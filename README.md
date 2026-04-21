@@ -9,6 +9,7 @@ Static personal website and CV for `vicorico.fun`.
 - `styles.css` - shared screen and print styling.
 - `site.js` - lightweight GitHub API integration for public repos and stars.
 - `assets/vicorico-mark.svg` - local brand mark and favicon.
+- `vercel.json` - Vercel static hosting settings.
 
 ## Edit
 
