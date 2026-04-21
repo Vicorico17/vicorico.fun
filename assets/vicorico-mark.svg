@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">vicorico.fun mark</title>
+  <desc id="desc">A compact geometric personal mark for vicorico.fun.</desc>
+  <rect width="240" height="240" rx="42" fill="#111315"/>
+  <path d="M54 67h32l34 92 34-92h32l-51 126h-30L54 67Z" fill="#f2b84b"/>
+  <circle cx="176" cy="63" r="19" fill="#0f766e"/>
+  <path d="M54 181h132v14H54v-14Z" fill="#fbfaf7"/>
+</svg>

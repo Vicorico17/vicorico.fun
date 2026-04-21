@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Vicorico's personal website for AI infrastructure, cloud engineering, crypto tooling, creative automation, and CV."
+    >
+    <title>vicorico.fun</title>
+    <link rel="icon" href="assets/vicorico-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="vicorico.fun home">
+        <img src="assets/vicorico-mark.svg" alt="" width="36" height="36">
+        <span>vicorico.fun</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#focus">Focus</a>
+        <a href="#projects">Projects</a>
+        <a href="#lab">Lab</a>
+        <a href="cv.html">CV</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section">
+        <div class="hero-copy">
+          <p class="eyebrow">AI infrastructure / cloud / crypto tooling</p>
+          <h1>Vicorico builds local-first AI tools and internet-native products.</h1>
+          <p class="lead">
+            I focus on AI cloud engineering, local model deployment, Kubernetes, DevOps,
+            smart contract architecture, growth systems, and creative automation for music,
+            video, and on-chain products.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="cv.html">View CV</a>
+            <a class="button secondary" href="https://github.com/Vicorico17">GitHub</a>
+            <a class="button secondary" href="mailto:hello@vicorico.fun">Contact</a>
+          </div>
+        </div>
+        <div class="identity-panel" aria-label="Vicorico profile summary">
+          <img src="assets/vicorico-mark.svg" alt="" width="116" height="116">
+          <div>
+            <p class="panel-label">Operating thesis</p>
+            <p class="panel-title">
+              Running models locally lets you sell apps instead of subscriptions while keeping
+              sensitive data private.
+            </p>
+          </div>
+          <dl class="quick-facts">
+            <div>
+              <dt>Base</dt>
+              <dd>Bucharest / Remote</dd>
+            </div>
+            <div>
+              <dt>Lab</dt>
+              <dd>5-node Kubernetes homelab</dd>
+            </div>
+            <div>
+              <dt>Domain</dt>
+              <dd>vicorico.fun</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section id="focus" class="section split">
+        <div>
+          <p class="eyebrow">Focus</p>
+          <h2>Tooling and experiences for AI x crypto.</h2>
+          <p class="lead small">
+            The page is organized around what I am building toward: applied AI infrastructure,
+            distribution engineering, on-chain payments, and creative agent workflows.
+          </p>
+        </div>
+        <div class="stack">
+          <article class="feature">
+            <h3>Local AI infrastructure</h3>
+            <p>
+              Run models on GPUs through container runtimes, mount GPUs into Kubernetes pods,
+              and package local-first apps for privacy-sensitive teams like law firms.
+            </p>
+          </article>
+          <article class="feature">
+            <h3>Cloud and platform engineering</h3>
+            <p>
+              AWS fundamentals, S3, EC2, Linux, containers, Kubernetes, security, uptime monitoring,
+              DevOps, and platform engineering.
+            </p>
+          </article>
+          <article class="feature">
+            <h3>Crypto product architecture</h3>
+            <p>
+              Smart contract architecture, x402-style payment flows, on-chain reputation,
+              micropayments, and AI x crypto tooling.
+            </p>
+          </article>
+          <article class="feature">
+            <h3>Creative automation</h3>
+            <p>
+              ComfyUI, generative art, automated video music generation, TikTok workflows,
+              presentations, storytelling automation, and creative agents.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="projects" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Portfolio</p>
+          <h2>Active projects, experiments, and systems.</h2>
+        </div>
+        <div class="project-grid">
+          <article class="project-card">
+            <p class="tag">AI search</p>
+            <h3>libergent</h3>
+            <p>
+              Cloudflare Worker marketplace search app with direct parsers, fallback providers,
+              local scoring, and a cost-aware scraping strategy.
+            </p>
+            <a href="https://github.com/Vicorico17/libergent">GitHub</a>
+          </article>
+          <article class="project-card">
+            <p class="tag">Commerce</p>
+            <h3>baguri</h3>
+            <p>
+              Product, creator, checkout, and automation work across a fashion commerce codebase.
+            </p>
+            <a href="https://github.com/Vicorico17/baguri">GitHub</a>
+          </article>
+          <article class="project-card">
+            <p class="tag">Web</p>
+            <h3>Grand Cafe Bucharest</h3>
+            <p>
+              Restaurant menu and web presentation work with optimized printable assets.
+            </p>
+            <a href="https://github.com/Vicorico17/grand-cafe-bucharest">GitHub</a>
+          </article>
+          <article class="project-card">
+            <p class="tag">Solana</p>
+            <h3>pump-bump</h3>
+            <p>
+              Solana and pump.fun tooling around balances, token accounts, token data, and bump flows.
+            </p>
+            <a href="https://github.com/degenfrends/pump-bump">GitHub</a>
+          </article>
+          <article class="project-card">
+            <p class="tag">Creative AI</p>
+            <h3>Ultimate Vocal Remover workflow</h3>
+            <p>
+              Local audio separation and music tooling for remix, content, and automated video pipelines.
+            </p>
+            <a href="https://github.com/Anjok07/ultimatevocalremovergui">Upstream</a>
+          </article>
+          <article class="project-card">
+            <p class="tag">Portfolio additions</p>
+            <h3>Icedout Coinflip / Curelao / x402 calendar</h3>
+            <p>
+              Add Icedout Coinflip, Curelao, and a personal x402-like calendar booking flow as
+              dedicated case studies when assets and URLs are ready.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section github-panel" aria-labelledby="github-title">
+        <div>
+          <p class="eyebrow">GitHub signal</p>
+          <h2 id="github-title">Public repositories and stars.</h2>
+          <p class="lead small">
+            This pulls public repository data from GitHub for Vicorico17 and ranks projects by stars.
+          </p>
+        </div>
+        <div class="github-stats" data-github-summary>
+          <div>
+            <span data-total-stars>--</span>
+            <p>Total stars</p>
+          </div>
+          <div>
+            <span data-total-repos>--</span>
+            <p>Public repos</p>
+          </div>
+        </div>
+        <div class="github-repos" data-github-repos>
+          <p class="muted">GitHub repositories load when this page is opened with network access.</p>
+        </div>
+      </section>
+
+      <section id="lab" class="section split">
+        <div>
+          <p class="eyebrow">Build queue</p>
+          <h2>What I am learning and shipping next.</h2>
+        </div>
+        <div class="note-grid">
+          <article class="note-card">
+            <h3>AI cloud engineering</h3>
+            <p>GPU containers, Kubernetes GPU scheduling, homelab operations, ComfyUI, AWS, Linux, security, and Uptime Kuma.</p>
+          </article>
+          <article class="note-card">
+            <h3>Distribution engineering</h3>
+            <p>Growth hacking, GitHub stars, one-minute pitches, grants, Wellfound, cover letters, and project packaging.</p>
+          </article>
+          <article class="note-card">
+            <h3>On-chain content</h3>
+            <p>Top 10 x402 tools, top 10 Polymarket tools, top 10 ERC-8004 tools, micropayments, history, and on-chain reputation.</p>
+          </article>
+          <article class="note-card">
+            <h3>Creative agents</h3>
+            <p>Glif agents, SlideGuru-style presentations, generative art, automated music videos, and TikToks on Vic's music.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Signals and resources</p>
+          <h2>References I want close to the work.</h2>
+        </div>
+        <div class="link-grid">
+          <a href="https://wc3ui.banteg.xyz/">wc3ui</a>
+          <a href="https://github.com/gausian-AI/Gausian_native_editor">Gausian native editor</a>
+          <a href="https://glif.app/agents/slideguru">SlideGuru on Glif</a>
+          <a href="https://marceldempers.dev/">Marcel Dempers</a>
+          <a href="https://trustmrr.com/">TrustMRR</a>
+          <a href="https://wellfound.com/">Wellfound</a>
+          <a href="https://www.virustotal.com/">VirusTotal</a>
+          <a href="https://www.cyfrin.io/updraft">Cyfrin Updraft</a>
+          <a href="https://rareskills.io/">RareSkills</a>
+          <a href="https://haveibeenpwned.com/">Have I Been Pwned</a>
+          <a href="https://www.firecrawl.dev/playground?endpoint=scrape&url=www.rektgang.com%2F&formats=%5B%22branding%22%5D">Firecrawl branding scraper</a>
+        </div>
+      </section>
+
+      <section class="section status-board">
+        <article>
+          <p class="eyebrow">Active</p>
+          <h3>Resume, cover letter, grants, GitHub polish, and portfolio packaging.</h3>
+        </article>
+        <article>
+          <p class="eyebrow">Sunsetted</p>
+          <h3>Archived experiments</h3>
+          <p>Older experiments can live here only when they support a specific story.</p>
+        </article>
+        <article>
+          <p class="eyebrow">Reading</p>
+          <h3>Foundation by Isaac Asimov</h3>
+          <p>A reminder that a game is as good as the rules.</p>
+        </article>
+      </section>
+
+      <section class="section contact-band">
+        <div>
+          <p class="eyebrow">Contact</p>
+          <h2>Build AI infrastructure, tooling, or creative automation with Vicorico.</h2>
+        </div>
+        <a class="button primary" href="mailto:hello@vicorico.fun">hello@vicorico.fun</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>vicorico.fun</span>
+      <span>AI infrastructure / cloud engineering / crypto tooling</span>
+    </footer>
+    <script src="site.js"></script>
+  </body>
+</html>
