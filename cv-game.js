@@ -112,6 +112,7 @@
     themeId: null,
     revealedCount: 0,
     messageTimer: 0,
+    worldTime: 0,
     lastTime: 0,
     player: {
       x: 72,
@@ -129,12 +130,12 @@
       wingPhase: 0,
     },
     platforms: [
-      { x: 0, y: 452, w: 1820, h: 88 },
-      { x: 210, y: 398, w: 148, h: 20 },
-      { x: 492, y: 398, w: 148, h: 20 },
-      { x: 774, y: 398, w: 148, h: 20 },
-      { x: 1056, y: 398, w: 148, h: 20 },
-      { x: 1338, y: 398, w: 148, h: 20 },
+      { x: 0, y: 452, w: 1820, h: 88, move: "static", phase: 0 },
+      { x: 210, y: 398, w: 148, h: 20, move: "bob", phase: 0.1 },
+      { x: 492, y: 398, w: 148, h: 20, move: "bob", phase: 1.4 },
+      { x: 774, y: 398, w: 148, h: 20, move: "bob", phase: 2.7 },
+      { x: 1056, y: 398, w: 148, h: 20, move: "bob", phase: 4.0 },
+      { x: 1338, y: 398, w: 148, h: 20, move: "bob", phase: 5.3 },
     ],
     blocks: [],
   };
@@ -148,6 +149,7 @@
     revealed: false,
     bump: 0,
     hits: 0,
+    phase: index * 1.35,
   }));
 
   function resetGame() {
@@ -157,6 +159,7 @@
     state.themeId = null;
     state.revealedCount = 0;
     state.messageTimer = 0;
+    state.worldTime = 0;
     Object.assign(state.player, {
       x: 72,
       y: 406,
@@ -203,6 +206,24 @@
     state.player.jumpQueued = true;
   }
 
+  function movingPlatformRect(platform) {
+    if (platform.move !== "bob") return platform;
+    return {
+      ...platform,
+      y: platform.y + Math.sin(state.worldTime * 1.75 + platform.phase) * 8,
+    };
+  }
+
+  function movingBlockRect(block) {
+    const floatY = Math.sin(state.worldTime * 1.45 + block.phase) * 5;
+    const floatX = Math.sin(state.worldTime * 0.75 + block.phase) * 4;
+    return {
+      ...block,
+      x: block.x + floatX,
+      y: block.y + floatY + block.bump * -8,
+    };
+  }
+
   function update(dt) {
     if (state.mode === "title") {
       if (keys.has("Enter") || keys.has(" ") || keys.has("Space")) resetGame();
@@ -210,6 +231,7 @@
     }
 
     if (keys.has("r") || keys.has("R")) resetGame();
+    state.worldTime += dt;
 
     const player = state.player;
     const accel = 1450;
@@ -254,9 +276,10 @@
     player.grounded = false;
 
     for (const platform of state.platforms) {
-      if (!rectsOverlap(player, platform)) continue;
-      if (player.vy > 0 && previousBottom <= platform.y + 4) {
-        player.y = platform.y - player.h;
+      const platformRect = movingPlatformRect(platform);
+      if (!rectsOverlap(player, platformRect)) continue;
+      if (player.vy > 0 && previousBottom <= platformRect.y + 4) {
+        player.y = platformRect.y - player.h;
         player.vy = 0;
         player.grounded = true;
         player.canDoubleJump = true;
@@ -265,8 +288,8 @@
     }
 
     for (const block of state.blocks) {
-      const blockRect = { x: block.x, y: block.y + block.bump * -8, w: block.w, h: block.h };
-      const centerAligned = player.x + player.w * 0.5 > blockRect.x - 8 && player.x + player.w * 0.5 < blockRect.x + blockRect.w + 8;
+      const blockRect = movingBlockRect(block);
+      const centerAligned = player.x + player.w * 0.5 > blockRect.x - 32 && player.x + player.w * 0.5 < blockRect.x + blockRect.w + 32;
       const headStrike =
         player.vy < 0 &&
         centerAligned &&
@@ -477,24 +500,35 @@
     ctx.translate(-cam, 0);
 
     for (const platform of state.platforms) {
+      const platformRect = movingPlatformRect(platform);
       ctx.fillStyle = theme.platform;
-      ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
+      ctx.fillRect(platformRect.x, platformRect.y, platformRect.w, platformRect.h);
       ctx.fillStyle = theme.trim;
-      ctx.fillRect(platform.x, platform.y, platform.w, 8);
+      ctx.fillRect(platformRect.x, platformRect.y, platformRect.w, 8);
       ctx.strokeStyle = "#213927";
       ctx.lineWidth = 3;
-      ctx.strokeRect(platform.x, platform.y, platform.w, platform.h);
+      ctx.strokeRect(platformRect.x, platformRect.y, platformRect.w, platformRect.h);
+      if (platform.move === "bob") {
+        ctx.strokeStyle = "rgba(23, 37, 43, 0.34)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(platform.x + 12, platform.y + platform.h + 9);
+        ctx.quadraticCurveTo(platform.x + platform.w / 2, platform.y + platform.h + 22, platform.x + platform.w - 12, platform.y + platform.h + 9);
+        ctx.stroke();
+      }
     }
 
     for (const block of state.blocks) {
-      const y = block.y + block.bump * -8;
+      const rect = movingBlockRect(block);
       ctx.fillStyle = block.revealed ? "#f6f1d2" : block.color;
       ctx.strokeStyle = "#17252b";
       ctx.lineWidth = 4;
-      ctx.fillRect(block.x, y, block.w, block.h);
-      ctx.strokeRect(block.x, y, block.w, block.h);
-      drawText(block.revealed ? "!" : "?", block.x + block.w / 2, y + 8, 34, "#17252b", "center", 900);
-      drawText(block.title, block.x + block.w / 2, y - 31, 13, "#17252b", "center", 900);
+      ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+      ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
+      ctx.fillStyle = "rgba(23, 37, 43, 0.18)";
+      ctx.fillRect(rect.x + 8, rect.y + rect.h + 7, rect.w - 16, 4);
+      drawText(block.revealed ? "!" : "?", rect.x + rect.w / 2, rect.y + 8, 34, "#17252b", "center", 900);
+      drawText(block.title, rect.x + rect.w / 2, rect.y - 31, 13, "#17252b", "center", 900);
     }
 
     const p = state.player;
@@ -776,18 +810,28 @@
 
   window.render_game_to_text = () => {
     const visibleBlocks = state.blocks
-      .filter((block) => block.x + block.w > state.cameraX && block.x < state.cameraX + W)
-      .map((block) => ({
+      .map((block) => ({ block, rect: movingBlockRect(block) }))
+      .filter(({ rect }) => rect.x + rect.w > state.cameraX && rect.x < state.cameraX + W)
+      .map(({ block, rect }) => ({
         id: block.id,
         title: block.title,
-        x: Math.round(block.x),
-        y: Math.round(block.y),
+        x: Math.round(rect.x),
+        y: Math.round(rect.y),
         revealed: block.revealed,
+      }));
+    const visiblePlatforms = state.platforms
+      .map((platform) => movingPlatformRect(platform))
+      .filter((platform) => platform.x + platform.w > state.cameraX && platform.x < state.cameraX + W)
+      .map((platform) => ({
+        x: Math.round(platform.x),
+        y: Math.round(platform.y),
+        moving: platform.move === "bob",
       }));
     return JSON.stringify({
       coordinates: "origin top-left, x right, y down",
       mode: state.mode,
       cameraX: Math.round(state.cameraX),
+      worldTime: Number(state.worldTime.toFixed(2)),
       player: {
         x: Math.round(state.player.x),
         y: Math.round(state.player.y),
@@ -796,6 +840,7 @@
         grounded: state.player.grounded,
       },
       visibleBlocks,
+      visiblePlatforms,
       activeId: state.activeId,
       themeId: state.themeId,
       revealedCount: state.revealedCount,
