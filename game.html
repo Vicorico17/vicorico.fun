@@ -28,7 +28,19 @@
     </header>
 
     <main class="game-shell">
-      <canvas id="game" width="960" height="540" aria-label="Vicorico Quest platform game"></canvas>
+      <div class="game-stage">
+        <canvas id="game" width="960" height="540" aria-label="Vicorico Quest platform game"></canvas>
+        <div class="touch-controls" aria-label="Touch game controls">
+          <div class="touch-cluster movement-controls">
+            <button class="touch-button" type="button" data-game-key="ArrowLeft" aria-label="Move left">Left</button>
+            <button class="touch-button" type="button" data-game-key="ArrowRight" aria-label="Move right">Right</button>
+          </div>
+          <div class="touch-cluster action-controls">
+            <button class="touch-button start-button" type="button" data-game-tap="Enter" aria-label="Start game">Start</button>
+            <button class="touch-button jump-button" type="button" data-game-key="ArrowUp" aria-label="Jump">Jump</button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script src="cv-game.js"></script>

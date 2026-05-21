@@ -575,6 +575,41 @@
     keys.delete(event.key);
   });
 
+  for (const button of document.querySelectorAll("[data-game-key]")) {
+    const key = button.dataset.gameKey;
+    const press = (event) => {
+      event.preventDefault();
+      keys.add(key);
+      button.classList.add("is-pressed");
+      if (state.mode === "title") resetGame();
+    };
+    const release = (event) => {
+      event.preventDefault();
+      keys.delete(key);
+      button.classList.remove("is-pressed");
+    };
+
+    button.addEventListener("pointerdown", press);
+    button.addEventListener("pointerup", release);
+    button.addEventListener("pointercancel", release);
+    button.addEventListener("pointerleave", release);
+    button.addEventListener("contextmenu", (event) => event.preventDefault());
+  }
+
+  for (const button of document.querySelectorAll("[data-game-tap]")) {
+    button.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      if (state.mode === "title") resetGame();
+      button.classList.add("is-pressed");
+    });
+    button.addEventListener("pointerup", (event) => {
+      event.preventDefault();
+      button.classList.remove("is-pressed");
+    });
+    button.addEventListener("pointercancel", () => button.classList.remove("is-pressed"));
+    button.addEventListener("pointerleave", () => button.classList.remove("is-pressed"));
+  }
+
   window.advanceTime = (ms) => {
     const steps = Math.max(1, Math.round(ms / (1000 / 60)));
     for (let i = 0; i < steps; i += 1) update(1 / 60);
@@ -607,6 +642,7 @@
       themeId: state.themeId,
       revealedCount: state.revealedCount,
       revealedIds: state.blocks.filter((block) => block.revealed).map((block) => block.id),
+      touchControls: document.querySelectorAll("[data-game-key], [data-game-tap]").length,
     });
   };
 

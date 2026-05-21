@@ -1,6 +1,8 @@
 .game-page {
   min-height: 100svh;
   overflow-x: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
   background:
     radial-gradient(circle at 18% 18%, rgba(242, 184, 75, 0.20), transparent 22rem),
     radial-gradient(circle at 82% 10%, rgba(15, 118, 110, 0.16), transparent 20rem),
@@ -20,8 +22,15 @@
   padding: 1rem;
 }
 
-#game {
+.game-stage {
   width: min(100%, calc((100svh - 110px) * 16 / 9));
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+}
+
+#game {
+  width: 100%;
   height: auto;
   max-height: calc(100svh - 110px);
   aspect-ratio: 16 / 9;
@@ -29,6 +38,54 @@
   background: #9ed5e6;
   image-rendering: pixelated;
   box-shadow: 0 18px 48px rgba(23, 37, 43, 0.18);
+  touch-action: none;
+  user-select: none;
+}
+
+.touch-controls {
+  display: none;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  touch-action: none;
+  user-select: none;
+}
+
+.touch-cluster {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.action-controls {
+  justify-content: flex-end;
+}
+
+.touch-button {
+  min-width: 4.8rem;
+  min-height: 3.2rem;
+  border: 2px solid #17252b;
+  border-radius: 8px;
+  background: #fffdf2;
+  color: #17252b;
+  box-shadow: 0 6px 0 #17252b;
+  font: 900 0.92rem/1 Inter, ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+  touch-action: none;
+}
+
+.touch-button:active,
+.touch-button.is-pressed {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 #17252b;
+}
+
+.jump-button {
+  min-width: 5.8rem;
+  background: #f4bf45;
+}
+
+.start-button {
+  background: #d7f0f0;
 }
 
 :fullscreen .game-shell {
@@ -50,13 +107,57 @@
 }
 
 @media (max-width: 760px) {
+  .game-page {
+    overflow: hidden;
+  }
+
+  .game-page .site-header {
+    gap: 0.55rem;
+    padding: 0.6rem 0;
+  }
+
+  .game-page nav a {
+    padding: 0.42rem 0.35rem;
+    font-size: 0.82rem;
+  }
+
   .game-shell {
-    min-height: calc(100svh - 128px);
+    min-height: calc(100svh - 110px);
     padding: 0.75rem;
+    align-items: start;
+  }
+
+  .game-stage {
+    width: 100%;
+    gap: 0.65rem;
   }
 
   #game {
     width: 100%;
-    max-height: calc(100svh - 148px);
+    max-height: calc(100svh - 230px);
+  }
+
+  .touch-controls {
+    display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .game-shell {
+    padding: 0.5rem;
+  }
+
+  .touch-controls {
+    gap: 0.5rem;
+  }
+
+  .touch-cluster {
+    gap: 0.45rem;
+  }
+
+  .touch-button {
+    min-width: 4.1rem;
+    min-height: 3rem;
+    font-size: 0.82rem;
   }
 }
