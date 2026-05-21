@@ -1,0 +1,62 @@
+.game-page {
+  min-height: 100svh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(242, 184, 75, 0.20), transparent 22rem),
+    radial-gradient(circle at 82% 10%, rgba(15, 118, 110, 0.16), transparent 20rem),
+    linear-gradient(180deg, #fbfaf7 0%, #eef2e6 100%);
+}
+
+.game-page .site-header {
+  border-bottom: 1px solid rgba(17, 19, 21, 0.08);
+}
+
+.game-shell {
+  width: min(100vw, 1180px);
+  min-height: calc(100svh - 74px);
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+#game {
+  width: min(100%, calc((100svh - 110px) * 16 / 9));
+  height: auto;
+  max-height: calc(100svh - 110px);
+  aspect-ratio: 16 / 9;
+  border: 3px solid #17252b;
+  background: #9ed5e6;
+  image-rendering: pixelated;
+  box-shadow: 0 18px 48px rgba(23, 37, 43, 0.18);
+}
+
+:fullscreen .game-shell {
+  width: 100vw;
+  min-height: 100vh;
+  padding: 0;
+  background: #17252b;
+}
+
+:fullscreen .site-header {
+  display: none;
+}
+
+:fullscreen #game {
+  width: min(100vw, calc(100vh * 16 / 9));
+  max-height: 100vh;
+  border: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 760px) {
+  .game-shell {
+    min-height: calc(100svh - 128px);
+    padding: 0.75rem;
+  }
+
+  #game {
+    width: 100%;
+    max-height: calc(100svh - 148px);
+  }
+}
