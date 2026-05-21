@@ -12,43 +12,98 @@
       id: "bio",
       title: "BIO",
       color: "#f4bf45",
+      theme: {
+        skyTop: "#9ed5e6",
+        skyMid: "#d7f0f0",
+        ground: "#78a95f",
+        platform: "#6d8b4f",
+        trim: "#365a3d",
+        motif: "city",
+      },
       detail:
         "Founder turned engineer and marketer in Bucharest building local-first AI tools, crypto tooling, and creative automation.",
+      bullets: ["Bucharest / remote", "Local-first AI", "AI x crypto products"],
     },
     {
       id: "study",
       title: "STUDY",
       color: "#7cc77d",
+      theme: {
+        skyTop: "#16213e",
+        skyMid: "#344a7a",
+        ground: "#25324f",
+        platform: "#576ca8",
+        trim: "#8bd3ff",
+        motif: "orbits",
+      },
       detail:
         "Focused on AI cloud engineering: Kubernetes, GPU containers, AWS, Linux, security, smart contracts, and x402.",
+      bullets: ["Kubernetes and GPU containers", "AWS, Linux, security", "Smart contracts and x402"],
     },
     {
       id: "experience",
       title: "WORK",
       color: "#e86f51",
+      theme: {
+        skyTop: "#2b1412",
+        skyMid: "#7b2d21",
+        ground: "#4b2c23",
+        platform: "#b95d3b",
+        trim: "#ffd166",
+        motif: "network",
+      },
       detail:
         "Crypto-native since 2017. Raised 200K+ in community funding, won a 50K Polygon grant, and ships AI automation systems.",
+      bullets: ["Crypto-native since 2017", "200K+ community funding", "50K Polygon grant"],
     },
     {
       id: "projects",
       title: "PROJECTS",
       color: "#6ea8d8",
+      theme: {
+        skyTop: "#062822",
+        skyMid: "#0f766e",
+        ground: "#143b35",
+        platform: "#1f9d8a",
+        trim: "#d4f7e7",
+        motif: "terminal",
+      },
       detail:
         "libergent, baguri, Grand Cafe Bucharest, pump-bump, ComfyUI workflows, audio/video automation, and creative agents.",
+      bullets: ["libergent and baguri", "Grand Cafe Bucharest", "pump-bump and creative AI"],
     },
     {
       id: "contact",
       title: "CONTACT",
       color: "#b58bd9",
+      theme: {
+        skyTop: "#25153d",
+        skyMid: "#6d4ea2",
+        ground: "#33244f",
+        platform: "#8b6fd1",
+        trim: "#f2e9ff",
+        motif: "signal",
+      },
       detail:
         "hello@vicorico.fun | vicorico.fun | github.com/Vicorico17 | Bucharest, Romania and remote.",
+      bullets: ["hello@vicorico.fun", "github.com/Vicorico17", "vicorico.fun"],
     },
   ];
+
+  const defaultTheme = {
+    skyTop: "#8fcfe2",
+    skyMid: "#d6eef0",
+    ground: "#78a95f",
+    platform: "#6d8b4f",
+    trim: "#365a3d",
+    motif: "clouds",
+  };
 
   const state = {
     mode: "title",
     cameraX: 0,
     activeId: null,
+    themeId: null,
     revealedCount: 0,
     messageTimer: 0,
     lastTime: 0,
@@ -64,28 +119,31 @@
     },
     platforms: [
       { x: 0, y: 452, w: 1820, h: 88 },
-      { x: 260, y: 370, w: 120, h: 20 },
-      { x: 700, y: 350, w: 142, h: 20 },
-      { x: 1150, y: 382, w: 132, h: 20 },
-      { x: 1530, y: 330, w: 150, h: 20 },
+      { x: 210, y: 398, w: 148, h: 20 },
+      { x: 492, y: 398, w: 148, h: 20 },
+      { x: 774, y: 398, w: 148, h: 20 },
+      { x: 1056, y: 398, w: 148, h: 20 },
+      { x: 1338, y: 398, w: 148, h: 20 },
     ],
     blocks: [],
   };
 
   state.blocks = sections.map((section, index) => ({
     ...section,
-    x: 238 + index * 300,
-    y: index % 2 === 0 ? 246 : 214,
+    x: 255 + index * 282,
+    y: 286,
     w: 58,
     h: 58,
     revealed: false,
     bump: 0,
+    hits: 0,
   }));
 
   function resetGame() {
     state.mode = "play";
     state.cameraX = 0;
     state.activeId = null;
+    state.themeId = null;
     state.revealedCount = 0;
     state.messageTimer = 0;
     Object.assign(state.player, {
@@ -101,6 +159,7 @@
     for (const block of state.blocks) {
       block.revealed = false;
       block.bump = 0;
+      block.hits = 0;
     }
   }
 
@@ -113,9 +172,11 @@
       block.revealed = true;
       state.revealedCount += 1;
     }
+    block.hits += 1;
     block.bump = 1;
     state.activeId = block.id;
-    state.messageTimer = 6;
+    state.themeId = block.id;
+    state.messageTimer = 8;
   }
 
   function update(dt) {
@@ -152,32 +213,35 @@
     player.vy += gravity * dt;
     player.x += player.vx * dt;
 
-    for (const platform of state.platforms) {
-      if (!rectsOverlap(player, platform)) continue;
-      if (player.vx > 0) player.x = platform.x - player.w;
-      if (player.vx < 0) player.x = platform.x + platform.w;
-      player.vx = 0;
-    }
-
+    const previousBottom = player.y + player.h;
     player.y += player.vy * dt;
     player.grounded = false;
 
     for (const platform of state.platforms) {
       if (!rectsOverlap(player, platform)) continue;
-      if (player.vy > 0) {
+      if (player.vy > 0 && previousBottom <= platform.y + 4) {
         player.y = platform.y - player.h;
         player.vy = 0;
         player.grounded = true;
-      } else if (player.vy < 0) {
-        player.y = platform.y + platform.h;
-        player.vy = 0;
       }
     }
 
     for (const block of state.blocks) {
       const blockRect = { x: block.x, y: block.y + block.bump * -8, w: block.w, h: block.h };
+      const centerAligned = player.x + player.w * 0.5 > blockRect.x - 8 && player.x + player.w * 0.5 < blockRect.x + blockRect.w + 8;
+      const headStrike =
+        player.vy < 0 &&
+        centerAligned &&
+        player.y <= blockRect.y + blockRect.h + 12 &&
+        player.y >= blockRect.y + 12;
+      if (headStrike) {
+        player.y = blockRect.y + blockRect.h;
+        player.vy = 85;
+        reveal(block);
+        continue;
+      }
       if (!rectsOverlap(player, blockRect)) continue;
-      const wasBelow = player.y > blockRect.y + blockRect.h - 18 && player.vy < 0;
+      const wasBelow = player.y > blockRect.y + blockRect.h - 24 && player.vy < 0 && centerAligned;
       if (wasBelow) {
         player.y = blockRect.y + blockRect.h;
         player.vy = 85;
@@ -250,41 +314,131 @@
     if (line) ctx.fillText(line, x, y);
   }
 
+  function activeTheme() {
+    const active = state.blocks.find((block) => block.id === state.themeId);
+    return active ? active.theme : defaultTheme;
+  }
+
+  function drawCloud(x, y, s, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, 26 * s, 0, Math.PI * 2);
+    ctx.arc(x + 28 * s, y - 12 * s, 32 * s, 0, Math.PI * 2);
+    ctx.arc(x + 62 * s, y, 24 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawMotif(theme) {
+    ctx.save();
+    ctx.globalAlpha = 0.72;
+
+    if (theme.motif === "city") {
+      ctx.fillStyle = "rgba(23, 37, 43, 0.24)";
+      for (let i = 0; i < 9; i += 1) {
+        const x = ((i * 138 - state.cameraX * 0.18) % 1200) - 80;
+        const h = 56 + (i % 4) * 18;
+        ctx.fillRect(x, 436 - h, 72, h);
+        ctx.fillStyle = "rgba(255, 248, 222, 0.48)";
+        ctx.fillRect(x + 16, 436 - h + 18, 10, 10);
+        ctx.fillRect(x + 42, 436 - h + 38, 10, 10);
+        ctx.fillStyle = "rgba(23, 37, 43, 0.24)";
+      }
+    } else if (theme.motif === "orbits") {
+      ctx.strokeStyle = "rgba(139, 211, 255, 0.34)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 4; i += 1) {
+        const x = 160 + i * 230 - state.cameraX * 0.1;
+        ctx.beginPath();
+        ctx.ellipse(x, 155, 88 + i * 6, 28 + i * 4, -0.35, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = i % 2 ? "#f4bf45" : "#8bd3ff";
+        ctx.beginPath();
+        ctx.arc(x + 68, 132 + i * 6, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (theme.motif === "network") {
+      ctx.strokeStyle = "rgba(255, 209, 102, 0.38)";
+      ctx.fillStyle = "rgba(255, 209, 102, 0.62)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i += 1) {
+        const x = 90 + i * 160 - state.cameraX * 0.16;
+        const y = 118 + (i % 3) * 42;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 92, y + 30);
+        ctx.lineTo(x + 42, y + 92);
+        ctx.stroke();
+        for (const p of [{ x, y }, { x: x + 92, y: y + 30 }, { x: x + 42, y: y + 92 }]) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    } else if (theme.motif === "terminal") {
+      for (let i = 0; i < 5; i += 1) {
+        const x = 72 + i * 210 - state.cameraX * 0.14;
+        ctx.fillStyle = "rgba(3, 19, 16, 0.48)";
+        roundedRect(x, 88 + (i % 2) * 42, 150, 88, 6);
+        ctx.fill();
+        ctx.fillStyle = "rgba(212, 247, 231, 0.72)";
+        ctx.fillRect(x + 18, 112 + (i % 2) * 42, 70, 7);
+        ctx.fillRect(x + 18, 134 + (i % 2) * 42, 112, 7);
+        ctx.fillRect(x + 18, 156 + (i % 2) * 42, 46, 7);
+      }
+    } else if (theme.motif === "signal") {
+      ctx.strokeStyle = "rgba(242, 233, 255, 0.42)";
+      ctx.lineWidth = 4;
+      for (let i = 0; i < 5; i += 1) {
+        const x = 130 + i * 190 - state.cameraX * 0.12;
+        for (let r = 28; r <= 92; r += 32) {
+          ctx.beginPath();
+          ctx.arc(x, 172, r, Math.PI * 1.12, Math.PI * 1.88);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "rgba(242, 233, 255, 0.62)";
+        ctx.beginPath();
+        ctx.arc(x, 172, 7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else {
+      for (const cloud of [
+        { x: 80, y: 70, s: 1 },
+        { x: 430, y: 92, s: 0.8 },
+        { x: 760, y: 58, s: 1.1 },
+      ]) {
+        const x = (cloud.x - state.cameraX * 0.25 + 1200) % 1200 - 120;
+        drawCloud(x, cloud.y, cloud.s, "#ffffff");
+      }
+    }
+
+    ctx.restore();
+  }
+
   function drawBackground() {
+    const theme = activeTheme();
     const gradient = ctx.createLinearGradient(0, 0, 0, H);
-    gradient.addColorStop(0, "#8fcfe2");
-    gradient.addColorStop(0.62, "#d6eef0");
+    gradient.addColorStop(0, theme.skyTop);
+    gradient.addColorStop(0.62, theme.skyMid);
     gradient.addColorStop(1, "#eef2e6");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, W, H);
 
-    ctx.fillStyle = "#ffffff";
-    for (const cloud of [
-      { x: 80, y: 70, s: 1 },
-      { x: 430, y: 92, s: 0.8 },
-      { x: 760, y: 58, s: 1.1 },
-    ]) {
-      const x = (cloud.x - state.cameraX * 0.25 + 1200) % 1200 - 120;
-      ctx.beginPath();
-      ctx.arc(x, cloud.y, 26 * cloud.s, 0, Math.PI * 2);
-      ctx.arc(x + 28 * cloud.s, cloud.y - 12 * cloud.s, 32 * cloud.s, 0, Math.PI * 2);
-      ctx.arc(x + 62 * cloud.s, cloud.y, 24 * cloud.s, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    drawMotif(theme);
 
-    ctx.fillStyle = "#78a95f";
+    ctx.fillStyle = theme.ground;
     ctx.fillRect(0, 436, W, 104);
   }
 
   function drawWorld() {
     const cam = state.cameraX;
+    const theme = activeTheme();
     ctx.save();
     ctx.translate(-cam, 0);
 
     for (const platform of state.platforms) {
-      ctx.fillStyle = "#6d8b4f";
+      ctx.fillStyle = theme.platform;
       ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
-      ctx.fillStyle = "#365a3d";
+      ctx.fillStyle = theme.trim;
       ctx.fillRect(platform.x, platform.y, platform.w, 8);
       ctx.strokeStyle = "#213927";
       ctx.lineWidth = 3;
@@ -319,6 +473,7 @@
   }
 
   function drawHud() {
+    const theme = activeTheme();
     ctx.fillStyle = "rgb(255 255 255 / 0.9)";
     roundedRect(20, 18, 272, 62, 8);
     ctx.fill();
@@ -331,20 +486,31 @@
     const active = state.blocks.find((block) => block.id === state.activeId);
     if (active && state.messageTimer > 0) {
       ctx.fillStyle = "rgb(255 255 255 / 0.96)";
-      roundedRect(330, 22, 590, 116, 8);
+      roundedRect(312, 22, 622, 166, 8);
       ctx.fill();
       ctx.strokeStyle = active.color;
       ctx.lineWidth = 5;
       ctx.stroke();
-      drawText(active.title, 354, 40, 22, "#17252b", "left", 900);
-      wrapText(active.detail, 354, 72, 520, 21, "#24363d", 16);
+      drawText(active.title, 336, 40, 22, "#17252b", "left", 900);
+      wrapText(active.detail, 336, 72, 548, 20, "#24363d", 15);
+      ctx.font = "800 14px Inter, system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillStyle = "#17252b";
+      active.bullets.forEach((bullet, index) => {
+        const y = 120 + index * 18;
+        ctx.fillStyle = theme.platform;
+        ctx.fillRect(336, y + 5, 8, 8);
+        ctx.fillStyle = "#17252b";
+        ctx.fillText(bullet, 354, y);
+      });
     }
 
     if (state.revealedCount === state.blocks.length) {
       ctx.fillStyle = "rgb(23 37 43 / 0.9)";
       roundedRect(326, 438, 310, 56, 8);
       ctx.fill();
-    drawText("Vicorico CV unlocked", 481, 454, 19, "#fff8de", "center", 900);
+      drawText("Vicorico CV unlocked", 481, 454, 19, "#fff8de", "center", 900);
     }
   }
 
@@ -356,7 +522,7 @@
     drawText("VICORICO QUEST", W / 2, 108, 54, "#17252b", "center", 900);
     drawText("A platformer CV for AI infrastructure, cloud, and crypto tooling", W / 2, 178, 22, "#415158", "center", 800);
     ctx.fillStyle = "#fffdf2";
-    roundedRect(255, 242, 450, 142, 8);
+    roundedRect(235, 242, 490, 156, 8);
     ctx.fill();
     ctx.strokeStyle = "#17252b";
     ctx.lineWidth = 3;
@@ -364,7 +530,8 @@
     drawText("Move: A/D or arrows", W / 2, 268, 22, "#17252b", "center", 800);
     drawText("Jump: W, Up, or Space", W / 2, 304, 22, "#17252b", "center", 800);
     drawText("Hit blocks from below to reveal CV details", W / 2, 340, 20, "#415158", "center", 750);
-    drawText("Press Enter to start", W / 2, 420, 24, "#e65f3f", "center", 900);
+    drawText("Each block changes the whole world", W / 2, 366, 18, "#415158", "center", 750);
+    drawText("Press Enter to start", W / 2, 424, 24, "#e65f3f", "center", 900);
   }
 
   function render() {
@@ -437,7 +604,9 @@
       },
       visibleBlocks,
       activeId: state.activeId,
+      themeId: state.themeId,
       revealedCount: state.revealedCount,
+      revealedIds: state.blocks.filter((block) => block.revealed).map((block) => block.id),
     });
   };
 
