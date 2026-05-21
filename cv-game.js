@@ -131,11 +131,11 @@
     },
     platforms: [
       { x: 0, y: 452, w: 1820, h: 88, move: "static", phase: 0 },
-      { x: 210, y: 398, w: 148, h: 20, move: "bob", phase: 0.1 },
-      { x: 492, y: 398, w: 148, h: 20, move: "bob", phase: 1.4 },
-      { x: 774, y: 398, w: 148, h: 20, move: "bob", phase: 2.7 },
-      { x: 1056, y: 398, w: 148, h: 20, move: "bob", phase: 4.0 },
-      { x: 1338, y: 398, w: 148, h: 20, move: "bob", phase: 5.3 },
+      { x: 210, y: 398, w: 148, h: 20, move: "orbit", phase: 0.1 },
+      { x: 492, y: 398, w: 148, h: 20, move: "orbit", phase: 1.4 },
+      { x: 774, y: 398, w: 148, h: 20, move: "orbit", phase: 2.7 },
+      { x: 1056, y: 398, w: 148, h: 20, move: "orbit", phase: 4.0 },
+      { x: 1338, y: 398, w: 148, h: 20, move: "orbit", phase: 5.3 },
     ],
     blocks: [],
   };
@@ -195,7 +195,7 @@
     block.bump = 1;
     state.activeId = block.id;
     state.themeId = block.id;
-    state.messageTimer = 8;
+    state.messageTimer = 6.5;
   }
 
   function queueJump() {
@@ -207,20 +207,21 @@
   }
 
   function movingPlatformRect(platform) {
-    if (platform.move !== "bob") return platform;
+    if (platform.move !== "orbit") return platform;
+    const angle = state.worldTime * 0.9 + platform.phase;
     return {
       ...platform,
-      y: platform.y + Math.sin(state.worldTime * 1.75 + platform.phase) * 8,
+      x: platform.x + Math.cos(angle) * 18,
+      y: platform.y + Math.sin(angle) * 12,
     };
   }
 
   function movingBlockRect(block) {
-    const floatY = Math.sin(state.worldTime * 1.45 + block.phase) * 5;
-    const floatX = Math.sin(state.worldTime * 0.75 + block.phase) * 4;
+    const angle = state.worldTime * 0.9 + block.phase + 0.45;
     return {
       ...block,
-      x: block.x + floatX,
-      y: block.y + floatY + block.bump * -8,
+      x: block.x + Math.cos(angle) * 14,
+      y: block.y + Math.sin(angle) * 10 + block.bump * -8,
     };
   }
 
@@ -289,7 +290,7 @@
 
     for (const block of state.blocks) {
       const blockRect = movingBlockRect(block);
-      const centerAligned = player.x + player.w * 0.5 > blockRect.x - 32 && player.x + player.w * 0.5 < blockRect.x + blockRect.w + 32;
+      const centerAligned = player.x + player.w * 0.5 > blockRect.x - 84 && player.x + player.w * 0.5 < blockRect.x + blockRect.w + 84;
       const headStrike =
         player.vy < 0 &&
         centerAligned &&
@@ -508,12 +509,11 @@
       ctx.strokeStyle = "#213927";
       ctx.lineWidth = 3;
       ctx.strokeRect(platformRect.x, platformRect.y, platformRect.w, platformRect.h);
-      if (platform.move === "bob") {
+      if (platform.move === "orbit") {
         ctx.strokeStyle = "rgba(23, 37, 43, 0.34)";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(platform.x + 12, platform.y + platform.h + 9);
-        ctx.quadraticCurveTo(platform.x + platform.w / 2, platform.y + platform.h + 22, platform.x + platform.w - 12, platform.y + platform.h + 9);
+        ctx.ellipse(platform.x + platform.w / 2, platform.y + platform.h / 2, 22, 14, 0, 0, Math.PI * 2);
         ctx.stroke();
       }
     }
@@ -527,6 +527,11 @@
       ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
       ctx.fillStyle = "rgba(23, 37, 43, 0.18)";
       ctx.fillRect(rect.x + 8, rect.y + rect.h + 7, rect.w - 16, 4);
+      ctx.strokeStyle = "rgba(23, 37, 43, 0.18)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(block.x + block.w / 2, block.y + block.h / 2, 18, 12, 0, 0, Math.PI * 2);
+      ctx.stroke();
       drawText(block.revealed ? "!" : "?", rect.x + rect.w / 2, rect.y + 8, 34, "#17252b", "center", 900);
       drawText(block.title, rect.x + rect.w / 2, rect.y - 31, 13, "#17252b", "center", 900);
     }
@@ -587,7 +592,7 @@
     ctx.strokeStyle = "#17252b";
     ctx.lineWidth = 2;
     ctx.stroke();
-    drawText("VICORICO QUEST", 36, 28, 22, "#17252b", "left", 900);
+    drawText("VIC'S QUEST", 36, 28, 22, "#17252b", "left", 900);
     drawText(`${state.revealedCount}/${state.blocks.length} details found`, 36, 54, 15, "#3d4b50", "left", 700);
 
     const active = state.blocks.find((block) => block.id === state.activeId);
@@ -595,6 +600,9 @@
       const panelX = W < 820 ? 132 : 312;
       const panelW = W < 820 ? W - panelX - 22 : 622;
       const textW = panelW - 74;
+      const panelAlpha = Math.min(1, state.messageTimer / 1.5);
+      ctx.save();
+      ctx.globalAlpha = panelAlpha;
       ctx.fillStyle = "rgb(255 255 255 / 0.96)";
       roundedRect(panelX, 22, panelW, 166, 8);
       ctx.fill();
@@ -614,13 +622,14 @@
         ctx.fillStyle = "#17252b";
         ctx.fillText(bullet, panelX + 42, y);
       });
+      ctx.restore();
     }
 
     if (state.revealedCount === state.blocks.length) {
       ctx.fillStyle = "rgb(23 37 43 / 0.9)";
       roundedRect(W / 2 - 155, 438, 310, 56, 8);
       ctx.fill();
-      drawText("Vicorico CV unlocked", W / 2, 454, 19, "#fff8de", "center", 900);
+      drawText("Vic's CV unlocked", W / 2, 454, 19, "#fff8de", "center", 900);
     }
   }
 
@@ -629,7 +638,7 @@
     drawWorld();
     ctx.fillStyle = "rgb(238 242 230 / 0.9)";
     ctx.fillRect(0, 0, W, H);
-    drawText("VICORICO QUEST", W / 2, 108, 54, "#17252b", "center", 900);
+    drawText("VIC'S QUEST", W / 2, 108, 58, "#17252b", "center", 900);
     drawText("A platformer CV for AI infrastructure, cloud, and crypto tooling", W / 2, 178, 22, "#415158", "center", 800);
     ctx.fillStyle = "#fffdf2";
     roundedRect(235, 242, 490, 156, 8);
@@ -825,7 +834,8 @@
       .map((platform) => ({
         x: Math.round(platform.x),
         y: Math.round(platform.y),
-        moving: platform.move === "bob",
+        moving: platform.move === "orbit",
+        motion: platform.move,
       }));
     return JSON.stringify({
       coordinates: "origin top-left, x right, y down",
