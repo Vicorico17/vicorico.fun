@@ -560,6 +560,15 @@
     }
   }
 
+  function isTouchLayout() {
+    return window.matchMedia("(max-width: 760px), (pointer: coarse)").matches;
+  }
+
+  function enterMobileFullscreen() {
+    if (!isTouchLayout() || document.fullscreenElement) return;
+    document.documentElement.requestFullscreen?.().catch(() => {});
+  }
+
   window.addEventListener("keydown", (event) => {
     if (event.key === "f" || event.key === "F") {
       toggleFullscreen();
@@ -579,6 +588,7 @@
     const key = button.dataset.gameKey;
     const press = (event) => {
       event.preventDefault();
+      enterMobileFullscreen();
       keys.add(key);
       button.classList.add("is-pressed");
       if (state.mode === "title") resetGame();
@@ -599,6 +609,7 @@
   for (const button of document.querySelectorAll("[data-game-tap]")) {
     button.addEventListener("pointerdown", (event) => {
       event.preventDefault();
+      enterMobileFullscreen();
       if (state.mode === "title") resetGame();
       button.classList.add("is-pressed");
     });
@@ -643,6 +654,8 @@
       revealedCount: state.revealedCount,
       revealedIds: state.blocks.filter((block) => block.revealed).map((block) => block.id),
       touchControls: document.querySelectorAll("[data-game-key], [data-game-tap]").length,
+      mobileFullscreenLayout: isTouchLayout(),
+      fullscreen: Boolean(document.fullscreenElement),
     });
   };
 
