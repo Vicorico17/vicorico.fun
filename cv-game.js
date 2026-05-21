@@ -2,10 +2,16 @@
   "use strict";
 
   const canvas = document.getElementById("game");
+  const startsInTouchLayout = window.matchMedia("(max-width: 760px), (pointer: coarse)").matches;
+  if (startsInTouchLayout) {
+    canvas.width = 720;
+    canvas.height = 540;
+  }
   const ctx = canvas.getContext("2d");
   const W = canvas.width;
   const H = canvas.height;
   const keys = new Set();
+  const jumpKeys = new Set(["ArrowUp", "w", "W", " ", "Space"]);
 
   const sections = [
     {
@@ -109,13 +115,18 @@
     lastTime: 0,
     player: {
       x: 72,
-      y: 346,
+      y: 406,
       w: 34,
       h: 46,
       vx: 0,
       vy: 0,
-      grounded: false,
+      grounded: true,
       facing: 1,
+      jumpQueued: false,
+      canDoubleJump: true,
+      doubleJumped: false,
+      wingTimer: 0,
+      wingPhase: 0,
     },
     platforms: [
       { x: 0, y: 452, w: 1820, h: 88 },
@@ -148,13 +159,18 @@
     state.messageTimer = 0;
     Object.assign(state.player, {
       x: 72,
-      y: 346,
+      y: 406,
       w: 34,
       h: 46,
       vx: 0,
       vy: 0,
-      grounded: false,
+      grounded: true,
       facing: 1,
+      jumpQueued: false,
+      canDoubleJump: true,
+      doubleJumped: false,
+      wingTimer: 0,
+      wingPhase: 0,
     });
     for (const block of state.blocks) {
       block.revealed = false;
@@ -177,6 +193,14 @@
     state.activeId = block.id;
     state.themeId = block.id;
     state.messageTimer = 8;
+  }
+
+  function queueJump() {
+    if (state.mode === "title") {
+      resetGame();
+      return;
+    }
+    state.player.jumpQueued = true;
   }
 
   function update(dt) {
@@ -205,12 +229,24 @@
     player.vx *= friction;
     player.vx = Math.max(-maxSpeed, Math.min(maxSpeed, player.vx));
 
-    if ((keys.has("ArrowUp") || keys.has("w") || keys.has("W") || keys.has(" ") || keys.has("Space")) && player.grounded) {
-      player.vy = jumpPower;
-      player.grounded = false;
+    if (player.jumpQueued) {
+      if (player.grounded) {
+        player.vy = jumpPower;
+        player.grounded = false;
+        player.canDoubleJump = true;
+        player.doubleJumped = false;
+      } else if (player.canDoubleJump) {
+        player.vy = jumpPower * 0.92;
+        player.canDoubleJump = false;
+        player.doubleJumped = true;
+        player.wingTimer = 0.85;
+      }
+      player.jumpQueued = false;
     }
 
     player.vy += gravity * dt;
+    player.wingPhase += dt * 18;
+    player.wingTimer = Math.max(0, player.wingTimer - dt);
     player.x += player.vx * dt;
 
     const previousBottom = player.y + player.h;
@@ -223,6 +259,8 @@
         player.y = platform.y - player.h;
         player.vy = 0;
         player.grounded = true;
+        player.canDoubleJump = true;
+        player.doubleJumped = false;
       }
     }
 
@@ -264,6 +302,9 @@
       player.y = 320;
       player.vx = 0;
       player.vy = 0;
+      player.canDoubleJump = true;
+      player.doubleJumped = false;
+      player.wingTimer = 0;
     }
     player.x = Math.max(20, Math.min(1760, player.x));
 
@@ -457,6 +498,38 @@
     }
 
     const p = state.player;
+    if (p.wingTimer > 0 || p.doubleJumped) {
+      const flap = Math.sin(p.wingPhase) * 7;
+      const fade = Math.min(1, p.wingTimer * 2.2 + (p.doubleJumped ? 0.35 : 0));
+      ctx.save();
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = "#f8fbff";
+      ctx.strokeStyle = "#17252b";
+      ctx.lineWidth = 3;
+
+      ctx.beginPath();
+      ctx.moveTo(p.x + 9, p.y + 19);
+      ctx.quadraticCurveTo(p.x - 20, p.y + 2 + flap, p.x - 31, p.y + 27 - flap * 0.25);
+      ctx.quadraticCurveTo(p.x - 12, p.y + 31, p.x + 9, p.y + 28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(p.x + 25, p.y + 19);
+      ctx.quadraticCurveTo(p.x + 54, p.y + 2 + flap, p.x + 65, p.y + 27 - flap * 0.25);
+      ctx.quadraticCurveTo(p.x + 46, p.y + 31, p.x + 25, p.y + 28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#8bd3ff";
+      ctx.globalAlpha = fade * 0.62;
+      ctx.fillRect(p.x - 18, p.y + 19 + flap * 0.15, 9, 4);
+      ctx.fillRect(p.x + 43, p.y + 19 + flap * 0.15, 9, 4);
+      ctx.restore();
+    }
+
     ctx.fillStyle = "#315b75";
     ctx.fillRect(p.x + 7, p.y + 14, 20, 28);
     ctx.fillStyle = "#e65f3f";
@@ -485,14 +558,17 @@
 
     const active = state.blocks.find((block) => block.id === state.activeId);
     if (active && state.messageTimer > 0) {
+      const panelX = W < 820 ? 132 : 312;
+      const panelW = W < 820 ? W - panelX - 22 : 622;
+      const textW = panelW - 74;
       ctx.fillStyle = "rgb(255 255 255 / 0.96)";
-      roundedRect(312, 22, 622, 166, 8);
+      roundedRect(panelX, 22, panelW, 166, 8);
       ctx.fill();
       ctx.strokeStyle = active.color;
       ctx.lineWidth = 5;
       ctx.stroke();
-      drawText(active.title, 336, 40, 22, "#17252b", "left", 900);
-      wrapText(active.detail, 336, 72, 548, 20, "#24363d", 15);
+      drawText(active.title, panelX + 24, 40, 22, "#17252b", "left", 900);
+      wrapText(active.detail, panelX + 24, 72, textW, 20, "#24363d", 15);
       ctx.font = "800 14px Inter, system-ui, sans-serif";
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
@@ -500,17 +576,17 @@
       active.bullets.forEach((bullet, index) => {
         const y = 120 + index * 18;
         ctx.fillStyle = theme.platform;
-        ctx.fillRect(336, y + 5, 8, 8);
+        ctx.fillRect(panelX + 24, y + 5, 8, 8);
         ctx.fillStyle = "#17252b";
-        ctx.fillText(bullet, 354, y);
+        ctx.fillText(bullet, panelX + 42, y);
       });
     }
 
     if (state.revealedCount === state.blocks.length) {
       ctx.fillStyle = "rgb(23 37 43 / 0.9)";
-      roundedRect(326, 438, 310, 56, 8);
+      roundedRect(W / 2 - 155, 438, 310, 56, 8);
       ctx.fill();
-      drawText("Vicorico CV unlocked", 481, 454, 19, "#fff8de", "center", 900);
+      drawText("Vicorico CV unlocked", W / 2, 454, 19, "#fff8de", "center", 900);
     }
   }
 
@@ -528,7 +604,7 @@
     ctx.lineWidth = 3;
     ctx.stroke();
     drawText("Move: A/D or arrows", W / 2, 268, 22, "#17252b", "center", 800);
-    drawText("Jump: W, Up, or Space", W / 2, 304, 22, "#17252b", "center", 800);
+    drawText("Jump twice to sprout wings", W / 2, 304, 22, "#17252b", "center", 800);
     drawText("Hit blocks from below to reveal CV details", W / 2, 340, 20, "#415158", "center", 750);
     drawText("Each block changes the whole world", W / 2, 366, 18, "#415158", "center", 750);
     drawText("Press Enter to start", W / 2, 424, 24, "#e65f3f", "center", 900);
@@ -577,6 +653,9 @@
     if (["ArrowLeft", "ArrowRight", "ArrowUp", " ", "Space"].includes(event.key)) {
       event.preventDefault();
     }
+    if (jumpKeys.has(event.key) && !keys.has(event.key)) {
+      queueJump();
+    }
     keys.add(event.key);
   });
 
@@ -586,15 +665,30 @@
 
   for (const button of document.querySelectorAll("[data-game-key]")) {
     const key = button.dataset.gameKey;
+    let lastPointerPress = 0;
     const press = (event) => {
       event.preventDefault();
+      lastPointerPress = performance.now();
+      try {
+        button.setPointerCapture?.(event.pointerId);
+      } catch {
+        // Pointer capture is best-effort on mobile browser controls.
+      }
       enterMobileFullscreen();
+      if (jumpKeys.has(key) && !keys.has(key)) {
+        queueJump();
+      }
       keys.add(key);
       button.classList.add("is-pressed");
       if (state.mode === "title") resetGame();
     };
     const release = (event) => {
       event.preventDefault();
+      try {
+        button.releasePointerCapture?.(event.pointerId);
+      } catch {
+        // Some browsers release capture automatically.
+      }
       keys.delete(key);
       button.classList.remove("is-pressed");
     };
@@ -603,23 +697,76 @@
     button.addEventListener("pointerup", release);
     button.addEventListener("pointercancel", release);
     button.addEventListener("pointerleave", release);
+    button.addEventListener("touchstart", press, { passive: false });
+    button.addEventListener("touchend", release, { passive: false });
+    button.addEventListener("touchcancel", release, { passive: false });
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      if (performance.now() - lastPointerPress < 350) return;
+      enterMobileFullscreen();
+      if (jumpKeys.has(key)) queueJump();
+    });
     button.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
   for (const button of document.querySelectorAll("[data-game-tap]")) {
+    let lastPointerPress = 0;
     button.addEventListener("pointerdown", (event) => {
       event.preventDefault();
+      lastPointerPress = performance.now();
+      try {
+        button.setPointerCapture?.(event.pointerId);
+      } catch {
+        // Pointer capture is best-effort on mobile browser controls.
+      }
       enterMobileFullscreen();
       if (state.mode === "title") resetGame();
       button.classList.add("is-pressed");
     });
     button.addEventListener("pointerup", (event) => {
       event.preventDefault();
+      try {
+        button.releasePointerCapture?.(event.pointerId);
+      } catch {
+        // Some browsers release capture automatically.
+      }
       button.classList.remove("is-pressed");
     });
     button.addEventListener("pointercancel", () => button.classList.remove("is-pressed"));
     button.addEventListener("pointerleave", () => button.classList.remove("is-pressed"));
+    button.addEventListener(
+      "touchstart",
+      (event) => {
+        event.preventDefault();
+        lastPointerPress = performance.now();
+        enterMobileFullscreen();
+        if (state.mode === "title") resetGame();
+        button.classList.add("is-pressed");
+      },
+      { passive: false }
+    );
+    button.addEventListener(
+      "touchend",
+      (event) => {
+        event.preventDefault();
+        button.classList.remove("is-pressed");
+      },
+      { passive: false }
+    );
+    button.addEventListener("touchcancel", () => button.classList.remove("is-pressed"), { passive: false });
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      if (performance.now() - lastPointerPress < 350) return;
+      enterMobileFullscreen();
+      if (state.mode === "title") resetGame();
+    });
   }
+
+  document.addEventListener("selectstart", (event) => {
+    if (event.target.closest?.(".touch-controls")) {
+      event.preventDefault();
+    }
+  });
 
   window.advanceTime = (ms) => {
     const steps = Math.max(1, Math.round(ms / (1000 / 60)));
@@ -653,6 +800,11 @@
       themeId: state.themeId,
       revealedCount: state.revealedCount,
       revealedIds: state.blocks.filter((block) => block.revealed).map((block) => block.id),
+      jump: {
+        canDoubleJump: state.player.canDoubleJump,
+        doubleJumped: state.player.doubleJumped,
+        wingTimer: Number(state.player.wingTimer.toFixed(2)),
+      },
       touchControls: document.querySelectorAll("[data-game-key], [data-game-tap]").length,
       mobileFullscreenLayout: isTouchLayout(),
       fullscreen: Boolean(document.fullscreenElement),
