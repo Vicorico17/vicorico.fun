@@ -11,6 +11,29 @@ function lerp(start, end, amount) {
   return start + (end - start) * amount;
 }
 
+function initIntroGate() {
+  const enterButton = document.querySelector("[data-enter-site]");
+  const aboutSection = document.querySelector("#about");
+
+  if (!enterButton || !aboutSection) return;
+
+  if ("scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+  }
+
+  window.scrollTo(0, 0);
+
+  enterButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    document.documentElement.classList.remove("scroll-locked");
+    document.body.classList.remove("scroll-locked");
+
+    window.requestAnimationFrame(() => {
+      aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+}
+
 function initFlowArt() {
   const panels = Array.from(document.querySelectorAll("[data-flow-panel]"));
   if (panels.length === 0) return;
@@ -104,5 +127,6 @@ async function loadGithubRepos() {
   }
 }
 
+initIntroGate();
 initFlowArt();
 loadGithubRepos();
