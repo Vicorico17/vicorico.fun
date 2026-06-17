@@ -7,89 +7,6 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function fitCanvas(canvas, ctx) {
-  const rect = canvas.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const width = Math.max(1, rect.width);
-  const height = Math.max(1, rect.height);
-  canvas.width = Math.floor(width * dpr);
-  canvas.height = Math.floor(height * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { width, height };
-}
-
-function initPortalField() {
-  const canvas = document.querySelector("[data-portal-field]");
-  if (!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const pointer = { x: 0, y: 0 };
-  let width = 0;
-  let height = 0;
-  let animationId = 0;
-
-  function resize() {
-    ({ width, height } = fitCanvas(canvas, ctx));
-  }
-
-  function draw(time = 0) {
-    const t = time * 0.001;
-    const spacing = width < 520 ? 18 : 22;
-
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "#06050a";
-    ctx.fillRect(0, 0, width, height);
-
-    for (let y = -spacing; y < height + spacing; y += spacing) {
-      for (let x = -spacing; x < width + spacing; x += spacing) {
-        const nx = x / width - 0.5;
-        const ny = y / height - 0.5;
-        const depth = 1 - clamp(Math.hypot(nx * 1.25, ny), 0, 1);
-        const wave = Math.sin(t * 0.8 + nx * 6 + ny * 4) * 2.4;
-        const driftX = pointer.x * depth * 10;
-        const driftY = pointer.y * depth * 7;
-        const accent = Math.round((x + y) / spacing) % 17 === 0;
-        const alpha = accent ? 0.28 + depth * 0.22 : 0.12 + depth * 0.22;
-        const radius = accent ? 1.55 + depth * 1.1 : 0.9 + depth * 0.8;
-
-        ctx.fillStyle = accent ? `rgba(212, 61, 23, ${alpha})` : `rgba(120, 113, 108, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(x + driftX + wave, y + driftY + wave * 0.35, radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    const glow = ctx.createRadialGradient(width * 0.52, height * 0.44, 0, width * 0.52, height * 0.44, Math.max(width, height) * 0.72);
-    glow.addColorStop(0, "rgba(212, 61, 23, 0.1)");
-    glow.addColorStop(0.45, "rgba(120, 113, 108, 0.05)");
-    glow.addColorStop(1, "rgba(6, 5, 10, 0.92)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, width, height);
-
-    if (!motionQuery.matches) {
-      animationId = window.requestAnimationFrame(draw);
-    }
-  }
-
-  function restart() {
-    window.cancelAnimationFrame(animationId);
-    resize();
-    draw();
-  }
-
-  canvas.parentElement?.addEventListener("pointermove", (event) => {
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = (event.clientX - rect.left) / rect.width - 0.5;
-    pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
-  });
-  window.addEventListener("resize", restart);
-  motionQuery.addEventListener("change", restart);
-  restart();
-}
-
 function initFlowArt() {
   const panels = Array.from(document.querySelectorAll("[data-flow-panel]"));
   if (panels.length === 0) return;
@@ -180,6 +97,5 @@ async function loadGithubRepos() {
   }
 }
 
-initPortalField();
 initFlowArt();
 loadGithubRepos();

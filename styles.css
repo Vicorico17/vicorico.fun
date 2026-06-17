@@ -1188,23 +1188,17 @@ button {
   align-items: center;
   justify-content: center;
   gap: 32px;
+  width: 100%;
   min-height: 100svh;
+  margin: 0;
   overflow: hidden;
+  background: #06050a;
   padding-top: 64px;
   padding-bottom: 64px;
 }
 
 .portal-start::before {
-  position: absolute;
-  inset: 18%;
-  border-radius: 24px;
-  background: rgba(6, 5, 10, 0.58);
-  box-shadow: var(--shadow);
-  content: "";
-}
-
-.portal-start .portal-field {
-  z-index: 0;
+  display: none;
 }
 
 .portal-enter {
@@ -1251,7 +1245,7 @@ button {
 }
 
 .portal-start .engage-button {
-  width: 264px;
+  width: 278px;
   height: 78px;
   border: 0;
   border-radius: 24px;
