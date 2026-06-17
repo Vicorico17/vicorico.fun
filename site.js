@@ -7,6 +7,10 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function lerp(start, end, amount) {
+  return start + (end - start) * amount;
+}
+
 function initFlowArt() {
   const panels = Array.from(document.querySelectorAll("[data-flow-panel]"));
   if (panels.length === 0) return;
@@ -17,21 +21,24 @@ function initFlowArt() {
   function update() {
     ticking = false;
 
-    panels.forEach((panel, index) => {
+    const isMobile = window.innerWidth <= 768;
+
+    panels.forEach((panel) => {
       const inner = panel.querySelector("[data-flow-inner]");
       if (!inner) return;
 
-      if (motionQuery.matches || index === 0) {
+      if (motionQuery.matches) {
         inner.style.transform = "none";
         return;
       }
 
       const rect = panel.getBoundingClientRect();
-      const progress = clamp((window.innerHeight - rect.top) / (window.innerHeight * 0.8), 0, 1);
+      const scrollRange = Math.max(rect.height + window.innerHeight * 0.25, 1);
+      const progress = clamp((window.innerHeight - rect.top) / scrollRange, 0, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const rotation = (1 - eased) * 24;
-      const offset = (1 - eased) * 42;
-      inner.style.transform = `rotate(${rotation}deg) translateY(${offset}px)`;
+      const rotation = lerp(20, 0, eased);
+      const scale = lerp(isMobile ? 0.72 : 1.05, isMobile ? 0.92 : 1, eased);
+      inner.style.transform = `rotateX(${rotation}deg) scale(${scale})`;
     });
   }
 

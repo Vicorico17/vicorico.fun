@@ -838,15 +838,24 @@ nav a:hover {
 
 .flow-art {
   position: relative;
-  margin: 1rem 0 0;
-  background: #020202;
+  margin: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 34rem),
+    #06050a;
   isolation: isolate;
 }
 
 .flow-panel {
   position: relative;
-  min-height: 118svh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 80rem;
   overflow: visible;
+  padding: clamp(5rem, 10vw, 9rem) 1rem;
+  perspective: 1000px;
+  perspective-origin: center 18%;
 }
 
 .flow-panel:nth-child(1) {
@@ -870,39 +879,84 @@ nav a:hover {
 }
 
 .flow-panel:last-child {
-  min-height: 100svh;
+  min-height: 72rem;
 }
 
 .flow-inner {
   position: sticky;
-  top: 0;
+  top: clamp(2rem, 8svh, 5rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
-  min-height: 100svh;
-  padding: clamp(2rem, 6vw, 4.5rem);
-  transform-origin: bottom left;
+  width: min(1024px, calc(100% - 2rem));
+  min-height: min(40rem, calc(100svh - 4rem));
+  overflow: hidden;
+  border: 4px solid rgba(108, 108, 108, 0.82);
+  border-radius: 30px;
+  background: #222222;
+  box-shadow:
+    0 0 #0000004d,
+    0 9px 20px #0000004a,
+    0 37px 37px #00000042,
+    0 84px 50px #00000026,
+    0 149px 60px #0000000a,
+    0 233px 65px #00000003;
+  padding: clamp(1.6rem, 4.8vw, 4rem);
+  transform-origin: center top;
+  transform-style: preserve-3d;
   will-change: transform;
 }
 
-.flow-orange {
-  background: #fd5200;
+.flow-inner::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.14), transparent 22rem);
+  opacity: 0.8;
+}
+
+.flow-inner > * {
+  position: relative;
+  z-index: 1;
+}
+
+.flow-orange,
+.flow-black,
+.flow-paper,
+.flow-blue {
+  background: transparent;
+}
+
+.flow-orange .flow-inner {
+  border-color: rgba(255, 120, 64, 0.72);
+  background:
+    linear-gradient(135deg, #fd5200 0%, #c73511 62%, #190705 100%);
   color: white;
 }
 
-.flow-black {
-  background: #020202;
+.flow-black .flow-inner {
+  border-color: rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(135deg, #2a2a2a 0%, #111111 52%, #020202 100%);
   color: white;
 }
 
-.flow-paper {
-  background: #f5f0e8;
+.flow-paper .flow-inner {
+  border-color: rgba(245, 240, 232, 0.68);
+  background:
+    linear-gradient(135deg, #f5f0e8 0%, #d8d1c4 64%, #8b8378 100%);
   color: #080808;
 }
 
-.flow-blue {
-  background: #1a3de8;
+.flow-blue .flow-inner {
+  border-color: rgba(92, 124, 255, 0.78);
+  background:
+    linear-gradient(135deg, #1a3de8 0%, #071c74 62%, #030614 100%);
   color: white;
 }
 
@@ -1870,6 +1924,15 @@ dd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .flow-panel {
+    min-height: 72rem;
+    padding: 5rem 1rem;
+  }
+
+  .flow-inner {
+    min-height: 38rem;
+  }
+
   .flow-title {
     font-size: 4.8rem;
   }
@@ -2029,13 +2092,31 @@ dd {
     font-size: clamp(3rem, 16vw, 5rem);
   }
 
+  .flow-panel {
+    min-height: 60rem;
+    padding: 4rem 0.5rem;
+    perspective-origin: center 12%;
+  }
+
+  .flow-panel:last-child {
+    min-height: 56rem;
+  }
+
   .flow-inner {
-    min-height: 100svh;
-    padding: 2rem 1rem;
+    top: 2rem;
+    width: min(100%, calc(100% - 0.75rem));
+    min-height: min(34rem, calc(100svh - 3rem));
+    border-width: 2px;
+    border-radius: 24px;
+    padding: 1.25rem;
   }
 
   .flow-title {
     font-size: 3.15rem;
+  }
+
+  .flow-copy {
+    font-size: 1rem;
   }
 
   .cv-contact {
