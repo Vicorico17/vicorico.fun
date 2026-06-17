@@ -1287,11 +1287,6 @@ button {
   line-height: 1.2;
 }
 
-.portal-start .engage-button-surface span:last-child {
-  flex: 0 0 auto;
-  color: rgba(41, 37, 36, 0.62);
-}
-
 .about-intro,
 .skills-page {
   min-height: 100svh;
