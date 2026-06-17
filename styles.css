@@ -1797,6 +1797,125 @@ dd {
   color: var(--muted);
 }
 
+.crypto-section {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 2rem;
+  padding-bottom: 6rem;
+}
+
+.crypto-heading {
+  max-width: 780px;
+}
+
+.crypto-heading h2 {
+  max-width: 11ch;
+  color: #ffffff;
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.92;
+}
+
+.crypto-heading p {
+  max-width: 62ch;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 1.08rem;
+}
+
+.crypto-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.crypto-grid article {
+  position: relative;
+  min-height: 190px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 17px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  backdrop-filter: blur(18px);
+  transition:
+    border-color 240ms ease,
+    background 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.crypto-grid article:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 36%),
+    rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+}
+
+.crypto-grid span {
+  color: #d43d17;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.crypto-grid p {
+  margin: 1rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.social-end {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  padding-bottom: 5rem;
+}
+
+.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  color: #ffffff;
+  backdrop-filter: blur(18px);
+  transition:
+    border-color 240ms ease,
+    background 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.social-icon-link:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+}
+
+.social-icon-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.86);
+  outline-offset: 5px;
+}
+
+.social-icon-link svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
 .contact-band {
   border-top: 1px solid var(--line);
   justify-content: space-between;
@@ -2022,6 +2141,7 @@ dd {
   .journey-list,
   .flow-grid,
   .skills-grid,
+  .crypto-grid,
   .cv-hero,
   .cv-item,
   .two-column {
