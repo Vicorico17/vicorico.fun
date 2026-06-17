@@ -19,6 +19,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html:not(.scroll-locked) {
+  scroll-snap-type: y proximity;
+}
+
 html.scroll-locked,
 body.scroll-locked {
   height: 100%;
@@ -851,7 +855,6 @@ nav a:hover {
 .flow-art {
   position: relative;
   margin: 0;
-  overflow: hidden;
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 34rem),
     #06050a;
@@ -861,45 +864,80 @@ nav a:hover {
 .flow-panel {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
+  height: 100svh;
   min-height: 100svh;
-  overflow: visible;
-  padding: 2rem 1rem;
+  overflow: hidden;
+  padding: 0;
   perspective: 1000px;
   perspective-origin: center 18%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .flow-panel:nth-child(1) {
   z-index: 1;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 218, 92, 0.35), transparent 28rem),
+    linear-gradient(135deg, #fd5200 0%, #c73511 58%, #190705 100%);
+  color: #ffffff;
 }
 
 .flow-panel:nth-child(2) {
   z-index: 2;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.14), transparent 24rem),
+    linear-gradient(135deg, #252525 0%, #0f0f0f 54%, #020202 100%);
+  color: #ffffff;
 }
 
 .flow-panel:nth-child(3) {
   z-index: 3;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.72), transparent 24rem),
+    linear-gradient(135deg, #f5f0e8 0%, #d8d1c4 62%, #8b8378 100%);
+  color: #080808;
 }
 
 .flow-panel:nth-child(4) {
   z-index: 4;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.55), transparent 26rem),
+    linear-gradient(135deg, #1a3de8 0%, #071c74 60%, #030614 100%);
+  color: #ffffff;
 }
 
 .flow-panel:nth-child(5) {
   z-index: 5;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(236, 72, 153, 0.32), transparent 28rem),
+    linear-gradient(135deg, #42123b 0%, #22112f 54%, #07040d 100%);
+  color: #ffffff;
 }
 
 .flow-panel:nth-child(6) {
   z-index: 6;
+  background:
+    radial-gradient(circle at 76% 20%, rgba(22, 163, 74, 0.28), transparent 24rem),
+    linear-gradient(135deg, #0d3b2e 0%, #10251f 54%, #030806 100%);
+  color: #f5fff8;
 }
 
 .flow-panel:nth-child(7) {
   z-index: 7;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(125, 211, 252, 0.28), transparent 24rem),
+    linear-gradient(135deg, #243447 0%, #101827 54%, #030712 100%);
+  color: #ffffff;
 }
 
 .flow-panel:nth-child(8) {
   z-index: 8;
+  background:
+    radial-gradient(circle at 82% 72%, rgba(251, 113, 133, 0.32), transparent 24rem),
+    linear-gradient(135deg, #5c1824 0%, #280912 58%, #080205 100%);
+  color: #ffffff;
 }
 
 .flow-panel:last-child {
@@ -907,26 +945,17 @@ nav a:hover {
 }
 
 .flow-inner {
-  position: sticky;
-  top: 2rem;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1.5rem;
-  width: min(1024px, calc(100% - 2rem));
-  min-height: calc(100svh - 4rem);
-  overflow: hidden;
-  border: 4px solid rgba(108, 108, 108, 0.82);
-  border-radius: 30px;
-  background: #222222;
-  box-shadow:
-    0 0 #0000004d,
-    0 9px 20px #0000004a,
-    0 37px 37px #00000042,
-    0 84px 50px #00000026,
-    0 149px 60px #0000000a,
-    0 233px 65px #00000003;
-  padding: clamp(1.6rem, 4.8vw, 4rem);
+  justify-content: center;
+  gap: clamp(0.9rem, 2.2vh, 1.5rem);
+  width: min(1180px, calc(100% - 2rem));
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(1.5rem, 4vw, 4rem) 0;
+  scrollbar-width: thin;
   transform-origin: center top;
   transform-style: preserve-3d;
   will-change: transform;
@@ -941,47 +970,12 @@ nav a:hover {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 28%),
     radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.14), transparent 22rem);
-  opacity: 0.8;
+  opacity: 0.38;
 }
 
 .flow-inner > * {
   position: relative;
   z-index: 1;
-}
-
-.flow-orange,
-.flow-black,
-.flow-paper,
-.flow-blue {
-  background: transparent;
-}
-
-.flow-orange .flow-inner {
-  border-color: rgba(255, 120, 64, 0.72);
-  background:
-    linear-gradient(135deg, #fd5200 0%, #c73511 62%, #190705 100%);
-  color: white;
-}
-
-.flow-black .flow-inner {
-  border-color: rgba(255, 255, 255, 0.18);
-  background:
-    linear-gradient(135deg, #2a2a2a 0%, #111111 52%, #020202 100%);
-  color: white;
-}
-
-.flow-paper .flow-inner {
-  border-color: rgba(245, 240, 232, 0.68);
-  background:
-    linear-gradient(135deg, #f5f0e8 0%, #d8d1c4 64%, #8b8378 100%);
-  color: #080808;
-}
-
-.flow-blue .flow-inner {
-  border-color: rgba(92, 124, 255, 0.78);
-  background:
-    linear-gradient(135deg, #1a3de8 0%, #071c74 62%, #030614 100%);
-  color: white;
 }
 
 .flow-kicker {
@@ -997,9 +991,9 @@ nav a:hover {
 }
 
 .flow-title {
-  max-width: 13ch;
+  max-width: 15ch;
   margin-bottom: 0;
-  font-size: 5.7rem;
+  font-size: clamp(3rem, 7.2vw, 6rem);
   font-weight: 950;
   line-height: 0.86;
   text-transform: uppercase;
@@ -1021,7 +1015,12 @@ nav a:hover {
 
 .flow-grid-dense {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.72rem;
+  gap: clamp(0.7rem, 1.8vw, 1.1rem);
+}
+
+.flow-grid > div {
+  border-top: 1px solid currentColor;
+  padding-top: 0.8rem;
 }
 
 .flow-grid h3 {
@@ -2079,12 +2078,15 @@ dd {
   }
 
   .flow-panel {
+    height: 100svh;
     min-height: 100svh;
-    padding: 1.5rem 1rem;
+    padding: 0;
   }
 
   .flow-inner {
-    min-height: calc(100svh - 3rem);
+    width: min(100%, calc(100% - 2rem));
+    height: 100%;
+    min-height: 0;
   }
 
   .flow-title {
@@ -2242,8 +2244,9 @@ dd {
   }
 
   .flow-panel {
+    height: 100svh;
     min-height: 100svh;
-    padding: 1.5rem 0.5rem;
+    padding: 0;
     perspective-origin: center 12%;
   }
 
@@ -2252,11 +2255,9 @@ dd {
   }
 
   .flow-inner {
-    top: 1.5rem;
     width: min(100%, calc(100% - 0.75rem));
-    min-height: calc(100svh - 3rem);
-    border-width: 2px;
-    border-radius: 24px;
+    height: 100%;
+    min-height: 0;
     padding: 1.25rem;
   }
 

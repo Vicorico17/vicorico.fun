@@ -59,9 +59,10 @@ function initFlowArt() {
       const scrollRange = Math.max(rect.height + window.innerHeight * 0.25, 1);
       const progress = clamp((window.innerHeight - rect.top) / scrollRange, 0, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const rotation = lerp(20, 0, eased);
-      const scale = lerp(isMobile ? 0.72 : 1.05, isMobile ? 0.92 : 1, eased);
-      inner.style.transform = `rotateX(${rotation}deg) scale(${scale})`;
+      const rotation = lerp(isMobile ? 0 : 5, 0, eased);
+      const scale = lerp(isMobile ? 0.98 : 0.96, 1, eased);
+      const translate = lerp(28, 0, eased);
+      inner.style.transform = `translateY(${translate}px) rotateX(${rotation}deg) scale(${scale})`;
     });
   }
 
