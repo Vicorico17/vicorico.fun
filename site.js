@@ -18,22 +18,73 @@ function initPortalArt() {
   const canvas = portalArtNode;
   const ctx = canvas.getContext("2d");
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const labels = ["AI", "GPU", "x402", "ERC-20", "ComfyUI", "OSINT", "K8S", "AGENTS", "GAMES", "MARKETS"];
+  const capabilityLabels = [
+    "AI INFRA",
+    "GPU VPS",
+    "LOCAL MODELS",
+    "KUBERNETES",
+    "DOCKER",
+    "MODEL SERVING",
+    "COMFYUI",
+    "CONTENT OPS",
+    "REVOPS AGENTS",
+    "SUPPORT COPILOTS",
+    "MEETING PREP",
+    "KNOWLEDGE BASES",
+    "CONTEXT ENGINEERING",
+    "OSINT",
+    "LINUX",
+    "SECURITY",
+    "SMART CONTRACTS",
+    "ERC-20",
+    "ERC-721",
+    "ERC-1155",
+    "X402 PAYMENTS",
+    "PREDICTION MARKETS",
+    "COMMUNITY COINS",
+    "NFT SYSTEMS",
+    "SOLANA TOOLING",
+    "DISCORD WORLDS",
+    "QUEST LOOPS",
+    "MARKETPLACES",
+    "DROPSHIPPING",
+    "CHECKOUT FLOWS",
+    "VIDEO AUTOMATION",
+    "TIKTOK SYSTEMS",
+    "YOUTUBE REPURPOSING",
+    "IMAGE MODELS",
+    "GROWTH LOOPS",
+    "GAME ECONOMIES",
+    "3D WORLDS",
+    "WORLD BUILDING",
+    "MONITORING",
+    "UPTIME KUMA",
+  ];
   let width = 0;
   let height = 0;
   let dpr = 1;
   let nodes = [];
   let animationFrame = 0;
 
+  function uniqueLabels(count) {
+    const shuffled = [...capabilityLabels];
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, Math.min(count, shuffled.length));
+  }
+
   function makeNodes() {
     const count = Math.max(28, Math.min(74, Math.round((width * height) / 26000)));
+    const labelPool = uniqueLabels(Math.min(24, count));
     nodes = Array.from({ length: count }, (_, index) => ({
       x: Math.random() * width,
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 0.16,
       vy: (Math.random() - 0.5) * 0.16,
       size: 2 + Math.random() * 5,
-      label: labels[index % labels.length],
+      label: labelPool[index] || "",
       phase: Math.random() * Math.PI * 2,
     }));
   }
@@ -101,7 +152,7 @@ function initPortalArt() {
       ctx.fillStyle = `rgba(255, 255, 255, ${0.18 + pulse * 0.34})`;
       ctx.fillRect(node.x, node.y, node.size, node.size);
 
-      if (node.size > 5.2) {
+      if (node.label && node.size > 3.8) {
         ctx.font = "800 11px Inter, system-ui, sans-serif";
         ctx.fillStyle = `rgba(242, 184, 75, ${0.24 + pulse * 0.28})`;
         ctx.fillText(node.label, node.x + 10, node.y - 3);

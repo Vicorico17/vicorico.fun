@@ -30,7 +30,31 @@
 
     <main class="game-shell">
       <div class="game-stage">
-        <canvas id="game" width="960" height="540" aria-label="Vic's Quest platform game"></canvas>
+        <canvas id="game" aria-label="Vic's Quest 3D CV game"></canvas>
+        <div class="game-hud" aria-live="polite">
+          <div class="hud-topline">
+            <div>
+              <p class="hud-kicker">Vic's Quest 3D</p>
+              <strong data-game-zone>Entering the map</strong>
+            </div>
+            <div class="hud-progress" aria-label="Game CV progress">
+              <span data-game-progress>0/10</span>
+              <div class="hud-progress-track">
+                <i data-game-progress-bar></i>
+              </div>
+            </div>
+          </div>
+          <article class="hud-card" data-game-card>
+            <p data-game-card-kicker>Current World</p>
+            <h1 data-game-card-title>Vic's Quest</h1>
+            <p data-game-card-copy>Move through the 3D CV map to unlock each part of the story.</p>
+            <ul data-game-card-list>
+              <li>AI systems</li>
+              <li>Crypto rails</li>
+              <li>Creative worlds</li>
+            </ul>
+          </article>
+        </div>
         <div class="touch-controls" aria-label="Touch game controls">
           <div class="touch-cluster movement-controls">
             <button class="touch-button dpad-button" type="button" data-game-key="ArrowLeft" aria-label="Move left">←</button>
@@ -44,6 +68,6 @@
       </div>
     </main>
 
-    <script src="cv-game.js"></script>
+    <script type="module" src="cv-game.js"></script>
   </body>
 </html>
