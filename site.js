@@ -2,6 +2,7 @@ const githubUser = "Vicorico17";
 const reposNode = document.querySelector("[data-github-repos]");
 const starsNode = document.querySelector("[data-total-stars]");
 const totalReposNode = document.querySelector("[data-total-repos]");
+const portalArtNode = document.querySelector("[data-portal-art]");
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -9,6 +10,137 @@ function clamp(value, min, max) {
 
 function lerp(start, end, amount) {
   return start + (end - start) * amount;
+}
+
+function initPortalArt() {
+  if (!portalArtNode) return;
+
+  const canvas = portalArtNode;
+  const ctx = canvas.getContext("2d");
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const labels = ["AI", "GPU", "x402", "ERC-20", "ComfyUI", "OSINT", "K8S", "AGENTS", "GAMES", "MARKETS"];
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let nodes = [];
+  let animationFrame = 0;
+
+  function makeNodes() {
+    const count = Math.max(28, Math.min(74, Math.round((width * height) / 26000)));
+    nodes = Array.from({ length: count }, (_, index) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.16,
+      vy: (Math.random() - 0.5) * 0.16,
+      size: 2 + Math.random() * 5,
+      label: labels[index % labels.length],
+      phase: Math.random() * Math.PI * 2,
+    }));
+  }
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(1, rect.width);
+    height = Math.max(1, rect.height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    makeNodes();
+  }
+
+  function drawCircuit(time) {
+    const cx = width / 2;
+    const cy = height / 2;
+    const size = Math.min(width, height) * 0.34;
+    const spin = time * 0.00014;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(spin);
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([16, 18]);
+
+    for (let i = 0; i < 4; i += 1) {
+      ctx.save();
+      ctx.rotate((Math.PI / 4) * i);
+      ctx.strokeRect(-size / 2, -size / 2, size, size);
+      ctx.restore();
+    }
+
+    ctx.setLineDash([]);
+    ctx.strokeStyle = "rgba(212, 61, 23, 0.36)";
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.72, 0);
+    ctx.lineTo(-size * 0.28, -size * 0.28);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(size * 0.28, -size * 0.28);
+    ctx.lineTo(size * 0.72, 0);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function draw(time = 0) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "rgba(6, 5, 10, 0.18)";
+    ctx.fillRect(0, 0, width, height);
+
+    drawCircuit(time);
+
+    for (const node of nodes) {
+      const pulse = Math.sin(time * 0.0012 + node.phase) * 0.5 + 0.5;
+      node.x += motionQuery.matches ? 0 : node.vx;
+      node.y += motionQuery.matches ? 0 : node.vy;
+
+      if (node.x < -20) node.x = width + 20;
+      if (node.x > width + 20) node.x = -20;
+      if (node.y < -20) node.y = height + 20;
+      if (node.y > height + 20) node.y = -20;
+
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.18 + pulse * 0.34})`;
+      ctx.fillRect(node.x, node.y, node.size, node.size);
+
+      if (node.size > 5.2) {
+        ctx.font = "800 11px Inter, system-ui, sans-serif";
+        ctx.fillStyle = `rgba(242, 184, 75, ${0.24 + pulse * 0.28})`;
+        ctx.fillText(node.label, node.x + 10, node.y - 3);
+      }
+    }
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < nodes.length; i += 1) {
+      for (let j = i + 1; j < nodes.length; j += 1) {
+        const a = nodes[i];
+        const b = nodes[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > 135) continue;
+        ctx.globalAlpha = 1 - distance / 135;
+        ctx.beginPath();
+        ctx.moveTo(a.x + a.size / 2, a.y + a.size / 2);
+        ctx.lineTo(b.x + b.size / 2, b.y + b.size / 2);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    if (!motionQuery.matches) {
+      animationFrame = window.requestAnimationFrame(draw);
+    }
+  }
+
+  function restart() {
+    window.cancelAnimationFrame(animationFrame);
+    resize();
+    draw();
+  }
+
+  window.addEventListener("resize", restart);
+  motionQuery.addEventListener("change", restart);
+  restart();
 }
 
 function initIntroGate() {
@@ -129,5 +261,6 @@ async function loadGithubRepos() {
 }
 
 initIntroGate();
+initPortalArt();
 initFlowArt();
 loadGithubRepos();

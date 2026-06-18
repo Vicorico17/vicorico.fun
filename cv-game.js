@@ -12,6 +12,8 @@
   const H = canvas.height;
   const keys = new Set();
   const jumpKeys = new Set(["ArrowUp", "w", "W", " ", "Space"]);
+  const blockStart = 255;
+  const blockSpacing = startsInTouchLayout ? 248 : 282;
 
   const sections = [
     {
@@ -27,56 +29,136 @@
         motif: "city",
       },
       detail:
-        "Founder turned engineer and marketer in Bucharest building local-first AI tools, crypto tooling, and creative automation.",
-      bullets: ["Bucharest / remote", "Local-first AI", "AI x crypto products"],
+        "Victor Cazacu: Bucharest-born founder, builder, and internet systems person moving through entrepreneurship, crypto, AI, and games.",
+      bullets: ["Started with tiny products", "Crypto-native since 2017", "Building AI systems now"],
     },
     {
-      id: "study",
-      title: "STUDY",
+      id: "company",
+      title: "COMPANY OS",
+      color: "#f07f2f",
+      theme: {
+        skyTop: "#2b1307",
+        skyMid: "#fd5200",
+        ground: "#31120c",
+        platform: "#d66a2c",
+        trim: "#ffe05a",
+        motif: "filesystem",
+      },
+      detail:
+        "Build companies as file systems: context, knowledge bases, agents, cron jobs, monitoring, and human review loops.",
+      bullets: ["Process architecture", "Business context", "Human review loops"],
+    },
+    {
+      id: "automation",
+      title: "AUTOMATION",
       color: "#7cc77d",
+      theme: {
+        skyTop: "#071c20",
+        skyMid: "#0f766e",
+        ground: "#123631",
+        platform: "#1f9d8a",
+        trim: "#d4f7e7",
+        motif: "agents",
+      },
+      detail:
+        "Ship the work before the meeting: enrichment agents, outreach drafts, support copilots, meeting prep, and content pipelines.",
+      bullets: ["RevOps agents", "Support copilots", "Distribution loops"],
+    },
+    {
+      id: "cloud",
+      title: "AI CLOUD",
+      color: "#6ea8d8",
       theme: {
         skyTop: "#16213e",
         skyMid: "#344a7a",
         ground: "#25324f",
         platform: "#576ca8",
         trim: "#8bd3ff",
-        motif: "orbits",
+        motif: "gpu",
       },
       detail:
-        "Focused on AI cloud engineering: Kubernetes, GPU containers, AWS, Linux, security, smart contracts, and x402.",
-      bullets: ["Kubernetes and GPU containers", "AWS, Linux, security", "Smart contracts and x402"],
+        "Run models locally and in the cloud: GPU VPS machines, containers, Kubernetes pods, monitoring, storage, and model serving.",
+      bullets: ["GPU containers", "Kubernetes pods", "Private inference endpoints"],
     },
     {
-      id: "experience",
-      title: "WORK",
-      color: "#e86f51",
+      id: "crypto",
+      title: "CRYPTO",
+      color: "#4f70ff",
       theme: {
-        skyTop: "#2b1412",
-        skyMid: "#7b2d21",
-        ground: "#4b2c23",
-        platform: "#b95d3b",
-        trim: "#ffd166",
-        motif: "network",
+        skyTop: "#030614",
+        skyMid: "#1a3de8",
+        ground: "#08164f",
+        platform: "#345af5",
+        trim: "#9db7ff",
+        motif: "contracts",
       },
       detail:
-        "Crypto-native since 2017. Raised 200K+ in community funding, won a 50K Polygon grant, and ships AI automation systems.",
-      bullets: ["Crypto-native since 2017", "200K+ community funding", "50K Polygon grant"],
+        "Build on-chain products across tokens, marketplaces, gaming loops, prediction markets, reputation, payments, and communities.",
+      bullets: ["200K+ community funding", "50K Polygon grant", "x402-style payments"],
+    },
+    {
+      id: "content",
+      title: "CONTENT",
+      color: "#d95f9d",
+      theme: {
+        skyTop: "#22091f",
+        skyMid: "#6f1d5a",
+        ground: "#2c1430",
+        platform: "#a83582",
+        trim: "#ffc7ec",
+        motif: "media",
+      },
+      detail:
+        "Automate video and content for Instagram, TikTok, YouTube, image models, repurposing systems, and growth experiments.",
+      bullets: ["Short-form workflows", "Creative agents", "Repurposing pipelines"],
     },
     {
       id: "projects",
       title: "PROJECTS",
-      color: "#6ea8d8",
+      color: "#6fd18c",
       theme: {
-        skyTop: "#062822",
-        skyMid: "#0f766e",
-        ground: "#143b35",
-        platform: "#1f9d8a",
-        trim: "#d4f7e7",
-        motif: "terminal",
+        skyTop: "#061913",
+        skyMid: "#137245",
+        ground: "#10251f",
+        platform: "#29a164",
+        trim: "#c9ffd8",
+        motif: "market",
       },
       detail:
-        "libergent, baguri, Grand Cafe Bucharest, pump-bump, ComfyUI workflows, audio/video automation, and creative agents.",
-      bullets: ["libergent and baguri", "Grand Cafe Bucharest", "pump-bump and creative AI"],
+        "Active builds include Arkadia Park, Baguri, Grand Cafe Bucharest, pump-bump, clip-ro, Marketz.ro, libergent, and commerce systems.",
+      bullets: ["Arkadia Park", "Baguri and Marketz", "libergent / pump-bump"],
+    },
+    {
+      id: "oss",
+      title: "OSS",
+      color: "#7dd3fc",
+      theme: {
+        skyTop: "#0b1524",
+        skyMid: "#243447",
+        ground: "#101827",
+        platform: "#456783",
+        trim: "#bcecff",
+        motif: "oss",
+      },
+      detail:
+        "Open source stack I keep close: Linux, Docker, Kubernetes, ComfyUI, Uptime Kuma, Ultimate Vocal Remover, Gaussian, and wc3ui.",
+      bullets: ["Linux foundations", "ComfyUI workflows", "Monitoring and media tools"],
+    },
+    {
+      id: "games",
+      title: "GAMES",
+      color: "#fb7185",
+      theme: {
+        skyTop: "#240812",
+        skyMid: "#7f1d2d",
+        ground: "#280912",
+        platform: "#b8324c",
+        trim: "#ffd1d9",
+        motif: "worlds",
+      },
+      detail:
+        "Build games as living economies: mechanics, 3D models, progression, lore, communities, and distribution loops.",
+      bullets: ["Game systems", "Worldbuilding", "Player economies"],
     },
     {
       id: "contact",
@@ -91,10 +173,20 @@
         motif: "signal",
       },
       detail:
-        "hello@vicorico.fun | vicorico.fun | github.com/Vicorico17 | Bucharest, Romania and remote.",
-      bullets: ["hello@vicorico.fun", "github.com/Vicorico17", "vicorico.fun"],
+        "Find the rest of the site through vicorico.fun, the CV page, Game CV, GitHub, and X.",
+      bullets: ["github.com/Vicorico17", "x.com/Vicorico17", "vicorico.fun"],
     },
   ];
+
+  const worldWidth = blockStart + (sections.length - 1) * blockSpacing + 520;
+  const movingPlatforms = sections.map((_, index) => ({
+    x: blockStart - 45 + index * blockSpacing,
+    y: 398,
+    w: 148,
+    h: 20,
+    move: "orbit",
+    phase: index * 1.12,
+  }));
 
   const defaultTheme = {
     skyTop: "#8fcfe2",
@@ -130,19 +222,15 @@
       wingPhase: 0,
     },
     platforms: [
-      { x: 0, y: 452, w: 1820, h: 88, move: "static", phase: 0 },
-      { x: 210, y: 398, w: 148, h: 20, move: "orbit", phase: 0.1 },
-      { x: 492, y: 398, w: 148, h: 20, move: "orbit", phase: 1.4 },
-      { x: 774, y: 398, w: 148, h: 20, move: "orbit", phase: 2.7 },
-      { x: 1056, y: 398, w: 148, h: 20, move: "orbit", phase: 4.0 },
-      { x: 1338, y: 398, w: 148, h: 20, move: "orbit", phase: 5.3 },
+      { x: 0, y: 452, w: worldWidth + 220, h: 88, move: "static", phase: 0 },
+      ...movingPlatforms,
     ],
     blocks: [],
   };
 
   state.blocks = sections.map((section, index) => ({
     ...section,
-    x: 255 + index * 282,
+    x: blockStart + index * blockSpacing,
     y: 286,
     w: 58,
     h: 58,
@@ -330,14 +418,14 @@
       player.doubleJumped = false;
       player.wingTimer = 0;
     }
-    player.x = Math.max(20, Math.min(1760, player.x));
+    player.x = Math.max(20, Math.min(worldWidth - player.w - 20, player.x));
 
     for (const block of state.blocks) {
       block.bump = Math.max(0, block.bump - dt * 5.5);
     }
     state.messageTimer = Math.max(0, state.messageTimer - dt);
 
-    const targetCamera = Math.max(0, Math.min(900, player.x - W * 0.42));
+    const targetCamera = Math.max(0, Math.min(Math.max(0, worldWidth - W), player.x - W * 0.42));
     state.cameraX += (targetCamera - state.cameraX) * Math.min(1, dt * 8);
   }
 
@@ -407,6 +495,151 @@
         ctx.fillRect(x + 16, 436 - h + 18, 10, 10);
         ctx.fillRect(x + 42, 436 - h + 38, 10, 10);
         ctx.fillStyle = "rgba(23, 37, 43, 0.24)";
+      }
+    } else if (theme.motif === "filesystem") {
+      ctx.strokeStyle = "rgba(255, 224, 90, 0.38)";
+      ctx.fillStyle = "rgba(255, 224, 90, 0.22)";
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 6; i += 1) {
+        const x = 82 + i * 190 - state.cameraX * 0.12;
+        const y = 92 + (i % 2) * 54;
+        roundedRect(x, y, 124, 72, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillRect(x + 14, y - 12, 42, 14);
+        ctx.beginPath();
+        ctx.moveTo(x + 62, y + 72);
+        ctx.lineTo(x + 62, y + 118);
+        ctx.lineTo(x + 152, y + 118);
+        ctx.stroke();
+      }
+    } else if (theme.motif === "agents") {
+      ctx.strokeStyle = "rgba(212, 247, 231, 0.34)";
+      ctx.fillStyle = "rgba(212, 247, 231, 0.5)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i += 1) {
+        const x = 90 + i * 166 - state.cameraX * 0.14;
+        const y = 118 + (i % 3) * 36;
+        ctx.strokeRect(x, y, 30, 30);
+        ctx.strokeRect(x + 68, y + 22, 30, 30);
+        ctx.strokeRect(x + 32, y + 72, 30, 30);
+        ctx.beginPath();
+        ctx.moveTo(x + 30, y + 15);
+        ctx.lineTo(x + 68, y + 37);
+        ctx.moveTo(x + 48, y + 72);
+        ctx.lineTo(x + 83, y + 52);
+        ctx.stroke();
+        ctx.fillRect(x + 10, y + 10, 10, 10);
+        ctx.fillRect(x + 78, y + 32, 10, 10);
+        ctx.fillRect(x + 42, y + 82, 10, 10);
+      }
+    } else if (theme.motif === "gpu") {
+      ctx.strokeStyle = "rgba(139, 211, 255, 0.38)";
+      ctx.fillStyle = "rgba(20, 34, 72, 0.44)";
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 5; i += 1) {
+        const x = 78 + i * 220 - state.cameraX * 0.12;
+        const y = 84 + (i % 2) * 44;
+        roundedRect(x, y, 164, 96, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.strokeRect(x + 28, y + 24, 54, 48);
+        for (let pin = 0; pin < 5; pin += 1) {
+          ctx.fillStyle = "rgba(139, 211, 255, 0.58)";
+          ctx.fillRect(x + 96 + pin * 10, y + 28, 5, 44);
+        }
+        ctx.fillStyle = "rgba(20, 34, 72, 0.44)";
+      }
+    } else if (theme.motif === "contracts") {
+      ctx.strokeStyle = "rgba(157, 183, 255, 0.36)";
+      ctx.fillStyle = "rgba(157, 183, 255, 0.2)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i += 1) {
+        const x = 70 + i * 172 - state.cameraX * 0.13;
+        const y = 90 + (i % 2) * 52;
+        roundedRect(x, y, 112, 128, 7);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.48)";
+        ctx.fillRect(x + 18, y + 26, 72, 7);
+        ctx.fillRect(x + 18, y + 48, 54, 7);
+        ctx.strokeRect(x + 18, y + 80, 20, 20);
+        ctx.beginPath();
+        ctx.moveTo(x + 22, y + 90);
+        ctx.lineTo(x + 28, y + 96);
+        ctx.lineTo(x + 38, y + 84);
+        ctx.stroke();
+        ctx.fillStyle = "rgba(157, 183, 255, 0.2)";
+      }
+    } else if (theme.motif === "media") {
+      ctx.strokeStyle = "rgba(255, 199, 236, 0.38)";
+      ctx.fillStyle = "rgba(255, 199, 236, 0.16)";
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 5; i += 1) {
+        const x = 74 + i * 220 - state.cameraX * 0.13;
+        const y = 96 + (i % 2) * 50;
+        roundedRect(x, y, 156, 86, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x + 62, y + 28);
+        ctx.lineTo(x + 62, y + 62);
+        ctx.lineTo(x + 96, y + 45);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255, 199, 236, 0.58)";
+        ctx.fill();
+        ctx.fillRect(x + 18, y + 104, 118, 8);
+        ctx.fillStyle = "rgba(255, 199, 236, 0.16)";
+      }
+    } else if (theme.motif === "market") {
+      ctx.strokeStyle = "rgba(201, 255, 216, 0.36)";
+      ctx.fillStyle = "rgba(201, 255, 216, 0.18)";
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 6; i += 1) {
+        const x = 64 + i * 184 - state.cameraX * 0.14;
+        const y = 116 + (i % 2) * 38;
+        ctx.fillRect(x, y, 126, 72);
+        ctx.strokeRect(x, y, 126, 72);
+        for (let stripe = 0; stripe < 4; stripe += 1) {
+          ctx.fillStyle = stripe % 2 ? "rgba(201, 255, 216, 0.34)" : "rgba(255, 255, 255, 0.28)";
+          ctx.fillRect(x + stripe * 31.5, y - 24, 31.5, 24);
+        }
+        ctx.fillStyle = "rgba(201, 255, 216, 0.18)";
+      }
+    } else if (theme.motif === "oss") {
+      ctx.strokeStyle = "rgba(188, 236, 255, 0.36)";
+      ctx.fillStyle = "rgba(188, 236, 255, 0.15)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i += 1) {
+        const x = 72 + i * 186 - state.cameraX * 0.12;
+        const y = 92 + (i % 2) * 56;
+        roundedRect(x, y, 136, 86, 6);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillRect(x + 16, y + 20, 22, 6);
+        ctx.fillRect(x + 44, y + 20, 54, 6);
+        ctx.strokeRect(x + 22, y + 48, 26, 26);
+        ctx.strokeRect(x + 58, y + 48, 26, 26);
+        ctx.strokeRect(x + 94, y + 48, 26, 26);
+      }
+    } else if (theme.motif === "worlds") {
+      ctx.strokeStyle = "rgba(255, 209, 217, 0.34)";
+      ctx.fillStyle = "rgba(255, 209, 217, 0.18)";
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 5; i += 1) {
+        const x = 80 + i * 220 - state.cameraX * 0.13;
+        const y = 194 + (i % 2) * 18;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 48, y - 86);
+        ctx.lineTo(x + 96, y);
+        ctx.lineTo(x + 138, y - 58);
+        ctx.lineTo(x + 184, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillRect(x + 84, y - 34, 16, 34);
+        ctx.fillRect(x + 70, y - 54, 44, 20);
       }
     } else if (theme.motif === "orbits") {
       ctx.strokeStyle = "rgba(139, 211, 255, 0.34)";
@@ -587,36 +820,50 @@
   function drawHud() {
     const theme = activeTheme();
     ctx.fillStyle = "rgb(255 255 255 / 0.9)";
-    roundedRect(20, 18, 272, 62, 8);
+    roundedRect(20, 18, 272, 86, 8);
     ctx.fill();
     ctx.strokeStyle = "#17252b";
     ctx.lineWidth = 2;
     ctx.stroke();
     drawText("VIC'S QUEST", 36, 28, 22, "#17252b", "left", 900);
     drawText(`${state.revealedCount}/${state.blocks.length} details found`, 36, 54, 15, "#3d4b50", "left", 700);
+    const routeX = 36;
+    const routeY = 82;
+    const routeW = 224;
+    ctx.strokeStyle = "rgba(23, 37, 43, 0.22)";
+    ctx.beginPath();
+    ctx.moveTo(routeX, routeY + 4);
+    ctx.lineTo(routeX + routeW, routeY + 4);
+    ctx.stroke();
+    state.blocks.forEach((block, index) => {
+      const x = routeX + (index / Math.max(1, state.blocks.length - 1)) * routeW;
+      ctx.fillStyle = block.revealed ? block.color : "#cbd5d8";
+      ctx.fillRect(x - 4, routeY, 8, 8);
+    });
 
     const active = state.blocks.find((block) => block.id === state.activeId);
     if (active && state.messageTimer > 0) {
-      const panelX = W < 820 ? 132 : 312;
-      const panelW = W < 820 ? W - panelX - 22 : 622;
+      const panelX = W < 820 ? 20 : 312;
+      const panelY = W < 820 ? 116 : 22;
+      const panelW = W < 820 ? W - 40 : 622;
       const textW = panelW - 74;
       const panelAlpha = Math.min(1, state.messageTimer / 1.5);
       ctx.save();
       ctx.globalAlpha = panelAlpha;
       ctx.fillStyle = "rgb(255 255 255 / 0.96)";
-      roundedRect(panelX, 22, panelW, 166, 8);
+      roundedRect(panelX, panelY, panelW, 166, 8);
       ctx.fill();
       ctx.strokeStyle = active.color;
       ctx.lineWidth = 5;
       ctx.stroke();
-      drawText(active.title, panelX + 24, 40, 22, "#17252b", "left", 900);
-      wrapText(active.detail, panelX + 24, 72, textW, 20, "#24363d", 15);
+      drawText(active.title, panelX + 24, panelY + 18, 22, "#17252b", "left", 900);
+      wrapText(active.detail, panelX + 24, panelY + 50, textW, 20, "#24363d", 15);
       ctx.font = "800 14px Inter, system-ui, sans-serif";
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.fillStyle = "#17252b";
       active.bullets.forEach((bullet, index) => {
-        const y = 120 + index * 18;
+        const y = panelY + 98 + index * 18;
         ctx.fillStyle = theme.platform;
         ctx.fillRect(panelX + 24, y + 5, 8, 8);
         ctx.fillStyle = "#17252b";
@@ -629,7 +876,7 @@
       ctx.fillStyle = "rgb(23 37 43 / 0.9)";
       roundedRect(W / 2 - 155, 438, 310, 56, 8);
       ctx.fill();
-      drawText("Vic's CV unlocked", W / 2, 454, 19, "#fff8de", "center", 900);
+      drawText("All worlds unlocked", W / 2, 454, 19, "#fff8de", "center", 900);
     }
   }
 
@@ -639,7 +886,8 @@
     ctx.fillStyle = "rgb(238 242 230 / 0.9)";
     ctx.fillRect(0, 0, W, H);
     drawText("VIC'S QUEST", W / 2, 108, 58, "#17252b", "center", 900);
-    drawText("A platformer CV for AI infrastructure, cloud, and crypto tooling", W / 2, 178, 22, "#415158", "center", 800);
+    drawText("A platformer map of AI systems, crypto rails,", W / 2, 176, 21, "#415158", "center", 800);
+    drawText("content, and game worlds", W / 2, 202, 21, "#415158", "center", 800);
     ctx.fillStyle = "#fffdf2";
     roundedRect(235, 242, 490, 156, 8);
     ctx.fill();

@@ -5,6 +5,7 @@ Static personal website and CV for `vicorico.fun`.
 ## Files
 
 - `index.html` - public website home page.
+- `ideas.html` - working UI direction board for the next homepage iteration.
 - `cv.html` - printable CV page.
 - `styles.css` - shared screen and print styling.
 - `site.js` - lightweight GitHub API integration for public repos and stars.
