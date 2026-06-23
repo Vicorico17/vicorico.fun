@@ -2009,38 +2009,16 @@ dd {
   font-size: 1.08rem;
 }
 
-.route-switcher {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.route-switcher button {
-  min-height: 58px;
-  border-radius: 14px;
-  justify-content: flex-start;
-  padding: 0 18px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.92rem;
-  text-align: left;
-}
-
-.route-switcher button[aria-selected="true"] {
-  border-color: rgba(212, 61, 23, 0.72);
-  background: rgba(212, 61, 23, 0.18);
-  color: #ffffff;
-}
-
 .route-panels {
-  position: relative;
-  min-height: 440px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .route-panel {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.55fr);
-  gap: clamp(1.5rem, 4vw, 3rem);
-  min-height: 440px;
+  gap: 1.5rem;
+  min-height: 520px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 24px;
@@ -2083,10 +2061,10 @@ dd {
 }
 
 .route-panel h3 {
-  max-width: 14ch;
+  max-width: 16ch;
   margin: 1.5rem 0 1rem;
   color: #ffffff;
-  font-size: clamp(2rem, 4.8vw, 4.4rem);
+  font-size: clamp(2rem, 4vw, 3.6rem);
   line-height: 0.95;
 }
 
@@ -2833,7 +2811,7 @@ dd {
   .career-grid,
   .career-links,
   .proof-grid,
-  .route-switcher {
+  .route-panels {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2903,7 +2881,7 @@ dd {
   .flow-grid,
   .crypto-grid,
   .proof-grid,
-  .route-switcher,
+  .route-panels,
   .route-panel,
   .game-entry,
   .career-contact,
