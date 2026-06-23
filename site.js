@@ -261,6 +261,39 @@ function initFlowArt() {
   update();
 }
 
+function initRouteSwitcher() {
+  const tabs = Array.from(document.querySelectorAll("[data-route-tab]"));
+  const panels = Array.from(document.querySelectorAll("[data-route-panel]"));
+  if (tabs.length === 0 || panels.length === 0) return;
+
+  function activateRoute(route) {
+    tabs.forEach((tab) => {
+      const isActive = tab.dataset.routeTab === route;
+      tab.setAttribute("aria-selected", String(isActive));
+      tab.tabIndex = isActive ? 0 : -1;
+    });
+
+    panels.forEach((panel) => {
+      const isActive = panel.dataset.routePanel === route;
+      panel.hidden = !isActive;
+      panel.classList.toggle("is-active", isActive);
+    });
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => activateRoute(tab.dataset.routeTab));
+    tab.addEventListener("keydown", (event) => {
+      const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+      if (direction === 0) return;
+
+      event.preventDefault();
+      const nextTab = tabs[(index + direction + tabs.length) % tabs.length];
+      nextTab.focus();
+      activateRoute(nextTab.dataset.routeTab);
+    });
+  });
+}
+
 async function loadGithubRepos() {
   if (!reposNode || !starsNode || !totalReposNode) return;
 
@@ -314,4 +347,5 @@ async function loadGithubRepos() {
 initIntroGate();
 initPortalArt();
 initFlowArt();
+initRouteSwitcher();
 loadGithubRepos();

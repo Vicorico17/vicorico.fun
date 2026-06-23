@@ -1660,7 +1660,8 @@ button {
   .text-flip,
   .text-flip span,
   .portal-enter,
-  .portal-start::after {
+  .portal-start::after,
+  .game-preview-player {
     animation: none;
     filter: none;
     opacity: 1;
@@ -1969,6 +1970,349 @@ dd {
 .crypto-grid p {
   margin: 1rem 0 0;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.route-console,
+.proof-section,
+.game-entry {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-top: clamp(4rem, 9vw, 7rem);
+  padding-bottom: clamp(4rem, 9vw, 7rem);
+}
+
+.route-console,
+.proof-section {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2rem);
+}
+
+.route-console-heading,
+.proof-heading {
+  max-width: 840px;
+}
+
+.route-console-heading h2,
+.proof-heading h2,
+.game-entry h2 {
+  max-width: 12ch;
+  color: #ffffff;
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.92;
+}
+
+.route-console-heading p,
+.proof-heading p,
+.game-entry p {
+  max-width: 68ch;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.08rem;
+}
+
+.route-switcher {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.route-switcher button {
+  min-height: 58px;
+  border-radius: 14px;
+  justify-content: flex-start;
+  padding: 0 18px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  text-align: left;
+}
+
+.route-switcher button[aria-selected="true"] {
+  border-color: rgba(212, 61, 23, 0.72);
+  background: rgba(212, 61, 23, 0.18);
+  color: #ffffff;
+}
+
+.route-panels {
+  position: relative;
+  min-height: 440px;
+}
+
+.route-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.55fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  min-height: 440px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    radial-gradient(circle at 82% 18%, rgba(212, 61, 23, 0.18), transparent 24rem),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  padding: clamp(1.4rem, 4vw, 3rem);
+  backdrop-filter: blur(18px);
+}
+
+.route-panel[data-route-panel="crypto"] {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    radial-gradient(circle at 82% 18%, rgba(92, 124, 255, 0.28), transparent 24rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.route-panel[data-route-panel="creative"] {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.24), transparent 24rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.route-panel[data-route-panel="games"] {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    radial-gradient(circle at 82% 18%, rgba(34, 197, 94, 0.22), transparent 24rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.route-panel span,
+.proof-grid span {
+  color: #d43d17;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.route-panel h3 {
+  max-width: 14ch;
+  margin: 1.5rem 0 1rem;
+  color: #ffffff;
+  font-size: clamp(2rem, 4.8vw, 4.4rem);
+  line-height: 0.95;
+}
+
+.route-panel p,
+.route-panel li {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.route-panel ul {
+  display: grid;
+  align-content: end;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-panel li {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 14px;
+  font-weight: 750;
+}
+
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.proof-grid article {
+  display: flex;
+  min-height: 430px;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  backdrop-filter: blur(18px);
+  transition:
+    border-color 240ms ease,
+    background 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.proof-grid article:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 36%),
+    rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+}
+
+.proof-artifact {
+  display: grid;
+  min-height: 132px;
+  place-items: center;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    rgba(6, 5, 10, 0.74);
+  background-size: 24px 24px;
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.proof-grid h3 {
+  margin-top: 0.55rem;
+  color: #ffffff;
+  font-size: 1.45rem;
+}
+
+.proof-grid p,
+.proof-grid li {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.proof-grid ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: auto 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.proof-grid li {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.proof-grid a {
+  color: #ffffff;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 0.24em;
+}
+
+.game-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.68fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+
+.game-entry-copy {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+
+.game-entry-copy .button {
+  margin-top: 1rem;
+}
+
+.game-entry-preview {
+  position: relative;
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 22% 26%, rgba(212, 61, 23, 0.28), transparent 18rem),
+    radial-gradient(circle at 78% 68%, rgba(92, 124, 255, 0.28), transparent 20rem),
+    #06050a;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.game-preview-screen {
+  position: relative;
+  height: 100%;
+  min-height: 384px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  background-size: 40px 40px, 40px 40px, auto;
+}
+
+.game-preview-screen::before {
+  position: absolute;
+  right: 8%;
+  bottom: 21%;
+  left: 8%;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d43d17, #e5d011, #22c55e);
+  content: "";
+}
+
+.game-preview-player,
+.game-preview-screen i,
+.game-preview-screen b {
+  position: absolute;
+}
+
+.game-preview-player {
+  bottom: 24%;
+  left: 18%;
+  width: 34px;
+  height: 48px;
+  border-radius: 9px 9px 5px 5px;
+  background: #ffffff;
+  box-shadow: 0 0 34px rgba(255, 255, 255, 0.34);
+  animation: gamePreviewBob 1.8s ease-in-out infinite;
+}
+
+.game-preview-screen i {
+  top: var(--y);
+  left: var(--x);
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: #e5d011;
+  box-shadow: 0 0 20px rgba(229, 208, 17, 0.56);
+}
+
+.game-preview-screen b {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+}
+
+.game-preview-screen b:nth-of-type(1) {
+  top: 22%;
+  left: 21%;
+}
+
+.game-preview-screen b:nth-of-type(2) {
+  top: 42%;
+  right: 18%;
+}
+
+.game-preview-screen b:nth-of-type(3) {
+  right: 22%;
+  bottom: 32%;
+}
+
+@keyframes gamePreviewBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
 }
 
 .career-data {
@@ -2487,8 +2831,15 @@ dd {
 
   .career-contact,
   .career-grid,
-  .career-links {
+  .career-links,
+  .proof-grid,
+  .route-switcher {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .game-entry,
+  .route-panel {
+    grid-template-columns: 1fr;
   }
 
   .flow-panel {
@@ -2551,6 +2902,10 @@ dd {
   .journey-list,
   .flow-grid,
   .crypto-grid,
+  .proof-grid,
+  .route-switcher,
+  .route-panel,
+  .game-entry,
   .career-contact,
   .career-grid,
   .career-split,
@@ -2559,6 +2914,27 @@ dd {
   .cv-item,
   .two-column {
     grid-template-columns: 1fr;
+  }
+
+  .route-panels,
+  .route-panel {
+    min-height: auto;
+  }
+
+  .route-panel h3 {
+    font-size: 2.15rem;
+  }
+
+  .proof-grid article {
+    min-height: auto;
+  }
+
+  .game-entry-preview {
+    min-height: 320px;
+  }
+
+  .game-preview-screen {
+    min-height: 284px;
   }
 
   .about-intro {
