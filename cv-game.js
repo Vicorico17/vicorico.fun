@@ -111,7 +111,7 @@ const sections = [
     sky: "#25153d",
     floor: "#8b6fd1",
     motif: "signal",
-    detail: "Find the rest of the site through vicorico.fun, the CV page, Game CV, GitHub, and X.",
+    detail: "Find the rest of the site through vicorico.fun, the career section, Game CV, GitHub, and X.",
     bullets: ["github.com/Vicorico17", "x.com/Vicorico17", "vicorico.fun"],
   },
 ];
