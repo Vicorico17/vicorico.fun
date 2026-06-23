@@ -180,7 +180,7 @@
   left: 16px;
   z-index: 3;
   display: none;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
   gap: 0.75rem;
   pointer-events: auto;
   touch-action: none;
@@ -300,6 +300,7 @@
   .hud-card {
     width: min(100%, 390px);
     margin-right: auto;
+    margin-bottom: 112px;
   }
 
   .hud-card h1 {
@@ -309,6 +310,22 @@
   .touch-controls {
     display: grid;
     bottom: max(12px, env(safe-area-inset-bottom));
+    grid-template-columns: 1fr;
+  }
+
+  .touch-cluster {
+    justify-content: center;
+  }
+
+  .action-controls {
+    justify-content: center;
+  }
+
+  .jump-button,
+  .dpad-button {
+    min-width: 4.2rem;
+    min-height: 4.2rem;
+    font-size: 1.8rem;
   }
 
   :fullscreen .touch-controls {
