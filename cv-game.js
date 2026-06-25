@@ -499,8 +499,7 @@ function updateMovement(dt) {
   const forward = (keys.has("ArrowUp") || keys.has("w") || keys.has("W") ? 1 : 0) - (keys.has("ArrowDown") || keys.has("s") || keys.has("S") ? 1 : 0);
   const strafe = (keys.has("ArrowRight") || keys.has("d") || keys.has("D") ? 1 : 0) - (keys.has("ArrowLeft") || keys.has("a") || keys.has("A") ? 1 : 0);
   const length = Math.hypot(strafe, forward);
-  const sprint = keys.has("Shift") ? 1.35 : 1;
-  const speed = 8.8 * sprint;
+  const speed = 9.4;
 
   if (length > 0) {
     const nx = strafe / length;
@@ -688,7 +687,7 @@ function updateHud(castle, force = false) {
 
   const bullets = castle
     ? castle.bullets
-    : ["WASD or arrow keys to move", "Space or E to attack", "Shift to sprint", "R to reset"];
+    : ["WASD or arrow keys to move", "Space or E to attack", "R to reset", "F for fullscreen"];
   cardListNode.replaceChildren(...bullets.map((bullet) => {
     const li = document.createElement("li");
     li.textContent = bullet;
@@ -745,6 +744,10 @@ window.addEventListener("keydown", (event) => {
 
 window.addEventListener("keyup", (event) => {
   keys.delete(event.key);
+});
+
+window.addEventListener("blur", () => {
+  keys.clear();
 });
 
 for (const button of document.querySelectorAll("[data-game-key]")) {
