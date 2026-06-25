@@ -352,16 +352,22 @@ function buildCastle(castle, index) {
 
 function spawnMobPack(castle, castleIndex) {
   const [, castleZ] = castle.position;
-  const mobPositions = [-2.2, 0, 2.2];
-  mobPositions.forEach((xOffset, mobIndex) => {
+  const formations = [
+    { x: 0, z: castleZ + gateOffset + 2.2 },
+    { x: -4.6, z: castleZ + gateOffset + 3.6 },
+    { x: 4.6, z: castleZ + gateOffset + 3.6 },
+    { x: -7.2, z: castleZ + gateOffset - 1.1 },
+    { x: 7.2, z: castleZ + gateOffset - 1.1 },
+  ];
+  formations.forEach((spawn, mobIndex) => {
     const mob = createMob(castle.color);
-    mob.position.set(xOffset, 0, castleZ + gateOffset + 2 + mobIndex * 0.8);
+    mob.position.set(spawn.x, 0, spawn.z);
     mob.userData = {
       castleIndex,
       hp: 2,
       alive: true,
-      baseX: xOffset,
-      baseZ: castleZ + gateOffset + 2 + mobIndex * 0.8,
+      baseX: spawn.x,
+      baseZ: spawn.z,
       phase: mobIndex * 1.7 + castleIndex,
     };
     mobs.push(mob);
