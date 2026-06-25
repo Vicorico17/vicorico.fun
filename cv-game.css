@@ -41,6 +41,27 @@
   isolation: isolate;
 }
 
+.attack-slash {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  z-index: 6;
+  width: min(42vw, 520px);
+  height: 34px;
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 246, 163, 0.98), rgba(34, 211, 238, 0.98), rgba(255, 255, 255, 0.88));
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.95), 0 0 42px rgba(255, 246, 163, 0.68);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-24deg) scaleX(0.45);
+}
+
+.attack-slash.is-attacking {
+  opacity: 1;
+  animation: attackSlash 220ms ease-out;
+}
+
 #game {
   display: block;
   width: 100%;
@@ -49,6 +70,35 @@
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+#game.is-attacking {
+  animation: attackPulse 220ms ease;
+}
+
+@keyframes attackPulse {
+  0%,
+  100% {
+    filter: none;
+  }
+
+  45% {
+    filter: brightness(1.18) saturate(1.2);
+  }
+}
+
+@keyframes attackSlash {
+  0% {
+    transform: translate(-50%, -50%) rotate(-34deg) scaleX(0.35);
+  }
+
+  38% {
+    transform: translate(-50%, -50%) rotate(-18deg) scaleX(1.08);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(4deg) scaleX(1.28);
+  }
 }
 
 .game-hud {

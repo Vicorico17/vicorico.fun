@@ -1,6 +1,7 @@
 import * as THREE from "./vendor/three.module.js";
 
 const canvas = document.getElementById("game");
+const attackSlashNode = document.querySelector(".attack-slash");
 const zoneNode = document.querySelector("[data-game-zone]");
 const progressNode = document.querySelector("[data-game-progress]");
 const progressBarNode = document.querySelector("[data-game-progress-bar]");
@@ -97,6 +98,7 @@ const state = {
   themeColor: new THREE.Color("#111827"),
   unlockedIndex: 0,
   attackCooldown: 0,
+  attackTimer: 0,
   playerHealth: 100,
   message: "Follow the road. Defeat the mobs before each castle.",
   player: {
@@ -254,8 +256,47 @@ function createPlayer() {
   rightWing.position.x = 0.64;
   rightWing.rotation.z = 0.22;
 
-  group.add(body, head, visor, pack, leftWing, rightWing);
+  const weaponPivot = new THREE.Group();
+  weaponPivot.position.set(0.56, 1.1, -0.28);
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 1.25), glowMat);
+  blade.position.set(0.46, 0, -0.44);
+  blade.rotation.y = -0.35;
+  const hilt = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.28), darkMat);
+  hilt.position.set(0.05, 0, 0.05);
+  weaponPivot.add(blade, hilt);
+
+  const slashMat = new THREE.MeshBasicMaterial({
+    color: "#22d3ee",
+    transparent: true,
+    opacity: 0.95,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+  });
+  const slash = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.095, 10, 80, Math.PI * 1.2), slashMat);
+  slash.position.set(0.12, 1.18, -1.35);
+  slash.rotation.set(Math.PI / 2, 0.16, -0.95);
+  slash.renderOrder = 10;
+  slash.visible = false;
+
+  const strike = new THREE.Mesh(
+    new THREE.BoxGeometry(2.35, 0.12, 0.16),
+    new THREE.MeshBasicMaterial({
+      color: "#fff6a3",
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    }),
+  );
+  strike.position.set(0.1, 1.32, -1.18);
+  strike.rotation.set(0.12, 0, -0.4);
+  strike.renderOrder = 12;
+  strike.visible = false;
+
+  group.add(body, head, visor, pack, leftWing, rightWing, weaponPivot, slash, strike);
   group.userData.wings = [leftWing, rightWing];
+  group.userData.weaponPivot = weaponPivot;
+  group.userData.slash = slash;
+  group.userData.strike = strike;
   return group;
 }
 
@@ -366,6 +407,7 @@ function spawnMobPack(castle, castleIndex) {
       castleIndex,
       hp: 2,
       alive: true,
+      hitTimer: 0,
       baseX: spawn.x,
       baseZ: spawn.z,
       phase: mobIndex * 1.7 + castleIndex,
@@ -402,7 +444,22 @@ function createMob(color) {
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.y = 0.02;
 
-  group.add(body, hornLeft, hornRight, eyeLeft, eyeRight, shadow);
+  const hitBurst = new THREE.Mesh(
+    new THREE.RingGeometry(0.42, 0.62, 18),
+    new THREE.MeshBasicMaterial({
+      color: "#fff6a3",
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    }),
+  );
+  hitBurst.position.set(0, 1.08, -0.92);
+  hitBurst.renderOrder = 11;
+  hitBurst.visible = false;
+
+  group.add(body, hornLeft, hornRight, eyeLeft, eyeRight, shadow, hitBurst);
+  group.userData.hitBurst = hitBurst;
   return group;
 }
 
@@ -471,12 +528,14 @@ function resetGame() {
   state.lastHudId = "";
   state.unlockedIndex = 0;
   state.attackCooldown = 0;
+  state.attackTimer = 0;
   state.playerHealth = 100;
   state.message = "Follow the road. Defeat the mobs before each castle.";
   visited.clear();
   mobs.forEach((mob) => {
     mob.userData.hp = 2;
     mob.userData.alive = true;
+    mob.userData.hitTimer = 0;
     mob.visible = true;
     mob.position.set(mob.userData.baseX, 0, mob.userData.baseZ);
     mob.scale.setScalar(1);
@@ -486,6 +545,7 @@ function resetGame() {
 
 function update(dt) {
   state.attackCooldown = Math.max(0, state.attackCooldown - dt);
+  state.attackTimer = Math.max(0, state.attackTimer - dt);
   updateMovement(dt);
   updateMobs(dt);
   updateCastleUnlocks();
@@ -536,6 +596,20 @@ function updateMobs(dt) {
     mob.rotation.y += dt * 1.8;
     mob.position.y = Math.sin(time * 4) * 0.08;
     mob.scale.lerp(new THREE.Vector3(1, 1, 1), Math.min(1, dt * 8));
+    mob.userData.hitTimer = Math.max(0, mob.userData.hitTimer - dt);
+    const hitBurst = mob.userData.hitBurst;
+    if (hitBurst) {
+      const hitProgress = mob.userData.hitTimer / 0.18;
+      hitBurst.visible = mob.userData.hitTimer > 0;
+      hitBurst.material.opacity = Math.max(0, hitProgress) * 0.95;
+      hitBurst.scale.setScalar(1 + (1 - hitProgress) * 1.35);
+      hitBurst.rotation.z += dt * 11;
+    }
+    mob.children.forEach((child) => {
+      if (child.material?.emissive) {
+        child.material.emissiveIntensity = mob.userData.hitTimer > 0 ? 0.9 : child.geometry?.type === "SphereGeometry" ? 0.72 : 0.18;
+      }
+    });
 
     if (!isActive) {
       mob.position.x = mob.userData.baseX;
@@ -600,12 +674,27 @@ function activeMobsForCastle(castleIndex) {
 function attack() {
   if (state.attackCooldown > 0) return;
   state.attackCooldown = 0.32;
+  state.attackTimer = 0.22;
+  canvas.classList.remove("is-attacking");
+  attackSlashNode?.classList.remove("is-attacking");
+  window.requestAnimationFrame(() => canvas.classList.add("is-attacking"));
+  window.requestAnimationFrame(() => attackSlashNode?.classList.add("is-attacking"));
+  window.setTimeout(() => {
+    canvas.classList.remove("is-attacking");
+    attackSlashNode?.classList.remove("is-attacking");
+  }, 230);
   let hit = false;
   activeMobsForCastle(state.unlockedIndex).forEach((mob) => {
     const distance = Math.hypot(state.player.x - mob.position.x, state.player.z - mob.position.z);
     if (distance > attackRadius) return;
     mob.userData.hp -= 1;
+    mob.userData.hitTimer = 0.18;
     mob.scale.setScalar(1.25);
+    const dx = mob.position.x - state.player.x;
+    const dz = mob.position.z - state.player.z;
+    const length = Math.max(0.001, Math.hypot(dx, dz));
+    mob.position.x += (dx / length) * 0.55;
+    mob.position.z += (dz / length) * 0.55;
     hit = true;
     if (mob.userData.hp <= 0) {
       mob.userData.alive = false;
@@ -633,6 +722,31 @@ function updatePlayer(dt) {
   player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, state.player.rotation, Math.min(1, dt * 10));
   const bob = Math.sin(clock.elapsedTime * 10) * 0.055 * Math.min(state.player.speed / 8, 1);
   player.position.y = bob;
+
+  const attackProgress = state.attackTimer > 0 ? 1 - state.attackTimer / 0.22 : 0;
+  const swing = attackProgress > 0 ? Math.sin(attackProgress * Math.PI) : 0;
+  const weaponPivot = player.userData.weaponPivot;
+  if (weaponPivot) {
+    weaponPivot.rotation.y = THREE.MathUtils.lerp(0.2, -1.45, swing);
+    weaponPivot.rotation.z = THREE.MathUtils.lerp(-0.3, 0.65, swing);
+    weaponPivot.position.x = 0.56 + swing * 0.18;
+  }
+
+  const slash = player.userData.slash;
+  if (slash) {
+    slash.visible = state.attackTimer > 0;
+    slash.material.opacity = Math.max(0, state.attackTimer / 0.22) * 0.95;
+    slash.rotation.z = -1.15 + attackProgress * 2.25;
+    slash.scale.set(0.82 + swing * 0.42, 0.82 + swing * 0.42, 1);
+  }
+
+  const strike = player.userData.strike;
+  if (strike) {
+    strike.visible = state.attackTimer > 0;
+    strike.material.opacity = Math.max(0, state.attackTimer / 0.22);
+    strike.rotation.z = -0.75 + attackProgress * 1.65;
+    strike.scale.set(0.75 + swing * 0.55, 1, 1);
+  }
 
   const wings = player.userData.wings || [];
   wings.forEach((wing, index) => {
