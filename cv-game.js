@@ -4,6 +4,7 @@ const canvas = document.getElementById("game");
 const zoneNode = document.querySelector("[data-game-zone]");
 const progressNode = document.querySelector("[data-game-progress]");
 const progressBarNode = document.querySelector("[data-game-progress-bar]");
+const cardNode = document.querySelector("[data-game-card]");
 const cardKickerNode = document.querySelector("[data-game-card-kicker]");
 const cardTitleNode = document.querySelector("[data-game-card-title]");
 const cardCopyNode = document.querySelector("[data-game-card-copy]");
@@ -16,7 +17,7 @@ const castles = [
     title: "AI Systems Castle",
     shortTitle: "AI Systems",
     color: "#f4bf45",
-    position: [-24, -18],
+    position: [0, -20],
     detail:
       "AI process architecture, local-first applications, GPU-backed model deployment, Kubernetes, second-brain knowledge bases, lead generation agents, support copilots, and internal workflows that reduce coordination.",
     bullets: [
@@ -31,7 +32,7 @@ const castles = [
     title: "Automation Castle",
     shortTitle: "Automation",
     color: "#7cc77d",
-    position: [0, -28],
+    position: [0, -44],
     detail:
       "Lead enrichment agents, first-touch emails, customer support copilots, meeting prep, content operations pipelines, second brains, review loops, and workflow automation.",
     bullets: ["RevOps agents", "Support copilots", "Meeting prep", "Content pipelines"],
@@ -41,7 +42,7 @@ const castles = [
     title: "Crypto Rails Castle",
     shortTitle: "Crypto Rails",
     color: "#4f70ff",
-    position: [24, -18],
+    position: [0, -68],
     detail:
       "Smart contracts, token standards, marketplaces, gaming loops, prediction markets, community coins, NFT systems, on-chain reputation, x402-style payments, and Solana tooling.",
     bullets: ["ERC-20 / ERC-721 / ERC-1155", "$200K+ community funding", "$50K Polygon grant", "x402-style payments"],
@@ -51,7 +52,7 @@ const castles = [
     title: "Creative Factory Castle",
     shortTitle: "Creative Factory",
     color: "#d95f9d",
-    position: [-28, 12],
+    position: [0, -92],
     detail:
       "Automated video and content creation for Instagram, TikTok, YouTube, image models, repurposing systems, music video automation, storytelling, and growth experiments.",
     bullets: ["ComfyUI workflows", "Seedance and Glif agents", "Short-form production", "YouTube repurposing"],
@@ -61,7 +62,7 @@ const castles = [
     title: "Projects Castle",
     shortTitle: "Projects",
     color: "#6fd18c",
-    position: [0, 18],
+    position: [0, -116],
     detail:
       "Active builds and artifacts: Arkadia Park, Baguri, Grand Cafe Bucharest, pump-bump, clip-ro, Marketz.ro, libergent, and commerce systems.",
     bullets: ["Arkadia Park", "Baguri", "libergent", "Grand Cafe Bucharest"],
@@ -71,7 +72,7 @@ const castles = [
     title: "Game Worlds Castle",
     shortTitle: "Game Worlds",
     color: "#fb7185",
-    position: [28, 12],
+    position: [0, -140],
     detail:
       "Games as living economies: mechanics, 3D models, progression, lore, communities, rewards, scarcity, marketplaces, wallets, collectibles, and distribution loops.",
     bullets: ["Game systems", "Worldbuilding", "Player economies", "Web3 theme park"],
@@ -82,13 +83,22 @@ const clock = new THREE.Clock();
 const visited = new Set();
 const worldObjects = [];
 const castleObjects = [];
-const worldBounds = 42;
-const triggerRadius = 7.2;
+const mobs = [];
+const worldBoundsX = 10;
+const worldStartZ = 8;
+const worldEndZ = -150;
+const triggerRadius = 5.8;
+const attackRadius = 3.2;
+const gateOffset = 8.2;
 
 const state = {
   activeCastle: null,
   lastHudId: "",
   themeColor: new THREE.Color("#111827"),
+  unlockedIndex: 0,
+  attackCooldown: 0,
+  playerHealth: 100,
+  message: "Follow the road. Defeat the mobs before each castle.",
   player: {
     x: 0,
     z: 0,
@@ -251,39 +261,27 @@ function createPlayer() {
 
 function buildWorld() {
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(96, 96, 12, 12),
+    new THREE.PlaneGeometry(46, 176, 12, 24),
     material("#253322", { roughness: 0.86 }),
   );
+  ground.position.z = -70;
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene.add(ground);
 
-  const pathMat = material("#3b3127", { roughness: 0.72 });
-  for (const castle of castles) {
-    const [x, z] = castle.position;
-    const path = makeBox(Math.abs(x) > Math.abs(z) ? Math.abs(x) + 8 : 5, 0.04, Math.abs(z) >= Math.abs(x) ? Math.abs(z) + 8 : 5, "#3b3127", x / 2, 0.025, z / 2, { roughness: 0.8 });
-    path.material = pathMat;
-    scene.add(path);
-  }
+  const path = makeBox(8, 0.04, 166, "#3b3127", 0, 0.025, -70, { roughness: 0.8 });
+  scene.add(path);
 
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 0.12, 48), material("#2f3c34", { roughness: 0.8 }));
   plaza.position.y = 0.06;
   plaza.receiveShadow = true;
   scene.add(plaza);
 
-  const centerLabel = makeTextSprite("Walk Into A Castle", {
-    background: "rgba(5, 7, 12, 0.72)",
-    color: "#ffffff",
-    height: 1.05,
-    fontSize: 54,
-  });
-  centerLabel.position.set(0, 3.1, 0);
-  scene.add(centerLabel);
-
   castles.forEach((castle, index) => {
     const built = buildCastle(castle, index);
     castleObjects.push(built);
     scene.add(built.group);
+    spawnMobPack(castle, index);
   });
 
   buildTrees();
@@ -349,7 +347,57 @@ function buildCastle(castle, index) {
   group.add(icon);
   worldObjects.push(icon);
 
-  return { group, castle, x, z, ring, icon };
+  return { group, castle, index, x, z, ring, icon };
+}
+
+function spawnMobPack(castle, castleIndex) {
+  const [, castleZ] = castle.position;
+  const mobPositions = [-2.2, 0, 2.2];
+  mobPositions.forEach((xOffset, mobIndex) => {
+    const mob = createMob(castle.color);
+    mob.position.set(xOffset, 0, castleZ + gateOffset + 2 + mobIndex * 0.8);
+    mob.userData = {
+      castleIndex,
+      hp: 2,
+      alive: true,
+      baseX: xOffset,
+      baseZ: castleZ + gateOffset + 2 + mobIndex * 0.8,
+      phase: mobIndex * 1.7 + castleIndex,
+    };
+    mobs.push(mob);
+    scene.add(mob);
+  });
+}
+
+function createMob(color) {
+  const group = new THREE.Group();
+  const bodyMat = material("#2b1115", { roughness: 0.46, emissive: "#4b1119", emissiveIntensity: 0.18 });
+  const accentMat = material(color, { emissive: color, emissiveIntensity: 0.54, roughness: 0.36 });
+  const eyeMat = material("#ffffff", { emissive: "#ffffff", emissiveIntensity: 0.72 });
+
+  const body = new THREE.Mesh(new THREE.IcosahedronGeometry(0.78, 1), bodyMat);
+  body.position.y = 0.88;
+  body.castShadow = true;
+
+  const hornLeft = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.6, 8), accentMat);
+  hornLeft.position.set(-0.34, 1.5, -0.16);
+  hornLeft.rotation.z = 0.35;
+
+  const hornRight = hornLeft.clone();
+  hornRight.position.x = 0.34;
+  hornRight.rotation.z = -0.35;
+
+  const eyeLeft = new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 8), eyeMat);
+  eyeLeft.position.set(-0.22, 1, -0.66);
+  const eyeRight = eyeLeft.clone();
+  eyeRight.position.x = 0.22;
+
+  const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.82, 24), material("#000000", { transparent: true, opacity: 0.22 }));
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = 0.02;
+
+  group.add(body, hornLeft, hornRight, eyeLeft, eyeRight, shadow);
+  return group;
 }
 
 function buildTrees() {
@@ -415,12 +463,26 @@ function resetGame() {
   state.player.speed = 0;
   state.activeCastle = null;
   state.lastHudId = "";
+  state.unlockedIndex = 0;
+  state.attackCooldown = 0;
+  state.playerHealth = 100;
+  state.message = "Follow the road. Defeat the mobs before each castle.";
+  visited.clear();
+  mobs.forEach((mob) => {
+    mob.userData.hp = 2;
+    mob.userData.alive = true;
+    mob.visible = true;
+    mob.position.set(mob.userData.baseX, 0, mob.userData.baseZ);
+    mob.scale.setScalar(1);
+  });
   updateHud(null, true);
 }
 
 function update(dt) {
+  state.attackCooldown = Math.max(0, state.attackCooldown - dt);
   updateMovement(dt);
-  updateCastleTrigger();
+  updateMobs(dt);
+  updateCastleUnlocks();
   updateTheme();
   updatePlayer(dt);
   updateCamera(dt);
@@ -431,8 +493,8 @@ function updateMovement(dt) {
   const forward = (keys.has("ArrowUp") || keys.has("w") || keys.has("W") ? 1 : 0) - (keys.has("ArrowDown") || keys.has("s") || keys.has("S") ? 1 : 0);
   const strafe = (keys.has("ArrowRight") || keys.has("d") || keys.has("D") ? 1 : 0) - (keys.has("ArrowLeft") || keys.has("a") || keys.has("A") ? 1 : 0);
   const length = Math.hypot(strafe, forward);
-  const sprint = keys.has("Shift") ? 1.45 : 1;
-  const speed = 10.5 * sprint;
+  const sprint = keys.has("Shift") ? 1.35 : 1;
+  const speed = 8.8 * sprint;
 
   if (length > 0) {
     const nx = strafe / length;
@@ -445,28 +507,113 @@ function updateMovement(dt) {
     state.player.speed = THREE.MathUtils.lerp(state.player.speed, 0, Math.min(1, dt * 8));
   }
 
-  state.player.x = THREE.MathUtils.clamp(state.player.x, -worldBounds, worldBounds);
-  state.player.z = THREE.MathUtils.clamp(state.player.z, -worldBounds, worldBounds);
+  state.player.x = THREE.MathUtils.clamp(state.player.x, -worldBoundsX, worldBoundsX);
+  state.player.z = THREE.MathUtils.clamp(state.player.z, worldEndZ, worldStartZ);
+
+  const nextCastle = castles[state.unlockedIndex];
+  if (!nextCastle) return;
+  const mobsAlive = activeMobsForCastle(state.unlockedIndex).length > 0;
+  const gateZ = nextCastle.position[1] + gateOffset;
+  if (mobsAlive && state.player.z < gateZ) {
+    state.player.z = gateZ;
+    state.message = "Clear the mobs before entering the next castle.";
+  }
 }
 
-function updateCastleTrigger() {
-  let active = null;
-  let bestDistance = Infinity;
+function updateMobs(dt) {
+  const activeIndex = state.unlockedIndex;
+  mobs.forEach((mob) => {
+    const isActive = mob.userData.alive && mob.userData.castleIndex === activeIndex;
+    mob.visible = mob.userData.alive && mob.userData.castleIndex >= activeIndex;
+    if (!mob.visible) return;
 
-  for (const item of castleObjects) {
-    const distance = Math.hypot(state.player.x - item.x, state.player.z - item.z);
+    const time = clock.elapsedTime + mob.userData.phase;
+    mob.rotation.y += dt * 1.8;
+    mob.position.y = Math.sin(time * 4) * 0.08;
+    mob.scale.lerp(new THREE.Vector3(1, 1, 1), Math.min(1, dt * 8));
+
+    if (!isActive) {
+      mob.position.x = mob.userData.baseX;
+      mob.position.z = mob.userData.baseZ;
+      return;
+    }
+
+    const dx = state.player.x - mob.position.x;
+    const dz = state.player.z - mob.position.z;
+    const distance = Math.hypot(dx, dz);
+    if (distance < 12 && distance > 0.1) {
+      mob.position.x += (dx / distance) * dt * 1.75;
+      mob.position.z += (dz / distance) * dt * 1.75;
+    }
+    if (distance < 1.35) {
+      state.playerHealth = Math.max(0, state.playerHealth - dt * 14);
+      state.message = "A mob is hitting you. Back up and attack.";
+      if (state.playerHealth <= 0) resetGame();
+    }
+  });
+}
+
+function updateCastleUnlocks() {
+  const currentItem = castleObjects[state.unlockedIndex];
+  if (currentItem) {
+    const mobsAlive = activeMobsForCastle(state.unlockedIndex).length > 0;
+    const distance = Math.hypot(state.player.x - currentItem.x, state.player.z - currentItem.z);
     const inside = distance <= triggerRadius;
-    item.ring.material.opacity = inside ? 1 : 0.72;
-    item.ring.scale.setScalar(inside ? 1.04 : 1);
-    if (inside && distance < bestDistance) {
-      active = item.castle;
-      bestDistance = distance;
+    currentItem.ring.material.opacity = mobsAlive ? 0.24 : inside ? 1 : 0.72;
+    currentItem.ring.scale.setScalar(inside && !mobsAlive ? 1.06 : 1);
+    if (inside && !mobsAlive) {
+      visited.add(currentItem.castle.id);
+      state.unlockedIndex = Math.max(state.unlockedIndex, currentItem.index + 1);
+      state.message = `${currentItem.castle.shortTitle} unlocked. Keep following the road.`;
     }
   }
 
-  if (active) visited.add(active.id);
+  castleObjects.forEach((item) => {
+    if (item.index === state.unlockedIndex) return;
+    item.ring.material.opacity = item.index < state.unlockedIndex ? 0.9 : 0.18;
+  });
+
+  let active = null;
+  let bestDistance = Infinity;
+  castleObjects.forEach((item) => {
+    if (!visited.has(item.castle.id)) return;
+    const distance = Math.hypot(state.player.x - item.x, state.player.z - item.z);
+    if (distance <= triggerRadius && distance < bestDistance) {
+      active = item.castle;
+      bestDistance = distance;
+    }
+  });
+
   state.activeCastle = active;
   updateHud(active);
+}
+
+function activeMobsForCastle(castleIndex) {
+  return mobs.filter((mob) => mob.userData.castleIndex === castleIndex && mob.userData.alive);
+}
+
+function attack() {
+  if (state.attackCooldown > 0) return;
+  state.attackCooldown = 0.32;
+  let hit = false;
+  activeMobsForCastle(state.unlockedIndex).forEach((mob) => {
+    const distance = Math.hypot(state.player.x - mob.position.x, state.player.z - mob.position.z);
+    if (distance > attackRadius) return;
+    mob.userData.hp -= 1;
+    mob.scale.setScalar(1.25);
+    hit = true;
+    if (mob.userData.hp <= 0) {
+      mob.userData.alive = false;
+      mob.visible = false;
+    }
+  });
+  const remaining = activeMobsForCastle(state.unlockedIndex).length;
+  state.message = hit
+    ? remaining > 0
+      ? `${remaining} mobs left before the castle unlocks.`
+      : "Mobs cleared. Walk into the castle ring."
+    : "Move closer to a mob before attacking.";
+  updateHud(state.activeCastle, true);
 }
 
 function updateTheme() {
@@ -507,24 +654,35 @@ function animateWorld(dt) {
 }
 
 function updateHud(castle, force = false) {
-  if (!zoneNode || !progressNode || !progressBarNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
-  const hudId = castle?.id || "hub";
+  if (!zoneNode || !progressNode || !progressBarNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
+  const nextCastle = castles[state.unlockedIndex];
+  const activeMobs = nextCastle ? activeMobsForCastle(state.unlockedIndex).length : 0;
+  const hudId = castle?.id || `road-${state.unlockedIndex}-${activeMobs}-${Math.round(state.playerHealth)}`;
   if (!force && state.lastHudId === hudId && Number(progressNode.dataset.count || 0) === visited.size) return;
   state.lastHudId = hudId;
   progressNode.dataset.count = String(visited.size);
 
-  zoneNode.textContent = castle ? `Inside ${castle.shortTitle}` : "Central World";
+  zoneNode.textContent = castle
+    ? `Unlocked ${castle.shortTitle}`
+    : nextCastle
+      ? activeMobs > 0
+        ? `${nextCastle.shortTitle}: ${activeMobs} mobs / ${Math.round(state.playerHealth)} HP`
+        : `${nextCastle.shortTitle}: gate open`
+      : "All castles unlocked";
   progressNode.textContent = `${visited.size}/${castles.length}`;
   progressBarNode.style.width = `${(visited.size / castles.length) * 100}%`;
+  cardNode.classList.toggle("is-hidden", !castle);
+  if (!castle) return;
+
   cardKickerNode.textContent = castle ? "Castle Data" : "3D World";
   cardTitleNode.textContent = castle ? castle.title : "Walk Into A Castle";
   cardCopyNode.textContent = castle
     ? castle.detail
-    : "Move freely around the world. Each castle represents a category, and walking into its ring opens the matching information on this screen.";
+    : "Follow the road, fight the mobs in front of each castle, then walk into the castle ring to unlock the next category.";
 
   const bullets = castle
     ? castle.bullets
-    : ["WASD or arrow keys to move", "Shift to sprint", "R to reset", "F for fullscreen"];
+    : ["WASD or arrow keys to move", "Space or E to attack", "Shift to sprint", "R to reset"];
   cardListNode.replaceChildren(...bullets.map((bullet) => {
     const li = document.createElement("li");
     li.textContent = bullet;
@@ -564,6 +722,11 @@ function toggleFullscreen() {
 window.addEventListener("keydown", (event) => {
   if (event.key === "f" || event.key === "F") {
     toggleFullscreen();
+    return;
+  }
+  if (event.key === " " || event.key === "Space" || event.key === "e" || event.key === "E") {
+    event.preventDefault();
+    attack();
     return;
   }
   if (event.key === "r" || event.key === "R") {
@@ -613,7 +776,11 @@ for (const button of document.querySelectorAll("[data-game-tap]")) {
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
     enterMobileFullscreen();
-    resetGame();
+    if (button.dataset.gameTap === "Attack") {
+      attack();
+    } else {
+      resetGame();
+    }
     button.classList.add("is-pressed");
   });
   button.addEventListener("pointerup", (event) => {
@@ -624,7 +791,11 @@ for (const button of document.querySelectorAll("[data-game-tap]")) {
   button.addEventListener("pointerleave", () => button.classList.remove("is-pressed"));
   button.addEventListener("click", (event) => {
     event.preventDefault();
-    resetGame();
+    if (button.dataset.gameTap === "Attack") {
+      attack();
+    } else {
+      resetGame();
+    }
   });
 }
 
@@ -640,8 +811,11 @@ window.advanceTime = (ms) => {
 
 window.render_game_to_text = () => JSON.stringify({
   renderer: "threejs",
-  mode: "free-roam-castles",
+  mode: "linear-castle-combat",
   active: state.activeCastle?.id || "hub",
+  unlockedIndex: state.unlockedIndex,
+  activeMobCount: activeMobsForCastle(state.unlockedIndex).length,
+  playerHealth: Math.round(state.playerHealth),
   player: {
     x: Number(state.player.x.toFixed(2)),
     z: Number(state.player.z.toFixed(2)),
