@@ -11,17 +11,20 @@
 
 .game-page .site-header {
   position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
+  top: 18px;
+  right: auto;
+  left: 24px;
   z-index: 8;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(5, 7, 12, 0.62);
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
   color: #ffffff;
 }
 
-.game-page .brand,
-.game-page nav a {
+.game-page .brand {
   color: #ffffff;
 }
 
@@ -388,7 +391,9 @@
   }
 
   .game-page .site-header {
-    display: none;
+    top: max(12px, env(safe-area-inset-top));
+    left: max(12px, env(safe-area-inset-left));
+    display: flex;
   }
 
   .game-stage,
