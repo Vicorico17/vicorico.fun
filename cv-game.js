@@ -4,6 +4,9 @@ const canvas = document.getElementById("game");
 const zoneNode = document.querySelector("[data-game-zone]");
 const progressNode = document.querySelector("[data-game-progress]");
 const progressBarNode = document.querySelector("[data-game-progress-bar]");
+const mobsNode = document.querySelector("[data-game-mobs]");
+const healthNode = document.querySelector("[data-game-health]");
+const healthBarNode = document.querySelector("[data-game-health-bar]");
 const cardNode = document.querySelector("[data-game-card]");
 const cardKickerNode = document.querySelector("[data-game-card-kicker]");
 const cardTitleNode = document.querySelector("[data-game-card-title]");
@@ -106,6 +109,9 @@ const state = {
     z: 0,
     rotation: 0,
     speed: 0,
+    vx: 0,
+    vz: 0,
+    hitCooldown: 0,
   },
 };
 
@@ -502,6 +508,9 @@ function resetGame() {
   state.player.z = 0;
   state.player.rotation = 0;
   state.player.speed = 0;
+  state.player.vx = 0;
+  state.player.vz = 0;
+  state.player.hitCooldown = 0;
   state.activeCastle = null;
   state.lastHudId = "";
   state.unlockedIndex = 0;
@@ -524,6 +533,7 @@ function resetGame() {
 function update(dt) {
   state.attackCooldown = Math.max(0, state.attackCooldown - dt);
   state.attackTimer = Math.max(0, state.attackTimer - dt);
+  state.player.hitCooldown = Math.max(0, state.player.hitCooldown - dt);
   updateMovement(dt);
   updateMobs(dt);
   updateCastleUnlocks();
@@ -549,6 +559,12 @@ function updateMovement(dt) {
   } else {
     state.player.speed = THREE.MathUtils.lerp(state.player.speed, 0, Math.min(1, dt * 8));
   }
+
+  state.player.x += state.player.vx * dt;
+  state.player.z += state.player.vz * dt;
+  const knockbackDamping = Math.max(0, 1 - dt * 7.5);
+  state.player.vx *= knockbackDamping;
+  state.player.vz *= knockbackDamping;
 
   state.player.x = THREE.MathUtils.clamp(state.player.x, -worldBoundsX, worldBoundsX);
   state.player.z = THREE.MathUtils.clamp(state.player.z, worldEndZ, worldStartZ);
@@ -605,6 +621,19 @@ function updateMobs(dt) {
     if (distance < 1.35) {
       state.playerHealth = Math.max(0, state.playerHealth - dt * 14);
       state.message = "A mob is hitting you. Back up and attack.";
+      if (state.player.hitCooldown <= 0 && distance > 0.05) {
+        let pushX = dx / distance;
+        let pushZ = dz / distance;
+        if (Math.abs(pushX) < 0.28) pushX = mob.userData.phase % 2 > 1 ? 0.72 : -0.72;
+        const pushLength = Math.max(0.001, Math.hypot(pushX, pushZ));
+        pushX /= pushLength;
+        pushZ /= pushLength;
+        state.player.x += pushX * 1.25;
+        state.player.z += pushZ * 1.25;
+        state.player.vx += pushX * 7.2;
+        state.player.vz += pushZ * 7.2;
+        state.player.hitCooldown = 0.34;
+      }
       if (state.playerHealth <= 0) resetGame();
     }
   });
@@ -744,7 +773,7 @@ function animateWorld(dt) {
 }
 
 function updateHud(castle, force = false) {
-  if (!zoneNode || !progressNode || !progressBarNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
+  if (!zoneNode || !progressNode || !progressBarNode || !mobsNode || !healthNode || !healthBarNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const nextCastle = castles[state.unlockedIndex];
   const activeMobs = nextCastle ? activeMobsForCastle(state.unlockedIndex).length : 0;
   const hudId = castle?.id || `road-${state.unlockedIndex}-${activeMobs}-${Math.round(state.playerHealth)}`;
@@ -756,9 +785,12 @@ function updateHud(castle, force = false) {
     ? `Unlocked ${castle.shortTitle}`
     : nextCastle
       ? activeMobs > 0
-        ? `${nextCastle.shortTitle}: ${activeMobs} mobs / ${Math.round(state.playerHealth)} HP`
+        ? nextCastle.shortTitle
         : `${nextCastle.shortTitle}: gate open`
       : "All castles unlocked";
+  mobsNode.textContent = String(activeMobs);
+  healthNode.textContent = String(Math.round(state.playerHealth));
+  healthBarNode.style.width = `${state.playerHealth}%`;
   progressNode.textContent = `${visited.size}/${castles.length}`;
   progressBarNode.style.width = `${(visited.size / castles.length) * 100}%`;
   cardNode.classList.toggle("is-hidden", !castle);

@@ -121,18 +121,53 @@
 
 .hud-progress {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   min-width: 210px;
   padding: 12px 14px;
 }
 
-.hud-progress span {
+.hud-stats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.hud-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: #ffffff;
   font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.hud-stat b {
+  color: #f4bf45;
+  font-size: 1rem;
+  font-style: normal;
+  line-height: 1;
+}
+
+.hud-stat:last-child b {
+  color: #fb7185;
+}
+
+.hud-stat i {
+  font-style: normal;
+  min-width: 2ch;
+  text-align: right;
+}
+
+.hud-progress-count {
+  color: #ffffff;
+  font-size: 0.78rem;
   font-weight: 900;
   text-align: right;
 }
 
+.hud-health-track,
 .hud-progress-track {
   width: 100%;
   height: 8px;
@@ -141,13 +176,21 @@
   background: rgba(255, 255, 255, 0.14);
 }
 
+.hud-health-track i,
 .hud-progress-track i {
   display: block;
   width: 0%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #f4bf45, #e65f3f, #8bd3ff);
   transition: width 260ms ease;
+}
+
+.hud-health-track i {
+  background: linear-gradient(90deg, #fb7185, #f4bf45);
+}
+
+.hud-progress-track i {
+  background: linear-gradient(90deg, #f4bf45, #e65f3f, #8bd3ff);
 }
 
 .hud-card {

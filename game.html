@@ -30,7 +30,14 @@
               <strong data-game-zone>Entering the map</strong>
             </div>
             <div class="hud-progress" aria-label="Game CV progress">
-              <span data-game-progress>0/6</span>
+              <div class="hud-stats" aria-label="Combat status">
+                <span class="hud-stat" title="Mobs remaining"><b aria-hidden="true">◆</b><i data-game-mobs>0</i></span>
+                <span class="hud-stat" title="Health"><b aria-hidden="true">♥</b><i data-game-health>100</i></span>
+              </div>
+              <div class="hud-health-track" aria-label="Health bar">
+                <i data-game-health-bar></i>
+              </div>
+              <span class="hud-progress-count" data-game-progress>0/6</span>
               <div class="hud-progress-track">
                 <i data-game-progress-bar></i>
               </div>
