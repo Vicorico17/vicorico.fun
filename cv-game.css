@@ -315,6 +315,7 @@
 
 .action-controls {
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .touch-button {
@@ -364,6 +365,14 @@
     radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.5), transparent 28%),
     rgba(109, 78, 162, 0.52);
   font-size: 0.78rem;
+}
+
+.weapon-button {
+  min-width: 5.4rem;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.5), transparent 28%),
+    rgba(244, 191, 69, 0.56);
+  font-size: 0.76rem;
 }
 
 .attack-button {
