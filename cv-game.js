@@ -89,6 +89,7 @@ const worldStartZ = 8;
 const worldEndZ = -150;
 const triggerRadius = 5.8;
 const attackRadius = 3.2;
+const attackDuration = 0.34;
 const gateOffset = 8.2;
 
 const state = {
@@ -231,6 +232,7 @@ function createPlayer() {
   const darkMat = material("#17252b", { roughness: 0.62 });
   const skinMat = material("#f3c58f", { roughness: 0.72 });
   const glowMat = material("#8bd3ff", { emissive: "#8bd3ff", emissiveIntensity: 0.65 });
+  const swordMat = material("#fff6a3", { emissive: "#f4bf45", emissiveIntensity: 1.15, roughness: 0.28, metalness: 0.18 });
 
   const body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.25, 0.58), bodyMat);
   body.position.y = 0.92;
@@ -256,13 +258,21 @@ function createPlayer() {
   rightWing.rotation.z = 0.22;
 
   const weaponPivot = new THREE.Group();
-  weaponPivot.position.set(0.56, 1.1, -0.28);
-  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 1.25), glowMat);
-  blade.position.set(0.46, 0, -0.44);
-  blade.rotation.y = -0.35;
-  const hilt = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.28), darkMat);
-  hilt.position.set(0.05, 0, 0.05);
-  weaponPivot.add(blade, hilt);
+  weaponPivot.position.set(0.58, 1.16, -0.2);
+  weaponPivot.rotation.set(0.12, 0.7, -0.5);
+
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.09, 1.72), swordMat);
+  blade.position.set(0.12, 0.02, -0.86);
+  blade.castShadow = true;
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.32, 4), swordMat);
+  tip.position.set(0.12, 0.02, -1.86);
+  tip.rotation.x = Math.PI / 2;
+  tip.castShadow = true;
+  const guard = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.11, 0.13), darkMat);
+  guard.position.set(0.1, 0, -0.08);
+  const hilt = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.44), darkMat);
+  hilt.position.set(0.1, 0, 0.16);
+  weaponPivot.add(blade, tip, guard, hilt);
 
   group.add(body, head, visor, pack, leftWing, rightWing, weaponPivot);
   group.userData.wings = [leftWing, rightWing];
@@ -643,13 +653,13 @@ function activeMobsForCastle(castleIndex) {
 
 function attack() {
   if (state.attackCooldown > 0) return;
-  state.attackCooldown = 0.32;
-  state.attackTimer = 0.22;
+  state.attackCooldown = 0.38;
+  state.attackTimer = attackDuration;
   canvas.classList.remove("is-attacking");
   window.requestAnimationFrame(() => canvas.classList.add("is-attacking"));
   window.setTimeout(() => {
     canvas.classList.remove("is-attacking");
-  }, 230);
+  }, attackDuration * 1000);
   let hit = false;
   activeMobsForCastle(state.unlockedIndex).forEach((mob) => {
     const distance = Math.hypot(state.player.x - mob.position.x, state.player.z - mob.position.z);
@@ -690,14 +700,26 @@ function updatePlayer(dt) {
   const bob = Math.sin(clock.elapsedTime * 10) * 0.055 * Math.min(state.player.speed / 8, 1);
   player.position.y = bob;
 
-  const attackProgress = state.attackTimer > 0 ? 1 - state.attackTimer / 0.22 : 0;
+  const attackProgress = state.attackTimer > 0 ? 1 - state.attackTimer / attackDuration : 0;
+  const windup = THREE.MathUtils.smoothstep(attackProgress, 0, 0.22);
+  const strike = THREE.MathUtils.smoothstep(attackProgress, 0.16, 0.72);
+  const recovery = THREE.MathUtils.smoothstep(attackProgress, 0.72, 1);
   const swing = attackProgress > 0 ? Math.sin(attackProgress * Math.PI) : 0;
   const weaponPivot = player.userData.weaponPivot;
   if (weaponPivot) {
-    weaponPivot.rotation.y = THREE.MathUtils.lerp(0.2, -1.45, swing);
-    weaponPivot.rotation.z = THREE.MathUtils.lerp(-0.3, 0.65, swing);
-    weaponPivot.position.x = 0.56 + swing * 0.18;
+    const slashArc = THREE.MathUtils.lerp(-0.95, 2.05, strike);
+    const returnArc = THREE.MathUtils.lerp(slashArc, 0, recovery);
+    weaponPivot.rotation.x = THREE.MathUtils.lerp(0.34, -0.18, strike) + recovery * 0.3;
+    weaponPivot.rotation.y = THREE.MathUtils.lerp(0.95, -2.35, strike) + recovery * 2.35;
+    weaponPivot.rotation.z = -0.5 - windup * 0.72 + returnArc;
+    weaponPivot.position.x = 0.58 - strike * 0.44 + recovery * 0.44;
+    weaponPivot.position.y = 1.16 + windup * 0.22 - recovery * 0.22;
+    weaponPivot.position.z = -0.2 - strike * 0.52 + recovery * 0.52;
+    weaponPivot.scale.setScalar(1 + swing * 0.08);
   }
+
+  player.rotation.x = -swing * 0.1;
+  player.rotation.z = -swing * 0.08;
 
   const wings = player.userData.wings || [];
   wings.forEach((wing, index) => {
