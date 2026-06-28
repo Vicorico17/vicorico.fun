@@ -1,7 +1,6 @@
 import * as THREE from "./vendor/three.module.js";
 
 const canvas = document.getElementById("game");
-const attackSlashNode = document.querySelector(".attack-slash");
 const zoneNode = document.querySelector("[data-game-zone]");
 const progressNode = document.querySelector("[data-game-progress]");
 const progressBarNode = document.querySelector("[data-game-progress-bar]");
@@ -265,38 +264,9 @@ function createPlayer() {
   hilt.position.set(0.05, 0, 0.05);
   weaponPivot.add(blade, hilt);
 
-  const slashMat = new THREE.MeshBasicMaterial({
-    color: "#22d3ee",
-    transparent: true,
-    opacity: 0.95,
-    side: THREE.DoubleSide,
-    depthWrite: false,
-  });
-  const slash = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.095, 10, 80, Math.PI * 1.2), slashMat);
-  slash.position.set(0.12, 1.18, -1.35);
-  slash.rotation.set(Math.PI / 2, 0.16, -0.95);
-  slash.renderOrder = 10;
-  slash.visible = false;
-
-  const strike = new THREE.Mesh(
-    new THREE.BoxGeometry(2.35, 0.12, 0.16),
-    new THREE.MeshBasicMaterial({
-      color: "#fff6a3",
-      transparent: true,
-      opacity: 0,
-      depthWrite: false,
-    }),
-  );
-  strike.position.set(0.1, 1.32, -1.18);
-  strike.rotation.set(0.12, 0, -0.4);
-  strike.renderOrder = 12;
-  strike.visible = false;
-
-  group.add(body, head, visor, pack, leftWing, rightWing, weaponPivot, slash, strike);
+  group.add(body, head, visor, pack, leftWing, rightWing, weaponPivot);
   group.userData.wings = [leftWing, rightWing];
   group.userData.weaponPivot = weaponPivot;
-  group.userData.slash = slash;
-  group.userData.strike = strike;
   return group;
 }
 
@@ -676,12 +646,9 @@ function attack() {
   state.attackCooldown = 0.32;
   state.attackTimer = 0.22;
   canvas.classList.remove("is-attacking");
-  attackSlashNode?.classList.remove("is-attacking");
   window.requestAnimationFrame(() => canvas.classList.add("is-attacking"));
-  window.requestAnimationFrame(() => attackSlashNode?.classList.add("is-attacking"));
   window.setTimeout(() => {
     canvas.classList.remove("is-attacking");
-    attackSlashNode?.classList.remove("is-attacking");
   }, 230);
   let hit = false;
   activeMobsForCastle(state.unlockedIndex).forEach((mob) => {
@@ -730,22 +697,6 @@ function updatePlayer(dt) {
     weaponPivot.rotation.y = THREE.MathUtils.lerp(0.2, -1.45, swing);
     weaponPivot.rotation.z = THREE.MathUtils.lerp(-0.3, 0.65, swing);
     weaponPivot.position.x = 0.56 + swing * 0.18;
-  }
-
-  const slash = player.userData.slash;
-  if (slash) {
-    slash.visible = state.attackTimer > 0;
-    slash.material.opacity = Math.max(0, state.attackTimer / 0.22) * 0.95;
-    slash.rotation.z = -1.15 + attackProgress * 2.25;
-    slash.scale.set(0.82 + swing * 0.42, 0.82 + swing * 0.42, 1);
-  }
-
-  const strike = player.userData.strike;
-  if (strike) {
-    strike.visible = state.attackTimer > 0;
-    strike.material.opacity = Math.max(0, state.attackTimer / 0.22);
-    strike.rotation.z = -0.75 + attackProgress * 1.65;
-    strike.scale.set(0.75 + swing * 0.55, 1, 1);
   }
 
   const wings = player.userData.wings || [];
