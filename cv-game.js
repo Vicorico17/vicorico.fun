@@ -84,7 +84,7 @@ const visited = new Set();
 const worldObjects = [];
 const castleObjects = [];
 const mobs = [];
-const worldBoundsX = 10;
+const worldBoundsX = 18;
 const worldStartZ = 8;
 const worldEndZ = -150;
 const triggerRadius = 5.8;
@@ -282,7 +282,7 @@ function createPlayer() {
 
 function buildWorld() {
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(46, 176, 12, 24),
+    new THREE.PlaneGeometry(260, 220, 32, 32),
     material("#253322", { roughness: 0.86 }),
   );
   ground.position.z = -70;
@@ -446,12 +446,10 @@ function createMob(color) {
 function buildTrees() {
   const trunkMat = material("#433019", { roughness: 0.82 });
   const leafMat = material("#1d5135", { roughness: 0.75 });
-  for (let i = 0; i < 70; i += 1) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = 16 + Math.random() * 32;
-    const x = Math.cos(angle) * radius;
-    const z = Math.sin(angle) * radius;
-    if (Math.abs(x) < 10 && Math.abs(z) < 10) continue;
+  for (let i = 0; i < 170; i += 1) {
+    const side = Math.random() < 0.5 ? -1 : 1;
+    const x = side * (11 + Math.random() * 82);
+    const z = worldStartZ - Math.random() * (Math.abs(worldEndZ) + 22);
     const tree = new THREE.Group();
     const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 1.1, 8), trunkMat);
     trunk.position.y = 0.55;
