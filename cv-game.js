@@ -87,9 +87,12 @@ const clock = new THREE.Clock();
 const visited = new Set();
 const worldObjects = [];
 const castleObjects = [];
+const buildingColliders = [];
 const mobs = [];
 const projectiles = [];
-const worldBoundsX = 18;
+const enemyProjectiles = [];
+const pickups = [];
+const worldBoundsX = 26;
 const worldStartZ = 8;
 const worldEndZ = -228;
 const triggerRadius = 5.8;
@@ -286,19 +289,31 @@ function createPlayer() {
   weaponPivot.add(blade, tip, guard, hilt);
 
   const bowPivot = new THREE.Group();
-  bowPivot.position.set(0.6, 1.18, -0.3);
-  bowPivot.rotation.set(0.25, -0.1, -0.25);
-  const bowTop = new THREE.Mesh(new THREE.TorusGeometry(0.48, 0.035, 8, 24, Math.PI), bowMat);
-  bowTop.position.set(0.05, 0.28, -0.18);
-  bowTop.rotation.set(Math.PI / 2, 0, Math.PI / 2);
-  const bowBottom = bowTop.clone();
-  bowBottom.position.y = -0.28;
-  bowBottom.rotation.z = -Math.PI / 2;
-  const bowString = new THREE.Mesh(new THREE.BoxGeometry(0.035, 1.05, 0.035), glowMat);
-  bowString.position.set(-0.33, 0, -0.18);
-  const arrowRest = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.07, 0.95), swordMat);
-  arrowRest.position.set(0.08, 0, -0.42);
-  bowPivot.add(bowTop, bowBottom, bowString, arrowRest);
+  bowPivot.position.set(0.64, 1.18, -0.3);
+  bowPivot.rotation.set(0.18, -0.18, -0.28);
+  const bowCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.08, 0.68, 0),
+    new THREE.Vector3(-0.26, 0.42, -0.05),
+    new THREE.Vector3(-0.38, 0, -0.08),
+    new THREE.Vector3(-0.26, -0.42, -0.05),
+    new THREE.Vector3(0.08, -0.68, 0),
+  ]);
+  const bowFrame = new THREE.Mesh(new THREE.TubeGeometry(bowCurve, 36, 0.035, 8, false), bowMat);
+  bowFrame.castShadow = true;
+  const stringTop = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.72, 0.025), glowMat);
+  stringTop.position.set(0.09, 0.33, 0);
+  stringTop.rotation.z = -0.09;
+  const stringBottom = stringTop.clone();
+  stringBottom.position.y = -0.33;
+  stringBottom.rotation.z = 0.09;
+  const nockedArrow = new THREE.Group();
+  const nockedShaft = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 1.08), swordMat);
+  const nockedHead = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.3, 8), bowMat);
+  nockedHead.position.z = -0.68;
+  nockedHead.rotation.x = -Math.PI / 2;
+  nockedArrow.add(nockedShaft, nockedHead);
+  nockedArrow.position.set(0.04, 0, -0.48);
+  bowPivot.add(bowFrame, stringTop, stringBottom, nockedArrow);
   bowPivot.visible = false;
 
   group.add(body, head, visor, pack, leftWing, rightWing, weaponPivot, bowPivot);
@@ -310,7 +325,7 @@ function createPlayer() {
 
 function buildWorld() {
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(280, 310, 32, 44),
+    new THREE.PlaneGeometry(360, 320, 40, 44),
     material("#253322", { roughness: 0.86 }),
   );
   ground.position.z = -110;
@@ -318,7 +333,7 @@ function buildWorld() {
   ground.receiveShadow = true;
   scene.add(ground);
 
-  const path = makeBox(8, 0.04, 250, "#3b3127", 0, 0.025, -110, { roughness: 0.8 });
+  const path = makeBox(10, 0.04, 250, "#3b3127", 0, 0.025, -110, { roughness: 0.8 });
   scene.add(path);
 
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 0.12, 48), material("#2f3c34", { roughness: 0.8 }));
@@ -334,6 +349,7 @@ function buildWorld() {
   });
 
   buildTrees();
+  buildPickups();
   buildSky();
 }
 
@@ -395,6 +411,7 @@ function buildCastle(castle, index) {
   icon.userData.baseY = icon.position.y;
   group.add(icon);
   worldObjects.push(icon);
+  buildingColliders.push({ x, z, halfX: 4.8, halfZ: 4.8 });
 
   return { group, castle, index, x, z, ring, icon };
 }
@@ -420,10 +437,14 @@ function spawnMobPack(castle, castleIndex) {
       maxHp: mobData.maxHp,
       speed: mobData.speed,
       damage: mobData.damage,
+      shootDamage: mobData.shootDamage,
+      shootRange: mobData.shootRange,
+      shootInterval: mobData.shootInterval,
       baseScale: mobData.baseScale,
       hitBurst: mobData.hitBurst,
       alive: true,
       hitTimer: 0,
+      shootCooldown: mobData.shootInterval ? 0.7 + mobIndex * 0.24 : Infinity,
       baseX: spawn.x,
       baseZ: spawn.z,
       phase: mobIndex * 1.7 + castleIndex,
@@ -438,9 +459,9 @@ function createMob(color, type = "brute") {
   const stats = {
     brute: { maxHp: 3, speed: 1.35, damage: 17, scale: 1.14 },
     crawler: { maxHp: 2, speed: 2.25, damage: 12, scale: 0.82 },
-    seer: { maxHp: 2, speed: 1.65, damage: 14, scale: 0.96 },
+    seer: { maxHp: 2, speed: 1.65, damage: 14, scale: 0.96, shootDamage: 9, shootRange: 13.5, shootInterval: 1.85 },
     runner: { maxHp: 1, speed: 2.8, damage: 10, scale: 0.74 },
-    sentinel: { maxHp: 4, speed: 1.05, damage: 20, scale: 1.22 },
+    sentinel: { maxHp: 4, speed: 1.05, damage: 20, scale: 1.22, shootDamage: 13, shootRange: 15.5, shootInterval: 2.45 },
   }[type];
   const bodyMat = material("#2b1115", { roughness: 0.46, emissive: "#4b1119", emissiveIntensity: 0.18 });
   const accentMat = material(color, { emissive: color, emissiveIntensity: 0.54, roughness: 0.36 });
@@ -504,6 +525,9 @@ function createMob(color, type = "brute") {
   group.userData.maxHp = stats.maxHp;
   group.userData.speed = stats.speed;
   group.userData.damage = stats.damage;
+  group.userData.shootDamage = stats.shootDamage || 0;
+  group.userData.shootRange = stats.shootRange || 0;
+  group.userData.shootInterval = stats.shootInterval || 0;
   group.userData.baseScale = stats.scale;
   group.userData.hitBurst = hitBurst;
   return group;
@@ -512,9 +536,9 @@ function createMob(color, type = "brute") {
 function buildTrees() {
   const trunkMat = material("#433019", { roughness: 0.82 });
   const leafMat = material("#1d5135", { roughness: 0.75 });
-  for (let i = 0; i < 170; i += 1) {
+  for (let i = 0; i < 230; i += 1) {
     const side = Math.random() < 0.5 ? -1 : 1;
-    const x = side * (11 + Math.random() * 82);
+    const x = side * (13 + Math.random() * 118);
     const z = worldStartZ - Math.random() * (Math.abs(worldEndZ) + 22);
     const tree = new THREE.Group();
     const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 1.1, 8), trunkMat);
@@ -528,6 +552,26 @@ function buildTrees() {
     tree.rotation.y = Math.random() * Math.PI;
     scene.add(tree);
   }
+}
+
+function buildPickups() {
+  const pickupMat = material("#8bd3ff", { emissive: "#8bd3ff", emissiveIntensity: 1.1, roughness: 0.24, metalness: 0.12 });
+  castles.forEach((castle, index) => {
+    if (index === castles.length - 1) return;
+    const nextCastle = castles[index + 1];
+    const z = (castle.position[1] + nextCastle.position[1]) / 2;
+    [-1, 1].forEach((side) => {
+      const pickup = new THREE.Mesh(new THREE.OctahedronGeometry(0.42, 0), pickupMat);
+      pickup.position.set(side * (7.2 + (index % 2) * 2.8), 0.85, z);
+      pickup.castShadow = true;
+      pickup.userData.baseY = pickup.position.y;
+      pickup.userData.spin = side * 1.15;
+      pickup.userData.active = true;
+      pickups.push(pickup);
+      worldObjects.push(pickup);
+      scene.add(pickup);
+    });
+  });
 }
 
 function buildSky() {
@@ -588,7 +632,12 @@ function resetGame() {
     mob.position.set(mob.userData.baseX, 0, mob.userData.baseZ);
     mob.scale.setScalar(mob.userData.baseScale);
   });
+  pickups.forEach((pickup) => {
+    pickup.userData.active = true;
+    pickup.visible = true;
+  });
   projectiles.splice(0).forEach((projectile) => scene.remove(projectile));
+  enemyProjectiles.splice(0).forEach((projectile) => scene.remove(projectile));
   updateWeaponUi();
   updateHud(null, true);
 }
@@ -600,6 +649,8 @@ function update(dt) {
   updateMovement(dt);
   updateMobs(dt);
   updateProjectiles(dt);
+  updateEnemyProjectiles(dt);
+  updatePickups(dt);
   updateCastleUnlocks();
   updateTheme();
   updatePlayer(dt);
@@ -632,6 +683,7 @@ function updateMovement(dt) {
 
   state.player.x = THREE.MathUtils.clamp(state.player.x, -worldBoundsX, worldBoundsX);
   state.player.z = THREE.MathUtils.clamp(state.player.z, worldEndZ, worldStartZ);
+  resolveBuildingCollisions();
 
   const nextCastle = castles[state.unlockedIndex];
   if (!nextCastle) return;
@@ -641,6 +693,26 @@ function updateMovement(dt) {
     state.player.z = gateZ;
     state.message = "Clear the mobs before entering the next castle.";
   }
+}
+
+function resolveBuildingCollisions() {
+  const radius = 0.72;
+  for (const collider of buildingColliders) {
+    const dx = state.player.x - collider.x;
+    const dz = state.player.z - collider.z;
+    const overlapX = collider.halfX + radius - Math.abs(dx);
+    const overlapZ = collider.halfZ + radius - Math.abs(dz);
+    if (overlapX <= 0 || overlapZ <= 0) continue;
+    if (overlapX < overlapZ) {
+      state.player.x += Math.sign(dx || 1) * overlapX;
+      state.player.vx = 0;
+    } else {
+      state.player.z += Math.sign(dz || 1) * overlapZ;
+      state.player.vz = 0;
+    }
+  }
+  state.player.x = THREE.MathUtils.clamp(state.player.x, -worldBoundsX, worldBoundsX);
+  state.player.z = THREE.MathUtils.clamp(state.player.z, worldEndZ, worldStartZ);
 }
 
 function updateMobs(dt) {
@@ -679,9 +751,18 @@ function updateMobs(dt) {
     const dx = state.player.x - mob.position.x;
     const dz = state.player.z - mob.position.z;
     const distance = Math.hypot(dx, dz);
+    mob.userData.shootCooldown = Math.max(0, mob.userData.shootCooldown - dt);
+    if (mob.userData.shootRange && distance < mob.userData.shootRange && distance > 2.4 && mob.userData.shootCooldown <= 0) {
+      fireEnemyBolt(mob, dx, dz, distance);
+      mob.userData.shootCooldown = mob.userData.shootInterval;
+    }
     if (distance < 12 && distance > 0.1) {
       mob.position.x += (dx / distance) * dt * mob.userData.speed;
       mob.position.z += (dz / distance) * dt * mob.userData.speed;
+    } else {
+      const patrolRadius = mob.userData.type === "runner" ? 2.4 : 1.45;
+      mob.position.x = THREE.MathUtils.lerp(mob.position.x, mob.userData.baseX + Math.sin(time * 0.85) * patrolRadius, Math.min(1, dt * 1.4));
+      mob.position.z = THREE.MathUtils.lerp(mob.position.z, mob.userData.baseZ + Math.cos(time * 0.7) * patrolRadius, Math.min(1, dt * 1.4));
     }
     if (distance < 1.35) {
       state.playerHealth = Math.max(0, state.playerHealth - dt * mob.userData.damage);
@@ -700,6 +781,22 @@ function updateMobs(dt) {
         state.player.hitCooldown = 0.34;
       }
       if (state.playerHealth <= 0) resetGame();
+    }
+  });
+}
+
+function updatePickups(dt) {
+  pickups.forEach((pickup) => {
+    if (!pickup.userData.active) return;
+    pickup.rotation.y += dt * 2.8 * Math.sign(pickup.userData.spin || 1);
+    pickup.position.y = pickup.userData.baseY + Math.sin(clock.elapsedTime * 3 + pickup.position.z) * 0.16;
+    const distance = Math.hypot(state.player.x - pickup.position.x, state.player.z - pickup.position.z);
+    if (distance < 1.35) {
+      pickup.userData.active = false;
+      pickup.visible = false;
+      state.playerHealth = Math.min(100, state.playerHealth + 22);
+      state.message = "Health pickup collected.";
+      updateHud(state.activeCastle, true);
     }
   });
 }
@@ -792,16 +889,7 @@ function attack() {
 }
 
 function fireArrow() {
-  const target = activeMobsForCastle(state.unlockedIndex)
-    .map((mob) => ({
-      mob,
-      distance: Math.hypot(mob.position.x - state.player.x, mob.position.z - state.player.z),
-    }))
-    .filter((item) => item.distance <= bowRange)
-    .sort((a, b) => a.distance - b.distance)[0]?.mob;
-  const direction = target
-    ? new THREE.Vector3(target.position.x - state.player.x, 0, target.position.z - state.player.z).normalize()
-    : new THREE.Vector3(Math.sin(state.player.rotation), 0, Math.cos(state.player.rotation));
+  const direction = new THREE.Vector3(Math.sin(state.player.rotation), 0, Math.cos(state.player.rotation));
   const arrow = new THREE.Group();
   const shaft = new THREE.Mesh(
     new THREE.BoxGeometry(0.09, 0.09, 1.05),
@@ -815,7 +903,7 @@ function fireArrow() {
   head.rotation.x = -Math.PI / 2;
   arrow.add(shaft, head);
   arrow.position.set(state.player.x + direction.x * 0.9, 1.08, state.player.z + direction.z * 0.9);
-  arrow.rotation.y = state.player.rotation;
+  arrow.rotation.y = Math.atan2(-direction.x, -direction.z);
   arrow.userData = {
     vx: direction.x * 25,
     vz: direction.z * 25,
@@ -847,6 +935,52 @@ function updateProjectiles(dt) {
     if (remove) {
       projectiles.splice(i, 1);
       scene.remove(projectile);
+    }
+  }
+}
+
+function fireEnemyBolt(mob, dx, dz, distance) {
+  const direction = new THREE.Vector3(dx / distance, 0, dz / distance);
+  const bolt = new THREE.Mesh(
+    new THREE.SphereGeometry(0.24, 14, 10),
+    new THREE.MeshBasicMaterial({ color: "#fb7185" }),
+  );
+  bolt.position.set(mob.position.x, 1.08, mob.position.z);
+  bolt.userData = {
+    vx: direction.x * 8.4,
+    vz: direction.z * 8.4,
+    age: 0,
+    maxAge: 1.85,
+    damage: mob.userData.shootDamage,
+  };
+  enemyProjectiles.push(bolt);
+  scene.add(bolt);
+}
+
+function updateEnemyProjectiles(dt) {
+  for (let i = enemyProjectiles.length - 1; i >= 0; i -= 1) {
+    const bolt = enemyProjectiles[i];
+    bolt.userData.age += dt;
+    bolt.position.x += bolt.userData.vx * dt;
+    bolt.position.z += bolt.userData.vz * dt;
+    bolt.position.y = 1.08 + Math.sin(bolt.userData.age * 18) * 0.08;
+    bolt.scale.setScalar(1 + Math.sin(bolt.userData.age * 22) * 0.18);
+    const distance = Math.hypot(state.player.x - bolt.position.x, state.player.z - bolt.position.z);
+    let remove = bolt.userData.age >= bolt.userData.maxAge;
+    if (!remove && distance < 0.95) {
+      const pushX = (state.player.x - bolt.position.x) / Math.max(0.001, distance);
+      const pushZ = (state.player.z - bolt.position.z) / Math.max(0.001, distance);
+      state.playerHealth = Math.max(0, state.playerHealth - bolt.userData.damage);
+      state.player.vx += pushX * 4.5;
+      state.player.vz += pushZ * 4.5;
+      state.message = "A ranged mob hit you.";
+      updateHud(state.activeCastle, true);
+      if (state.playerHealth <= 0) resetGame();
+      remove = true;
+    }
+    if (remove) {
+      enemyProjectiles.splice(i, 1);
+      scene.remove(bolt);
     }
   }
 }
@@ -887,12 +1021,21 @@ function updatePlayer(dt) {
   if (bowPivot) {
     bowPivot.visible = state.weapon === "bow";
     const draw = state.weapon === "bow" ? swing : 0;
-    bowPivot.rotation.x = 0.25 - draw * 0.22;
-    bowPivot.rotation.y = -0.1 + draw * 0.22;
-    bowPivot.rotation.z = -0.25 - draw * 0.38;
-    bowPivot.position.x = 0.6 - draw * 0.12;
-    bowPivot.position.z = -0.3 - draw * 0.16;
-    bowPivot.scale.setScalar(1 + draw * 0.06);
+    bowPivot.rotation.x = 0.18 - draw * 0.12;
+    bowPivot.rotation.y = -0.18 + draw * 0.16;
+    bowPivot.rotation.z = -0.28 - draw * 0.18;
+    bowPivot.position.x = 0.64 - draw * 0.1;
+    bowPivot.position.z = -0.3 - draw * 0.12;
+    bowPivot.scale.setScalar(1 + draw * 0.05);
+    const [, stringTop, stringBottom, nockedArrow] = bowPivot.children;
+    if (stringTop && stringBottom && nockedArrow) {
+      stringTop.position.x = 0.09 - draw * 0.16;
+      stringBottom.position.x = 0.09 - draw * 0.16;
+      stringTop.rotation.z = -0.09 - draw * 0.12;
+      stringBottom.rotation.z = 0.09 + draw * 0.12;
+      nockedArrow.position.z = -0.48 + draw * 0.18;
+      nockedArrow.position.x = 0.04 - draw * 0.14;
+    }
   }
 
   player.rotation.x = -swing * 0.1;
@@ -1125,10 +1268,13 @@ window.render_game_to_text = () => JSON.stringify({
   playerHealth: Math.round(state.playerHealth),
   weapon: state.weapon,
   projectileCount: projectiles.length,
+  enemyProjectileCount: enemyProjectiles.length,
   player: {
     x: Number(state.player.x.toFixed(2)),
     z: Number(state.player.z.toFixed(2)),
   },
+  castleColliders: buildingColliders.length,
+  pickupCount: pickups.length,
   visitedCount: visited.size,
   visitedIds: [...visited],
   castleCount: castles.length,
