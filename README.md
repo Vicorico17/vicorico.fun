@@ -5,7 +5,7 @@ Static personal website for `vicorico.fun`.
 ## Files
 
 - `index.html` - public website home page.
-- `ideas.html` - working UI direction board for the next homepage iteration.
+- `game.html` - playable Game CV page.
 - `styles.css` - shared screen and print styling.
 - `site.js` - lightweight GitHub API integration for public repos and stars.
 - `assets/vicorico-mark.svg` - local brand mark and favicon.

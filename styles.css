@@ -1973,6 +1973,7 @@ dd {
 }
 
 .route-console,
+.system-map,
 .proof-section,
 .game-entry {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
@@ -1981,17 +1982,20 @@ dd {
 }
 
 .route-console,
+.system-map,
 .proof-section {
   display: grid;
   gap: clamp(1.2rem, 3vw, 2rem);
 }
 
 .route-console-heading,
+.system-map-heading,
 .proof-heading {
   max-width: 840px;
 }
 
 .route-console-heading h2,
+.system-map-heading h2,
 .proof-heading h2,
 .game-entry h2 {
   max-width: 12ch;
@@ -2002,11 +2006,87 @@ dd {
 }
 
 .route-console-heading p,
+.system-map-heading p,
 .proof-heading p,
 .game-entry p {
   max-width: 68ch;
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.08rem;
+}
+
+.system-map-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.system-map-grid a {
+  display: grid;
+  min-height: 250px;
+  align-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(212, 61, 23, 0.18), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+  text-decoration: none;
+  backdrop-filter: blur(18px);
+  transition:
+    border-color 220ms ease,
+    background 220ms ease,
+    transform 220ms ease;
+}
+
+.system-map-grid a:nth-child(2) {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(92, 124, 255, 0.22), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.system-map-grid a:nth-child(3) {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(34, 197, 94, 0.2), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.system-map-grid a:nth-child(4) {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.18), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.system-map-grid a:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background-color: rgba(255, 255, 255, 0.09);
+  transform: translateY(-4px);
+}
+
+.system-map-grid span {
+  width: max-content;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: #f2b84b;
+  font-size: 0.78rem;
+  font-weight: 900;
+  padding: 0.28rem 0.6rem;
+}
+
+.system-map-grid h3 {
+  margin: 2.7rem 0 0.7rem;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 3vw, 2.55rem);
+  line-height: 0.98;
+}
+
+.system-map-grid p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .route-panels {
@@ -2525,140 +2605,6 @@ dd {
   background: var(--paper);
 }
 
-.ideas-page {
-  min-height: 100svh;
-  background:
-    linear-gradient(rgba(17, 19, 21, 0.065) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(17, 19, 21, 0.05) 1px, transparent 1px),
-    linear-gradient(180deg, #fbfaf7 0%, #edf4f1 52%, #fbfaf7 100%);
-  background-size: 46px 46px, 46px 46px, auto;
-}
-
-.ideas-shell {
-  width: min(1120px, calc(100% - 2rem));
-  margin: 0 auto 5rem;
-}
-
-.ideas-hero {
-  display: grid;
-  min-height: calc(80svh - 74px);
-  align-content: center;
-  padding: clamp(3rem, 9vw, 7rem) 0;
-}
-
-.ideas-hero h1 {
-  max-width: 9ch;
-  margin-bottom: 1.2rem;
-}
-
-.ideas-section {
-  border-top: 1px solid rgba(17, 19, 21, 0.14);
-  display: grid;
-  gap: 1.4rem;
-  padding: clamp(2rem, 6vw, 4rem) 0;
-}
-
-.ideas-grid,
-.ideas-list {
-  display: grid;
-  gap: 10px;
-}
-
-.ideas-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.ideas-grid.compact {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.idea-card,
-.ideas-list article {
-  border: 1px solid rgba(17, 19, 21, 0.12);
-  border-radius: 8px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.46)),
-    rgba(255, 255, 255, 0.68);
-  box-shadow: var(--shadow);
-  padding: clamp(1rem, 2.5vw, 1.35rem);
-}
-
-.idea-card {
-  display: flex;
-  min-height: 245px;
-  flex-direction: column;
-}
-
-.idea-card.priority {
-  background:
-    linear-gradient(135deg, rgba(6, 5, 10, 0.94), rgba(28, 38, 48, 0.9)),
-    #111315;
-  color: #ffffff;
-}
-
-.idea-card span {
-  align-self: flex-start;
-  margin-bottom: auto;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  color: var(--accent-dark);
-  font-size: 0.76rem;
-  font-weight: 900;
-  padding: 0.25rem 0.52rem;
-  text-transform: uppercase;
-}
-
-.idea-card.priority span {
-  color: #f2b84b;
-}
-
-.idea-card h3,
-.ideas-list h3 {
-  margin-top: 1.6rem;
-}
-
-.idea-card p,
-.ideas-list p {
-  margin-bottom: 0;
-  color: var(--muted);
-}
-
-.idea-card.priority p {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.ideas-list {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.final-idea {
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
-  align-items: start;
-}
-
-.idea-steps {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.idea-steps li {
-  counter-increment: idea-step;
-  border: 1px solid rgba(17, 19, 21, 0.12);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow);
-  padding: 1rem;
-}
-
-.idea-steps li::before {
-  content: counter(idea-step, decimal-leading-zero) " / ";
-  color: var(--accent-dark);
-  font-weight: 900;
-}
-
 .cv-shell {
   width: min(980px, calc(100% - 2rem));
   margin: 0 auto 4rem;
@@ -2811,6 +2757,7 @@ dd {
   .career-grid,
   .career-links,
   .proof-grid,
+  .system-map-grid,
   .route-panels {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2881,6 +2828,7 @@ dd {
   .flow-grid,
   .crypto-grid,
   .proof-grid,
+  .system-map-grid,
   .route-panels,
   .route-panel,
   .game-entry,
@@ -3060,21 +3008,6 @@ dd {
     text-align: left;
   }
 
-  .ideas-hero {
-    min-height: auto;
-    padding-top: 4rem;
-  }
-
-  .ideas-grid,
-  .ideas-grid.compact,
-  .ideas-list,
-  .final-idea {
-    grid-template-columns: 1fr;
-  }
-
-  .idea-card {
-    min-height: 210px;
-  }
 }
 
 @media print {
