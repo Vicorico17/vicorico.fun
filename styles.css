@@ -2207,9 +2207,8 @@ dd {
 }
 
 .proof-artifact {
-  display: grid;
   min-height: 132px;
-  place-items: center;
+  overflow: hidden;
   margin-bottom: 18px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
@@ -2221,6 +2220,29 @@ dd {
   color: #ffffff;
   font-size: 1.6rem;
   font-weight: 900;
+}
+
+.proof-artifact img {
+  display: block;
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+}
+
+.proof-artifact-logo {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    rgba(6, 5, 10, 0.74);
+  background-size: 24px 24px;
+}
+
+.proof-artifact-logo img {
+  width: min(70%, 180px);
+  height: 132px;
+  object-fit: contain;
 }
 
 .proof-grid h3 {
@@ -2251,11 +2273,32 @@ dd {
   font-weight: 800;
 }
 
+.proof-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .proof-grid a {
   color: #ffffff;
   font-weight: 900;
   text-decoration: underline;
   text-underline-offset: 0.24em;
+}
+
+.proof-actions a {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.48rem 0.68rem;
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.proof-actions a:first-child {
+  border-color: rgba(242, 184, 75, 0.44);
+  background: rgba(242, 184, 75, 0.12);
+  color: #f7d58a;
 }
 
 .game-entry {
