@@ -1975,6 +1975,7 @@ dd {
 .route-console,
 .system-map,
 .proof-section,
+.oss-section,
 .game-entry {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   padding-top: clamp(4rem, 9vw, 7rem);
@@ -1983,6 +1984,7 @@ dd {
 
 .route-console,
 .system-map,
+.oss-section,
 .proof-section {
   display: grid;
   gap: clamp(1.2rem, 3vw, 2rem);
@@ -1990,12 +1992,14 @@ dd {
 
 .route-console-heading,
 .system-map-heading,
+.oss-heading,
 .proof-heading {
   max-width: 840px;
 }
 
 .route-console-heading h2,
 .system-map-heading h2,
+.oss-heading h2,
 .proof-heading h2,
 .game-entry h2 {
   max-width: 12ch;
@@ -2007,6 +2011,7 @@ dd {
 
 .route-console-heading p,
 .system-map-heading p,
+.oss-heading p,
 .proof-heading p,
 .game-entry p {
   max-width: 68ch;
@@ -2299,6 +2304,72 @@ dd {
   border-color: rgba(242, 184, 75, 0.44);
   background: rgba(242, 184, 75, 0.12);
   color: #f7d58a;
+}
+
+.oss-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.oss-grid article {
+  display: flex;
+  min-height: 300px;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  backdrop-filter: blur(18px);
+}
+
+.oss-grid span {
+  color: #f2b84b;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.oss-grid h3 {
+  margin: 1.2rem 0 0.65rem;
+  color: #ffffff;
+  font-size: 1.35rem;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.oss-grid p {
+  margin: 0 0 1.1rem;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.oss-grid a {
+  color: #ffffff;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 0.24em;
+}
+
+.oss-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.oss-actions a,
+.oss-grid article > a {
+  width: max-content;
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.48rem 0.68rem;
+  font-size: 0.82rem;
+  text-decoration: none;
 }
 
 .game-entry {
@@ -2799,6 +2870,7 @@ dd {
   .career-contact,
   .career-grid,
   .career-links,
+  .oss-grid,
   .proof-grid,
   .system-map-grid,
   .route-panels {
@@ -2870,6 +2942,7 @@ dd {
   .journey-list,
   .flow-grid,
   .crypto-grid,
+  .oss-grid,
   .proof-grid,
   .system-map-grid,
   .route-panels,
