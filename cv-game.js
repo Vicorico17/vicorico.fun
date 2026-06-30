@@ -362,13 +362,16 @@ function buildCastle(castle, index) {
   const dark = "#10141d";
   const accentMat = material(accent, { emissive: accent, emissiveIntensity: 0.22, metalness: 0.16, roughness: 0.42 });
 
-  const base = makeBox(8.4, 0.28, 8.4, "#1d2527", 0, 0.14, 0, { roughness: 0.72 });
-  const keep = makeBox(3.6, 5.2, 3.3, wall, 0, 2.74, 0.6, { roughness: 0.55, metalness: 0.08 });
-  const roof = makeCone(2.75, 2.2, accent, 0, 6.45, 0.6, { emissive: accent, emissiveIntensity: 0.18 });
-  const gate = makeBox(2.15, 2.4, 0.3, dark, 0, 1.28, -3.63, { emissive: accent, emissiveIntensity: 0.18 });
-  const gateGlow = makeBox(1.28, 1.58, 0.08, accent, 0, 1.25, -3.82, { emissive: accent, emissiveIntensity: 0.55, transparent: true, opacity: 0.68 });
+  const base = makeBox(9.4, 0.18, 8.8, "#1d2527", 0, 0.09, 0, { roughness: 0.72 });
+  const leftKeep = makeBox(2.0, 4.8, 3.0, wall, -2.85, 2.52, 0, { roughness: 0.55, metalness: 0.08 });
+  const rightKeep = makeBox(2.0, 4.8, 3.0, wall, 2.85, 2.52, 0, { roughness: 0.55, metalness: 0.08 });
+  const leftRoof = makeCone(1.55, 1.55, accent, -2.85, 5.68, 0, { emissive: accent, emissiveIntensity: 0.18 });
+  const rightRoof = makeCone(1.55, 1.55, accent, 2.85, 5.68, 0, { emissive: accent, emissiveIntensity: 0.18 });
+  const arch = makeBox(2.65, 0.75, 0.58, wall, 0, 3.2, 3.72, { roughness: 0.55, metalness: 0.08 });
+  const gate = makeBox(2.25, 2.45, 0.28, dark, 0, 1.32, 3.86, { emissive: accent, emissiveIntensity: 0.18 });
+  const gateGlow = makeBox(1.46, 1.66, 0.08, accent, 0, 1.34, 3.98, { emissive: accent, emissiveIntensity: 0.65, transparent: true, opacity: 0.28 });
 
-  group.add(base, keep, roof, gate, gateGlow);
+  group.add(base, leftKeep, rightKeep, leftRoof, rightRoof, arch, gate, gateGlow);
 
   const towerPositions = [
     [-3.45, -3.45],
@@ -383,8 +386,10 @@ function buildCastle(castle, index) {
   }
 
   const walls = [
-    makeBox(7.2, 1.8, 0.44, wall, 0, 1.02, -3.72),
-    makeBox(7.2, 1.8, 0.44, wall, 0, 1.02, 3.72),
+    makeBox(2.35, 1.8, 0.44, wall, -2.45, 1.02, -3.72),
+    makeBox(2.35, 1.8, 0.44, wall, 2.45, 1.02, -3.72),
+    makeBox(2.35, 1.8, 0.44, wall, -2.45, 1.02, 3.72),
+    makeBox(2.35, 1.8, 0.44, wall, 2.45, 1.02, 3.72),
     makeBox(0.44, 1.8, 7.2, wall, -3.72, 1.02, 0),
     makeBox(0.44, 1.8, 7.2, wall, 3.72, 1.02, 0),
   ];
@@ -403,17 +408,25 @@ function buildCastle(castle, index) {
     height: 1.0,
     fontSize: 58,
   });
-  label.position.set(0, 8.2, -1.2);
+  label.position.set(0, 7.55, 3.2);
   group.add(label);
 
   const icon = new THREE.Mesh(new THREE.IcosahedronGeometry(0.48, 1), accentMat);
-  icon.position.set(0, 7.1, 0.6);
+  icon.position.set(0, 6.55, 1.2);
   icon.userData.baseY = icon.position.y;
   group.add(icon);
   worldObjects.push(icon);
-  buildingColliders.push({ x, z, halfX: 4.8, halfZ: 4.8 });
+  buildingColliders.push(
+    { x: x - 3.72, z, halfX: 0.62, halfZ: 3.92, castleIndex: index, kind: "wall" },
+    { x: x + 3.72, z, halfX: 0.62, halfZ: 3.92, castleIndex: index, kind: "wall" },
+    { x: x - 2.45, z: z - 3.72, halfX: 1.32, halfZ: 0.54, castleIndex: index, kind: "wall" },
+    { x: x + 2.45, z: z - 3.72, halfX: 1.32, halfZ: 0.54, castleIndex: index, kind: "wall" },
+    { x: x - 2.45, z: z + 3.72, halfX: 1.32, halfZ: 0.54, castleIndex: index, kind: "wall" },
+    { x: x + 2.45, z: z + 3.72, halfX: 1.32, halfZ: 0.54, castleIndex: index, kind: "wall" },
+    { x, z: z + 3.85, halfX: 1.35, halfZ: 0.52, castleIndex: index, kind: "gate" },
+  );
 
-  return { group, castle, index, x, z, ring, icon };
+  return { group, castle, index, x, z, ring, icon, gate, gateGlow };
 }
 
 function spawnMobPack(castle, castleIndex) {
@@ -555,15 +568,14 @@ function buildTrees() {
 }
 
 function buildPickups() {
-  const pickupMat = material("#8bd3ff", { emissive: "#8bd3ff", emissiveIntensity: 1.1, roughness: 0.24, metalness: 0.12 });
+  const pickupMat = material("#fb7185", { emissive: "#fb7185", emissiveIntensity: 1.05, roughness: 0.28, metalness: 0.08 });
   castles.forEach((castle, index) => {
     if (index === castles.length - 1) return;
     const nextCastle = castles[index + 1];
     const z = (castle.position[1] + nextCastle.position[1]) / 2;
     [-1, 1].forEach((side) => {
-      const pickup = new THREE.Mesh(new THREE.OctahedronGeometry(0.42, 0), pickupMat);
+      const pickup = createHeartPickup(pickupMat);
       pickup.position.set(side * (7.2 + (index % 2) * 2.8), 0.85, z);
-      pickup.castShadow = true;
       pickup.userData.baseY = pickup.position.y;
       pickup.userData.spin = side * 1.15;
       pickup.userData.active = true;
@@ -572,6 +584,24 @@ function buildPickups() {
       scene.add(pickup);
     });
   });
+}
+
+function createHeartPickup(pickupMat) {
+  const group = new THREE.Group();
+  const left = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 12), pickupMat);
+  left.position.set(-0.18, 0.12, 0);
+  const right = left.clone();
+  right.position.x = 0.18;
+  const point = new THREE.Mesh(new THREE.ConeGeometry(0.36, 0.58, 18), pickupMat);
+  point.position.set(0, -0.18, 0);
+  point.rotation.z = Math.PI;
+  group.add(left, right, point);
+  group.rotation.z = -0.12;
+  group.scale.setScalar(1.15);
+  group.traverse((child) => {
+    if (child.isMesh) child.castShadow = true;
+  });
+  return group;
 }
 
 function buildSky() {
@@ -698,6 +728,7 @@ function updateMovement(dt) {
 function resolveBuildingCollisions() {
   const radius = 0.72;
   for (const collider of buildingColliders) {
+    if (collider.kind === "gate" && activeMobsForCastle(collider.castleIndex).length === 0) continue;
     const dx = state.player.x - collider.x;
     const dz = state.player.z - collider.z;
     const overlapX = collider.halfX + radius - Math.abs(dx);
@@ -806,19 +837,25 @@ function updateCastleUnlocks() {
   if (currentItem) {
     const mobsAlive = activeMobsForCastle(state.unlockedIndex).length > 0;
     const distance = Math.hypot(state.player.x - currentItem.x, state.player.z - currentItem.z);
+    const passedGate = Math.abs(state.player.x - currentItem.x) < 2.25 && state.player.z < currentItem.z - 4.35;
     const inside = distance <= triggerRadius;
     currentItem.ring.material.opacity = mobsAlive ? 0.24 : inside ? 1 : 0.72;
     currentItem.ring.scale.setScalar(inside && !mobsAlive ? 1.06 : 1);
-    if (inside && !mobsAlive) {
+    currentItem.gate.visible = mobsAlive;
+    currentItem.gateGlow.visible = !mobsAlive;
+    currentItem.gateGlow.material.opacity = !mobsAlive ? 0.72 : 0.24;
+    if (passedGate && !mobsAlive) {
       visited.add(currentItem.castle.id);
       state.unlockedIndex = Math.max(state.unlockedIndex, currentItem.index + 1);
-      state.message = `${currentItem.castle.shortTitle} unlocked. Keep following the road.`;
+      state.message = `${currentItem.castle.shortTitle} gate cleared. Keep following the road.`;
     }
   }
 
   castleObjects.forEach((item) => {
     if (item.index === state.unlockedIndex) return;
     item.ring.material.opacity = item.index < state.unlockedIndex ? 0.9 : 0.18;
+    item.gate.visible = item.index >= state.unlockedIndex;
+    item.gateGlow.visible = item.index < state.unlockedIndex;
   });
 
   let active = null;
@@ -883,7 +920,7 @@ function attack() {
   state.message = hit
     ? remaining > 0
       ? `${remaining} mobs left before the castle unlocks.`
-      : "Mobs cleared. Walk into the castle ring."
+      : "Mobs cleared. The gate is open."
     : "Move closer to a mob before attacking.";
   updateHud(state.activeCastle, true);
 }
@@ -1093,7 +1130,7 @@ function updateHud(castle, force = false) {
   cardTitleNode.textContent = castle ? castle.title : "Walk Into A Castle";
   cardCopyNode.textContent = castle
     ? castle.detail
-    : "Follow the road, fight the mobs in front of each castle, then walk into the castle ring to unlock the next category.";
+    : "Follow the road, fight the mobs in front of each castle, then go through the open gate to unlock the next category.";
 
   const bullets = castle
     ? castle.bullets
