@@ -106,6 +106,7 @@ const state = {
   lastHudId: "",
   themeColor: new THREE.Color("#111827"),
   unlockedIndex: 0,
+  completed: false,
   attackCooldown: 0,
   attackTimer: 0,
   weapon: "sword",
@@ -648,6 +649,7 @@ function resetGame() {
   state.activeCastle = null;
   state.lastHudId = "";
   state.unlockedIndex = 0;
+  state.completed = false;
   state.attackCooldown = 0;
   state.attackTimer = 0;
   state.weapon = "sword";
@@ -846,8 +848,12 @@ function updateCastleUnlocks() {
     currentItem.gateGlow.material.opacity = !mobsAlive ? 0.72 : 0.24;
     if (passedGate && !mobsAlive) {
       visited.add(currentItem.castle.id);
+      const completed = currentItem.index === castles.length - 1;
       state.unlockedIndex = Math.max(state.unlockedIndex, currentItem.index + 1);
-      state.message = `${currentItem.castle.shortTitle} gate cleared. Keep following the road.`;
+      state.completed = completed;
+      state.message = completed
+        ? "Congratulations, you completed the game CV."
+        : `${currentItem.castle.shortTitle} gate cleared. Keep following the road.`;
     }
   }
 
@@ -861,7 +867,6 @@ function updateCastleUnlocks() {
   let active = null;
   let bestDistance = Infinity;
   castleObjects.forEach((item) => {
-    if (!visited.has(item.castle.id)) return;
     const distance = Math.hypot(state.player.x - item.x, state.player.z - item.z);
     if (distance <= triggerRadius && distance < bestDistance) {
       active = item.castle;
@@ -1106,13 +1111,17 @@ function updateHud(castle, force = false) {
   if (!zoneNode || !progressNode || !progressBarNode || !mobsNode || !healthNode || !healthBarNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const nextCastle = castles[state.unlockedIndex];
   const activeMobs = nextCastle ? activeMobsForCastle(state.unlockedIndex).length : 0;
-  const hudId = castle?.id || `road-${state.unlockedIndex}-${activeMobs}-${Math.round(state.playerHealth)}`;
+  const hudId = state.completed
+    ? `complete-${Math.round(state.playerHealth)}`
+    : castle?.id || `road-${state.unlockedIndex}-${activeMobs}-${Math.round(state.playerHealth)}`;
   if (!force && state.lastHudId === hudId && Number(progressNode.dataset.count || 0) === visited.size) return;
   state.lastHudId = hudId;
   progressNode.dataset.count = String(visited.size);
 
-  zoneNode.textContent = castle
-    ? `Unlocked ${castle.shortTitle}`
+  zoneNode.textContent = state.completed
+    ? "Congratulations, you completed the game CV."
+    : castle
+    ? castle.shortTitle
     : nextCastle
       ? activeMobs > 0
         ? nextCastle.shortTitle
@@ -1123,8 +1132,20 @@ function updateHud(castle, force = false) {
   healthBarNode.style.width = `${state.playerHealth}%`;
   progressNode.textContent = `${visited.size}/${castles.length}`;
   progressBarNode.style.width = `${(visited.size / castles.length) * 100}%`;
-  cardNode.classList.toggle("is-hidden", !castle);
-  if (!castle) return;
+  cardNode.classList.toggle("is-hidden", !castle && !state.completed);
+  if (!castle && !state.completed) return;
+
+  if (state.completed) {
+    cardKickerNode.textContent = "Game CV Complete";
+    cardTitleNode.textContent = "Congratulations, you completed the game CV.";
+    cardCopyNode.textContent = "You unlocked every castle and reached the end of the interactive CV.";
+    cardListNode.replaceChildren(...castles.map((item) => {
+      const li = document.createElement("li");
+      li.textContent = item.shortTitle;
+      return li;
+    }));
+    return;
+  }
 
   cardKickerNode.textContent = castle ? "Castle Data" : "3D World";
   cardTitleNode.textContent = castle ? castle.title : "Walk Into A Castle";
@@ -1301,6 +1322,7 @@ window.render_game_to_text = () => JSON.stringify({
   mode: "linear-castle-combat",
   active: state.activeCastle?.id || "hub",
   unlockedIndex: state.unlockedIndex,
+  completed: state.completed,
   activeMobCount: activeMobsForCastle(state.unlockedIndex).length,
   playerHealth: Math.round(state.playerHealth),
   weapon: state.weapon,
