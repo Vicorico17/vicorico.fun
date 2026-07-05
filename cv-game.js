@@ -25,7 +25,7 @@ const castles = [
     detail:
       "AI process architecture, local-first applications, GPU-backed model deployment, Kubernetes, second-brain knowledge bases, lead generation agents, support copilots, and internal workflows that reduce coordination.",
     bullets: [
-      "Five-node Kubernetes homelab",
+      "Kubernetes and platform infrastructure",
       "GPU containers and model serving",
       "Context engineering and quality control",
       "Privacy-preserving local AI for professional services",
@@ -52,11 +52,21 @@ const castles = [
     bullets: ["ERC-20 / ERC-721 / ERC-1155", "$200K+ community funding", "$50K Polygon grant", "x402-style payments"],
   },
   {
+    id: "places",
+    title: "Places Worked With Castle",
+    shortTitle: "Worked With",
+    color: "#f97316",
+    position: [0, -138],
+    detail:
+      "Hands-on crypto context across major ecosystems and tooling surfaces, including Terra Luna, Polygon, Hyperliquid, and Thirdweb.",
+    bullets: ["Terra Luna", "Polygon", "Hyperliquid", "Thirdweb"],
+  },
+  {
     id: "creative",
     title: "Creative Factory Castle",
     shortTitle: "Creative Factory",
     color: "#d95f9d",
-    position: [0, -138],
+    position: [0, -176],
     detail:
       "Automated video and content creation for Instagram, TikTok, YouTube, image models, repurposing systems, music video automation, storytelling, and growth experiments.",
     bullets: ["ComfyUI workflows", "Seedance and Glif agents", "Short-form production", "YouTube repurposing"],
@@ -66,7 +76,7 @@ const castles = [
     title: "Projects Castle",
     shortTitle: "Projects",
     color: "#6fd18c",
-    position: [0, -176],
+    position: [0, -214],
     detail:
       "Active builds and artifacts: Arkadia Park, Baguri, Grand Cafe Bucharest, pump-bump, clip-ro, Marketz.ro, libergent, and commerce systems.",
     bullets: ["Arkadia Park", "Baguri", "libergent", "Grand Cafe Bucharest"],
@@ -76,7 +86,7 @@ const castles = [
     title: "Game Worlds Castle",
     shortTitle: "Game Worlds",
     color: "#fb7185",
-    position: [0, -214],
+    position: [0, -252],
     detail:
       "Games as living economies: mechanics, 3D models, progression, lore, communities, rewards, scarcity, marketplaces, wallets, collectibles, and distribution loops.",
     bullets: ["Game systems", "Worldbuilding", "Player economies", "Web3 theme park"],
@@ -94,7 +104,7 @@ const enemyProjectiles = [];
 const pickups = [];
 const worldBoundsX = 26;
 const worldStartZ = 8;
-const worldEndZ = -228;
+const worldEndZ = -266;
 const triggerRadius = 5.8;
 const attackRadius = 3.2;
 const bowRange = 15;
@@ -326,15 +336,15 @@ function createPlayer() {
 
 function buildWorld() {
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(360, 320, 40, 44),
+    new THREE.PlaneGeometry(360, 360, 40, 48),
     material("#253322", { roughness: 0.86 }),
   );
-  ground.position.z = -110;
+  ground.position.z = -126;
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene.add(ground);
 
-  const path = makeBox(10, 0.04, 250, "#3b3127", 0, 0.025, -110, { roughness: 0.8 });
+  const path = makeBox(10, 0.04, 290, "#3b3127", 0, 0.025, -122, { roughness: 0.8 });
   scene.add(path);
 
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 0.12, 48), material("#2f3c34", { roughness: 0.8 }));
