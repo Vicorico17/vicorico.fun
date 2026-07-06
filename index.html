@@ -82,44 +82,11 @@
           <span aria-hidden="true" style="--i: 10">u</span>
           <span aria-hidden="true" style="--i: 11">n</span>
         </h1>
-        <a class="engage-button portal-enter" href="#system-map" aria-label="Learn more about Victor" data-enter-site>
+        <a class="engage-button portal-enter" href="#chapters" aria-label="Learn more about Victor" data-enter-site>
           <span class="engage-button-surface">
             <span>Learn more about Victor</span>
           </span>
         </a>
-      </section>
-
-      <section id="system-map" class="system-map section" aria-labelledby="system-map-title">
-        <div class="system-map-heading">
-          <p class="eyebrow">World Map</p>
-          <h2 id="system-map-title">Enter The Work As A System</h2>
-          <p>
-            The page keeps the full CV and long-form context, but the main path is organized like
-            a world: routes, proof, a playable CV, and the full career archive underneath.
-          </p>
-        </div>
-        <div class="system-map-grid">
-          <a href="#routes">
-            <span>01</span>
-            <h3>Chapters</h3>
-            <p>Crypto, AI, agentic commerce, and security for agentic attacks.</p>
-          </a>
-          <a href="#proof">
-            <span>02</span>
-            <h3>Active Projects</h3>
-            <p>Current builds, status labels, links, artifacts, and concrete proof points.</p>
-          </a>
-          <a href="#game-cv">
-            <span>03</span>
-            <h3>Playable CV</h3>
-            <p>A 3D route through the same material for people who would rather explore.</p>
-          </a>
-          <a href="#career">
-            <span>04</span>
-            <h3>Full Context</h3>
-            <p>The complete written CV stays available for anyone who wants every detail.</p>
-          </a>
-        </div>
       </section>
 
       <section id="chapters" class="system-map section" aria-labelledby="chapters-title">
@@ -127,23 +94,23 @@
           <p class="eyebrow">Chapters</p>
           <h2 id="chapters-title">The Four Lanes I Am Tracking</h2>
         </div>
-        <div class="system-map-grid">
-          <a href="#route-crypto">
+        <div class="system-map-grid chapters-grid">
+          <a class="chapter-card crypto-lane" href="#route-crypto">
             <span>Chapter 1</span>
             <h3>Crypto</h3>
             <p>Tokens, marketplaces, prediction markets, payments, ownership, reputation, and on-chain coordination.</p>
           </a>
-          <a href="#route-ai">
+          <a class="chapter-card ai-lane" href="#route-ai">
             <span>Chapter 2</span>
             <h3>AI</h3>
-            <p>Local models, GPU infrastructure, agents, knowledge bases, and company operating systems.</p>
+            <p>Local models, GPU infrastructure, agents, knowledge bases, automated content generation, and company operating systems.</p>
           </a>
-          <a href="#career">
+          <a class="chapter-card agentic-commerce-lane" href="#career">
             <span>Chapter 3</span>
             <h3>Agentic Commerce</h3>
-            <p>How to sell to AI agents, agent-ready products, ACP, AP2, x402, and new internet-native checkout rails.</p>
+            <p>Where AI and crypto meet: selling to AI agents, agent-ready products, ACP, AP2, x402, and new internet-native checkout rails.</p>
           </a>
-          <a href="#career">
+          <a class="chapter-card security-lane" href="#career">
             <span>Chapter 4</span>
             <h3>Security</h3>
             <p>Agentic attacks, hacking, OSINT, threat modeling, wallet hygiene, and defensive workflows.</p>
@@ -169,6 +136,9 @@
               <dd>Entrepreneurship, crypto, AI systems</dd>
             </div>
           </dl>
+          <p class="profile-intro">
+            Founder turned engineer and marketer focused on AI systems that reduce coordination: local-first applications, GPU-backed model deployment, Kubernetes, second-brain knowledge bases with Obsidian, lead generation automation, content operations, smart contract architecture, and internet-native distribution. I am especially interested in privacy-preserving local AI for professional services, AI x crypto tooling, creative agents, automated media generation, and software systems with low technical debt.
+          </p>
         </div>
 
         <div class="journey-panel">
@@ -447,19 +417,6 @@
             <div class="proof-actions">
               <a href="https://boldmind.vercel.app">Open build</a>
               <a href="https://github.com/Vicorico17/boldmind">GitHub</a>
-            </div>
-          </article>
-          <article>
-            <span>Crypto / Community Coin</span>
-            <h3>$GONE / Polygon community coin</h3>
-            <p>Polygon-native culture coin that reached a $10M all-time-high market cap through community distribution, workshops, memes, and launch mechanics.</p>
-            <ul>
-              <li>$200K+ community funding</li>
-              <li>$50K Polygon grant</li>
-              <li>20k+ holders at peak community reach</li>
-            </ul>
-            <div class="proof-actions">
-              <a href="https://itsgone.xyz/">Open project</a>
             </div>
           </article>
         </div>
@@ -831,17 +788,7 @@
           </p>
         </div>
 
-        <div class="career-contact" aria-label="Contact and profile links">
-          <a href="mailto:hello@vicorico.fun">hello@vicorico.fun</a>
-          <a href="https://vicorico.fun">vicorico.fun</a>
-          <a href="https://github.com/Vicorico17">github.com/Vicorico17</a>
-          <a href="game.html">Play Game CV</a>
-          <a href="ats-cv.html">Plain CV</a>
-          <a href="teaching-portfolio.html">Workshop Materials</a>
-          <span>Bucharest, Romania</span>
-        </div>
-
-        <div class="career-profile role-target">
+        <div class="career-profile role-focus">
           <span>Target</span>
           <h3>AI Engineer / Entrepreneurship & Tech Lecturer / Venture Tech Mentor</h3>
           <p>
@@ -849,10 +796,7 @@
             growth, technology strategy, AI systems, crypto tooling, venture building, and practical
             portfolio-based assessment.
           </p>
-        </div>
-
-        <div class="career-profile role-fit-top">
-          <h3>Good Role Fit</h3>
+          <h4>Good Role Fit</h4>
           <ul class="career-list">
             <li>AI Integrator, AI Engineer, or AI Solutions Engineer.</li>
             <li>Internal Forward Deployed Engineer for automation-heavy teams.</li>
@@ -875,13 +819,9 @@
             <span>$50K</span>
             <p>Polygon grant received for ecosystem work.</p>
           </article>
-          <article>
+          <article class="proof-workshops">
             <span>Workshops</span>
-            <p>hosted many workshops and Twitter Spaces for crypto and startup communities.</p>
-          </article>
-          <article>
-            <span>8+</span>
-            <p>active builds across AI, marketplaces, creator tools, and crypto.</p>
+            <p>Hosted many workshops and Twitter Spaces for crypto and startup communities.</p>
           </article>
         </div>
 
@@ -917,14 +857,10 @@
             which gives me practical experience explaining complex technology topics to founder and
             crypto audiences.
           </p>
-          <div class="career-links">
-            <a href="teaching-portfolio.html">View workshop materials</a>
-          </div>
         </div>
 
-        <div class="career-grid case-study-grid">
+        <div class="career-grid teaching-bubbles" aria-label="Teaching focus areas">
           <article>
-            <span>Teaching Area</span>
             <h3>Tech strategy and growth</h3>
             <p class="career-meta">Startup ecosystems / funnels / tech stacks / analytics</p>
             <p>
@@ -934,7 +870,6 @@
             </p>
           </article>
           <article>
-            <span>Teaching Area</span>
             <h3>Tech trends and futures</h3>
             <p class="career-meta">Trend radars / scenarios / systems thinking / responsible tech</p>
             <p>
@@ -944,7 +879,6 @@
             </p>
           </article>
           <article>
-            <span>Teaching Area</span>
             <h3>Venture tech capstone mentoring</h3>
             <p class="career-meta">Audits / MVP sprints / strategy / reflective portfolios</p>
             <p>
