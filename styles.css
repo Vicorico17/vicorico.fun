@@ -863,11 +863,16 @@ nav a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100svh;
+  min-height: auto;
   overflow: visible;
-  padding: 2rem 1rem;
+  padding: 0.55rem 1rem;
   perspective: 1000px;
   perspective-origin: center 18%;
+}
+
+.flow-panel.is-expanded {
+  min-height: 100svh;
+  padding: 2rem 1rem;
 }
 
 .flow-panel:nth-child(1) {
@@ -900,6 +905,136 @@ nav a:hover {
 
 .flow-panel:nth-child(8) {
   z-index: 8;
+}
+
+.flow-summary {
+  position: relative;
+  display: grid;
+  width: min(1024px, calc(100% - 2rem));
+  min-height: 170px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  color: #ffffff;
+  cursor: pointer;
+  padding: clamp(1.1rem, 2.8vw, 1.6rem);
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.flow-summary:hover,
+.flow-summary:focus-visible {
+  border-color: rgba(244, 191, 69, 0.48);
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.flow-summary span {
+  color: #f4bf45;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.flow-summary strong {
+  display: block;
+  grid-column: 1 / -1;
+  max-width: 16ch;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 4vw, 3.4rem);
+  font-weight: 950;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.flow-summary small {
+  max-width: 58ch;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.flow-summary em {
+  justify-self: end;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 900;
+  padding: 0.5rem 0.72rem;
+  text-transform: uppercase;
+}
+
+.flow-panel.is-expanded .flow-summary {
+  display: none;
+}
+
+.flow-close {
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  color: currentColor;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 0.5rem 0.72rem;
+  text-transform: uppercase;
+}
+
+.flow-close:hover,
+.flow-close:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.flow-panel:nth-child(1) .flow-summary {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 218, 92, 0.26), transparent 26rem),
+    linear-gradient(135deg, rgba(253, 82, 0, 0.32), rgba(25, 7, 5, 0.9));
+}
+
+.flow-panel:nth-child(2) .flow-summary,
+.flow-panel:nth-child(5) .flow-summary,
+.flow-panel:nth-child(7) .flow-summary {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.13), transparent 18rem),
+    linear-gradient(135deg, rgba(37, 37, 37, 0.98), rgba(2, 2, 2, 0.96));
+}
+
+.flow-panel:nth-child(3) .flow-summary {
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.44), transparent 18rem),
+    linear-gradient(135deg, rgba(245, 240, 232, 0.92), rgba(139, 131, 120, 0.78));
+  color: #080808;
+}
+
+.flow-panel:nth-child(3) .flow-summary strong,
+.flow-panel:nth-child(3) .flow-summary small,
+.flow-panel:nth-child(3) .flow-summary em {
+  color: #080808;
+}
+
+.flow-panel:nth-child(4) .flow-summary,
+.flow-panel:nth-child(8) .flow-summary {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.34), transparent 20rem),
+    linear-gradient(135deg, rgba(26, 61, 232, 0.82), rgba(3, 6, 20, 0.96));
+}
+
+.flow-panel:nth-child(6) .flow-summary {
+  background:
+    radial-gradient(circle at 76% 20%, rgba(22, 163, 74, 0.24), transparent 18rem),
+    linear-gradient(135deg, rgba(13, 59, 46, 0.96), rgba(3, 8, 6, 0.96));
 }
 
 .flow-panel:nth-child(1) .flow-inner {
@@ -967,12 +1102,16 @@ nav a:hover {
 }
 
 .flow-panel:last-child {
+  min-height: auto;
+}
+
+.flow-panel.is-expanded:last-child {
   min-height: 100svh;
 }
 
 .flow-inner {
   position: relative;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
@@ -992,6 +1131,10 @@ nav a:hover {
   transform-origin: center top;
   transform-style: preserve-3d;
   will-change: transform;
+}
+
+.flow-panel.is-expanded .flow-inner {
+  display: flex;
 }
 
 .flow-inner::before {
@@ -1535,11 +1678,36 @@ button {
   margin: 0;
 }
 
-.profile-intro {
+.profile-persona {
   margin-top: 18px;
+  border: 1px solid rgba(244, 191, 69, 0.24);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(244, 191, 69, 0.12), transparent 36%),
+    rgba(255, 255, 255, 0.045);
+  padding: 18px;
+}
+
+.profile-persona h3 {
+  margin: 0 0 0.7rem;
+  color: #ffffff;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.05;
+}
+
+.profile-persona p,
+.profile-intro {
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.98rem;
   line-height: 1.7;
+}
+
+.profile-persona p {
+  margin: 0;
+}
+
+.profile-intro {
+  margin-top: 18px;
 }
 
 .bio-facts div,
@@ -1979,7 +2147,6 @@ dd {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.route-console,
 .system-map,
 .proof-section,
 .oss-section,
@@ -1989,7 +2156,6 @@ dd {
   padding-bottom: clamp(4rem, 9vw, 7rem);
 }
 
-.route-console,
 .system-map,
 .oss-section,
 .proof-section {
@@ -1997,14 +2163,12 @@ dd {
   gap: clamp(1.2rem, 3vw, 2rem);
 }
 
-.route-console-heading,
 .system-map-heading,
 .oss-heading,
 .proof-heading {
   max-width: 840px;
 }
 
-.route-console-heading h2,
 .system-map-heading h2,
 .oss-heading h2,
 .proof-heading h2,
@@ -2016,7 +2180,6 @@ dd {
   line-height: 0.92;
 }
 
-.route-console-heading p,
 .system-map-heading p,
 .oss-heading p,
 .proof-heading p,
@@ -2153,85 +2316,11 @@ dd {
   text-transform: uppercase;
 }
 
-.route-panels {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.route-panel {
-  display: grid;
-  gap: 1.5rem;
-  min-height: 520px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 24px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
-    radial-gradient(circle at 82% 18%, rgba(212, 61, 23, 0.18), transparent 24rem),
-    rgba(255, 255, 255, 0.055);
-  box-shadow: var(--shadow);
-  padding: clamp(1.4rem, 4vw, 3rem);
-  backdrop-filter: blur(18px);
-}
-
-.route-panel[data-route-panel="crypto"] {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
-    radial-gradient(circle at 82% 18%, rgba(92, 124, 255, 0.28), transparent 24rem),
-    rgba(255, 255, 255, 0.055);
-}
-
-.route-panel[data-route-panel="creative"] {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
-    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.24), transparent 24rem),
-    rgba(255, 255, 255, 0.055);
-}
-
-.route-panel[data-route-panel="games"] {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
-    radial-gradient(circle at 82% 18%, rgba(34, 197, 94, 0.22), transparent 24rem),
-    rgba(255, 255, 255, 0.055);
-}
-
-.route-panel span,
 .proof-grid span {
   color: #d43d17;
   font-size: 0.78rem;
   font-weight: 900;
   text-transform: uppercase;
-}
-
-.route-panel h3 {
-  max-width: 16ch;
-  margin: 1.5rem 0 1rem;
-  color: #ffffff;
-  font-size: clamp(2rem, 4vw, 3.6rem);
-  line-height: 0.95;
-}
-
-.route-panel p,
-.route-panel li {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.route-panel ul {
-  display: grid;
-  align-content: end;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.route-panel li {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 14px;
-  font-weight: 750;
 }
 
 .proof-grid {
@@ -2307,6 +2396,40 @@ dd {
   width: min(70%, 180px);
   height: 132px;
   object-fit: contain;
+}
+
+.proof-artifact-wordmark {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.45rem;
+  text-align: center;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(242, 184, 75, 0.32), transparent 34%),
+    radial-gradient(circle at 82% 86%, rgba(34, 197, 94, 0.24), transparent 32%),
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    rgba(6, 5, 10, 0.82);
+  background-size: auto, auto, 24px 24px, 24px 24px, auto;
+}
+
+.proof-artifact-wordmark b {
+  max-width: 8ch;
+  color: #ffffff;
+  font-size: clamp(1.6rem, 2.4vw, 2.35rem);
+  line-height: 0.92;
+}
+
+.proof-artifact-wordmark small {
+  border: 1px solid rgba(242, 184, 75, 0.34);
+  border-radius: 999px;
+  background: rgba(242, 184, 75, 0.12);
+  color: #f7d58a;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  padding: 0.32rem 0.58rem;
+  text-transform: uppercase;
 }
 
 .proof-grid h3 {
@@ -3391,8 +3514,7 @@ dd {
   .career-links,
   .oss-grid,
   .proof-grid,
-  .system-map-grid,
-  .route-panels {
+  .system-map-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -3401,12 +3523,16 @@ dd {
     display: none;
   }
 
-  .game-entry,
-  .route-panel {
+  .game-entry {
     grid-template-columns: 1fr;
   }
 
   .flow-panel {
+    min-height: auto;
+    padding: 0.55rem 1rem;
+  }
+
+  .flow-panel.is-expanded {
     min-height: 100svh;
     padding: 1.5rem 1rem;
   }
@@ -3469,8 +3595,6 @@ dd {
   .oss-grid,
   .proof-grid,
   .system-map-grid,
-  .route-panels,
-  .route-panel,
   .game-entry,
   .career-contact,
   .career-grid,
@@ -3505,15 +3629,6 @@ dd {
   .teaching-nav {
     position: static;
     margin-bottom: 2rem;
-  }
-
-  .route-panels,
-  .route-panel {
-    min-height: auto;
-  }
-
-  .route-panel h3 {
-    font-size: 2.15rem;
   }
 
   .proof-grid article {
@@ -3638,13 +3753,28 @@ dd {
   }
 
   .flow-panel {
-    min-height: 100svh;
-    padding: 1.25rem 0.5rem;
+    min-height: auto;
+    padding: 0.45rem 0.5rem;
     perspective-origin: center 12%;
   }
 
-  .flow-panel:last-child {
+  .flow-panel.is-expanded,
+  .flow-panel.is-expanded:last-child {
     min-height: 100svh;
+    padding: 1.25rem 0.5rem;
+  }
+
+  .flow-panel:last-child {
+    min-height: auto;
+  }
+
+  .flow-summary {
+    min-height: 150px;
+    grid-template-columns: 1fr;
+  }
+
+  .flow-summary em {
+    justify-self: start;
   }
 
   .flow-inner {

@@ -196,9 +196,11 @@ function initPortalArt() {
 
 function initIntroGate() {
   const enterButton = document.querySelector("[data-enter-site]");
-  const aboutSection = document.querySelector("#about");
+  if (!enterButton) return;
 
-  if (!enterButton || !aboutSection) return;
+  const targetSelector = enterButton.getAttribute("href");
+  const targetSection = targetSelector ? document.querySelector(targetSelector) : document.querySelector("#about");
+  if (!targetSection) return;
 
   if ("scrollRestoration" in window.history) {
     window.history.scrollRestoration = "manual";
@@ -212,7 +214,7 @@ function initIntroGate() {
     document.body.classList.remove("scroll-locked");
 
     window.requestAnimationFrame(() => {
-      aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
@@ -224,6 +226,65 @@ function initFlowArt() {
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   let ticking = false;
 
+  function setExpanded(panel, expanded, shouldScroll = false) {
+    const toggle = panel.querySelector("[data-flow-toggle]");
+    const inner = panel.querySelector("[data-flow-inner]");
+    if (!toggle || !inner) return;
+
+    panel.classList.toggle("is-expanded", expanded);
+    toggle.setAttribute("aria-expanded", String(expanded));
+    inner.setAttribute("aria-hidden", String(!expanded));
+
+    if (!expanded) {
+      inner.style.transform = "none";
+    }
+
+    requestUpdate();
+
+    if (expanded && shouldScroll) {
+      window.requestAnimationFrame(() => {
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
+
+  panels.forEach((panel, index) => {
+    const toggle = panel.querySelector("[data-flow-toggle]");
+    const inner = panel.querySelector("[data-flow-inner]");
+    if (!toggle || !inner) return;
+
+    if (!inner.id) {
+      inner.id = `flow-detail-${index + 1}`;
+    }
+
+    toggle.setAttribute("aria-controls", inner.id);
+    inner.setAttribute("aria-hidden", "true");
+
+    const close = document.createElement("button");
+    close.className = "flow-close";
+    close.type = "button";
+    close.textContent = "Close details";
+    close.addEventListener("click", () => setExpanded(panel, false, true));
+    inner.prepend(close);
+
+    toggle.addEventListener("click", () => {
+      const willExpand = !panel.classList.contains("is-expanded");
+      panels.forEach((otherPanel) => setExpanded(otherPanel, false));
+      setExpanded(panel, willExpand, true);
+    });
+  });
+
+  document.querySelectorAll('a[href^="#story-"]').forEach((anchor) => {
+    anchor.addEventListener("click", (event) => {
+      const targetPanel = document.querySelector(anchor.getAttribute("href"));
+      if (!targetPanel || !targetPanel.matches("[data-flow-panel]")) return;
+
+      event.preventDefault();
+      panels.forEach((panel) => setExpanded(panel, false));
+      setExpanded(targetPanel, true, true);
+    });
+  });
+
   function update() {
     ticking = false;
 
@@ -233,7 +294,7 @@ function initFlowArt() {
       const inner = panel.querySelector("[data-flow-inner]");
       if (!inner) return;
 
-      if (motionQuery.matches) {
+      if (!panel.classList.contains("is-expanded") || motionQuery.matches) {
         inner.style.transform = "none";
         return;
       }
