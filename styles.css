@@ -849,81 +849,48 @@ nav a:hover {
 }
 
 .flow-art {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
   position: relative;
   margin: 0;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 34rem),
-    #06050a;
-  isolation: isolate;
+  overflow: visible;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: #06050a;
+  padding-top: clamp(2rem, 5vw, 4rem);
+  padding-bottom: clamp(2rem, 5vw, 4rem);
 }
 
 .flow-panel {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   min-height: auto;
   overflow: visible;
-  padding: 0.55rem 1rem;
-  perspective: 1000px;
-  perspective-origin: center 18%;
+  padding: 0;
 }
 
 .flow-panel.is-expanded {
-  min-height: 100svh;
-  padding: 2rem 1rem;
-}
-
-.flow-panel:nth-child(1) {
-  z-index: 1;
-}
-
-.flow-panel:nth-child(2) {
-  z-index: 2;
-}
-
-.flow-panel:nth-child(3) {
-  z-index: 3;
-}
-
-.flow-panel:nth-child(4) {
-  z-index: 4;
-}
-
-.flow-panel:nth-child(5) {
-  z-index: 5;
-}
-
-.flow-panel:nth-child(6) {
-  z-index: 6;
-}
-
-.flow-panel:nth-child(7) {
-  z-index: 7;
-}
-
-.flow-panel:nth-child(8) {
-  z-index: 8;
+  grid-column: 1 / -1;
+  min-height: auto;
+  padding: 0;
 }
 
 .flow-summary {
   position: relative;
   display: grid;
-  width: min(1024px, calc(100% - 2rem));
-  min-height: 170px;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 1rem;
+  width: 100%;
+  min-height: 210px;
+  align-content: space-between;
+  gap: 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 22px;
+  border-radius: 16px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 34%),
     rgba(255, 255, 255, 0.055);
-  box-shadow: var(--shadow);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
   color: #ffffff;
   cursor: pointer;
-  padding: clamp(1.1rem, 2.8vw, 1.6rem);
+  padding: 1rem;
   text-align: left;
   transition:
     border-color 180ms ease,
@@ -940,38 +907,37 @@ nav a:hover {
 
 .flow-summary span {
   color: #f4bf45;
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
 .flow-summary strong {
   display: block;
-  grid-column: 1 / -1;
-  max-width: 16ch;
+  max-width: none;
   color: #ffffff;
-  font-size: clamp(1.65rem, 4vw, 3.4rem);
+  font-size: clamp(1.05rem, 1.65vw, 1.55rem);
   font-weight: 950;
-  line-height: 0.9;
+  line-height: 1;
   text-transform: uppercase;
 }
 
 .flow-summary small {
-  max-width: 58ch;
+  max-width: none;
   color: rgba(255, 255, 255, 0.68);
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 0.86rem;
+  line-height: 1.4;
 }
 
 .flow-summary em {
-  justify-self: end;
+  width: max-content;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   font-style: normal;
   font-weight: 900;
-  padding: 0.5rem 0.72rem;
+  padding: 0.42rem 0.58rem;
   text-transform: uppercase;
 }
 
@@ -999,21 +965,21 @@ nav a:hover {
 
 .flow-panel:nth-child(1) .flow-summary {
   background:
-    radial-gradient(circle at 12% 18%, rgba(255, 218, 92, 0.26), transparent 26rem),
-    linear-gradient(135deg, rgba(253, 82, 0, 0.32), rgba(25, 7, 5, 0.9));
+    radial-gradient(circle at 12% 18%, rgba(255, 218, 92, 0.24), transparent 18rem),
+    linear-gradient(135deg, rgba(253, 82, 0, 0.3), rgba(25, 7, 5, 0.92));
 }
 
 .flow-panel:nth-child(2) .flow-summary,
 .flow-panel:nth-child(5) .flow-summary,
 .flow-panel:nth-child(7) .flow-summary {
   background:
-    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.13), transparent 18rem),
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.12), transparent 14rem),
     linear-gradient(135deg, rgba(37, 37, 37, 0.98), rgba(2, 2, 2, 0.96));
 }
 
 .flow-panel:nth-child(3) .flow-summary {
   background:
-    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.44), transparent 18rem),
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.34), transparent 14rem),
     linear-gradient(135deg, rgba(245, 240, 232, 0.92), rgba(139, 131, 120, 0.78));
   color: #080808;
 }
@@ -1027,13 +993,13 @@ nav a:hover {
 .flow-panel:nth-child(4) .flow-summary,
 .flow-panel:nth-child(8) .flow-summary {
   background:
-    radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.34), transparent 20rem),
+    radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.28), transparent 16rem),
     linear-gradient(135deg, rgba(26, 61, 232, 0.82), rgba(3, 6, 20, 0.96));
 }
 
 .flow-panel:nth-child(6) .flow-summary {
   background:
-    radial-gradient(circle at 76% 20%, rgba(22, 163, 74, 0.24), transparent 18rem),
+    radial-gradient(circle at 76% 20%, rgba(22, 163, 74, 0.22), transparent 14rem),
     linear-gradient(135deg, rgba(13, 59, 46, 0.96), rgba(3, 8, 6, 0.96));
 }
 
@@ -1101,12 +1067,9 @@ nav a:hover {
   color: #ffffff;
 }
 
-.flow-panel:last-child {
-  min-height: auto;
-}
-
+.flow-panel:last-child,
 .flow-panel.is-expanded:last-child {
-  min-height: 100svh;
+  min-height: auto;
 }
 
 .flow-inner {
@@ -1115,22 +1078,14 @@ nav a:hover {
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
-  width: min(1024px, calc(100% - 2rem));
-  min-height: min(760px, calc(100svh - 4rem));
+  width: 100%;
+  min-height: auto;
   overflow: hidden;
-  border: 4px solid rgba(108, 108, 108, 0.82);
-  border-radius: 30px;
-  box-shadow:
-    0 0 #0000004d,
-    0 9px 20px #0000004a,
-    0 37px 37px #00000042,
-    0 84px 50px #00000026,
-    0 149px 60px #0000000a,
-    0 233px 65px #00000003;
-  padding: clamp(1.6rem, 4.8vw, 4rem);
+  border: 2px solid rgba(108, 108, 108, 0.82);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: clamp(1.4rem, 3.2vw, 3rem);
   transform-origin: center top;
-  transform-style: preserve-3d;
-  will-change: transform;
 }
 
 .flow-panel.is-expanded .flow-inner {
@@ -1144,9 +1099,9 @@ nav a:hover {
   pointer-events: none;
   content: "";
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 28%),
-    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.14), transparent 22rem);
-  opacity: 0.8;
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.12), transparent 22rem);
+  opacity: 0.78;
 }
 
 .flow-inner > * {
@@ -1695,19 +1650,11 @@ button {
   line-height: 1.05;
 }
 
-.profile-persona p,
-.profile-intro {
+.profile-persona p {
+  margin: 0;
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.98rem;
   line-height: 1.7;
-}
-
-.profile-persona p {
-  margin: 0;
-}
-
-.profile-intro {
-  margin-top: 18px;
 }
 
 .bio-facts div,
@@ -2203,7 +2150,6 @@ dd {
   border-radius: 18px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
-    radial-gradient(circle at 82% 18%, rgba(212, 61, 23, 0.18), transparent 20rem),
     rgba(255, 255, 255, 0.055);
   box-shadow: var(--shadow);
   padding: clamp(1.1rem, 2.4vw, 1.6rem);
@@ -2213,27 +2159,6 @@ dd {
     border-color 220ms ease,
     background 220ms ease,
     transform 220ms ease;
-}
-
-.system-map-grid a:nth-child(2) {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
-    radial-gradient(circle at 82% 18%, rgba(92, 124, 255, 0.22), transparent 20rem),
-    rgba(255, 255, 255, 0.055);
-}
-
-.system-map-grid a:nth-child(3) {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
-    radial-gradient(circle at 82% 18%, rgba(34, 197, 94, 0.2), transparent 20rem),
-    rgba(255, 255, 255, 0.055);
-}
-
-.system-map-grid a:nth-child(4) {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
-    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.18), transparent 20rem),
-    rgba(255, 255, 255, 0.055);
 }
 
 .system-map-grid a:hover {
@@ -2255,7 +2180,7 @@ dd {
 .system-map-grid h3 {
   margin: 2.7rem 0 0.7rem;
   color: #ffffff;
-  font-size: clamp(1.65rem, 3vw, 2.55rem);
+  font-size: clamp(1.55rem, 2.65vw, 2.45rem);
   line-height: 0.98;
 }
 
@@ -2267,38 +2192,92 @@ dd {
 .chapters-grid {
   position: relative;
   overflow: visible;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr) minmax(0, 0.95fr);
+  grid-template-areas:
+    "crypto agentic security"
+    "ai agentic security"
+    "content agentic security";
+  gap: 12px 24px;
+  align-items: stretch;
 }
 
 .chapters-grid .chapter-card {
   position: relative;
   z-index: 1;
+  min-height: 190px;
+}
+
+.chapters-grid .crypto-lane {
+  grid-area: crypto;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(212, 61, 23, 0.2), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.chapters-grid .ai-lane {
+  grid-area: ai;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(92, 124, 255, 0.22), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
 }
 
 .chapters-grid .agentic-commerce-lane {
+  grid-area: agentic;
+  align-content: center;
   border-color: rgba(34, 197, 94, 0.38);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(34, 197, 94, 0.22), transparent 20rem),
+    rgba(255, 255, 255, 0.062);
   box-shadow: var(--shadow), 0 0 44px rgba(34, 197, 94, 0.08);
+}
+
+.chapters-grid .security-lane {
+  grid-area: security;
+  align-content: center;
+  border-color: rgba(236, 72, 153, 0.24);
+  border-style: dashed;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.18), transparent 20rem),
+    rgba(255, 255, 255, 0.045);
+}
+
+.chapters-grid .content-lane {
+  grid-area: content;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(249, 115, 22, 0.2), transparent 20rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.chapters-grid .content-lane h3 {
+  font-size: clamp(1.35rem, 2.15vw, 2rem);
 }
 
 .chapters-grid .crypto-lane::after,
 .chapters-grid .ai-lane::after {
   content: "";
   position: absolute;
-  left: calc(100% + 4px);
+  left: 100%;
   top: 50%;
+  width: 24px;
   height: 2px;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(244, 191, 69, 0.92), rgba(34, 197, 94, 0.16));
-  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(244, 191, 69, 0.92), rgba(34, 197, 94, 0.22));
 }
 
-.chapters-grid .crypto-lane::after {
-  width: calc(200% + 16px);
-  transform: rotate(8deg);
-}
-
-.chapters-grid .ai-lane::after {
-  width: calc(100% + 8px);
-  transform: rotate(-8deg);
+.chapters-grid .content-lane::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  width: 2px;
+  height: 12px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(92, 124, 255, 0.84), rgba(249, 115, 22, 0.3));
 }
 
 .chapters-grid .agentic-commerce-lane::before {
@@ -2805,8 +2784,20 @@ dd {
   color: rgba(255, 255, 255, 0.68);
 }
 
+.career-section-label {
+  color: #f4bf45;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
 .career-grid article {
   min-height: 220px;
+}
+
+.career-grid article > h3:first-child {
+  margin-top: 0;
 }
 
 .career-grid-compact article {
@@ -3518,8 +3509,19 @@ dd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .chapters-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "crypto agentic"
+      "ai agentic"
+      "content agentic"
+      "security security";
+    gap: 10px;
+  }
+
   .chapters-grid .crypto-lane::after,
-  .chapters-grid .ai-lane::after {
+  .chapters-grid .ai-lane::after,
+  .chapters-grid .content-lane::before {
     display: none;
   }
 
@@ -3527,19 +3529,19 @@ dd {
     grid-template-columns: 1fr;
   }
 
-  .flow-panel {
-    min-height: auto;
-    padding: 0.55rem 1rem;
+  .flow-art {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .flow-panel,
   .flow-panel.is-expanded {
-    min-height: 100svh;
-    padding: 1.5rem 1rem;
+    min-height: auto;
+    padding: 0;
   }
 
   .flow-inner {
-    width: min(100%, calc(100% - 2rem));
-    min-height: min(720px, calc(100svh - 3rem));
+    width: 100%;
+    min-height: auto;
   }
 
   .flow-title {
@@ -3606,6 +3608,16 @@ dd {
   .cv-item,
   .two-column {
     grid-template-columns: 1fr;
+  }
+
+  .chapters-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "crypto"
+      "ai"
+      "content"
+      "agentic"
+      "security";
   }
 
   .experience-timeline article,
@@ -3752,37 +3764,27 @@ dd {
     font-size: clamp(3rem, 16vw, 5rem);
   }
 
-  .flow-panel {
-    min-height: auto;
-    padding: 0.45rem 0.5rem;
-    perspective-origin: center 12%;
+  .flow-art {
+    grid-template-columns: 1fr;
   }
 
+  .flow-panel,
   .flow-panel.is-expanded,
-  .flow-panel.is-expanded:last-child {
-    min-height: 100svh;
-    padding: 1.25rem 0.5rem;
-  }
-
+  .flow-panel.is-expanded:last-child,
   .flow-panel:last-child {
     min-height: auto;
+    padding: 0;
   }
 
   .flow-summary {
     min-height: 150px;
-    grid-template-columns: 1fr;
-  }
-
-  .flow-summary em {
-    justify-self: start;
   }
 
   .flow-inner {
-    top: auto;
-    width: min(100%, calc(100% - 0.75rem));
+    width: 100%;
     min-height: auto;
     border-width: 2px;
-    border-radius: 24px;
+    border-radius: 18px;
     padding: 1.25rem;
   }
 

@@ -223,9 +223,6 @@ function initFlowArt() {
   const panels = Array.from(document.querySelectorAll("[data-flow-panel]"));
   if (panels.length === 0) return;
 
-  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let ticking = false;
-
   function setExpanded(panel, expanded, shouldScroll = false) {
     const toggle = panel.querySelector("[data-flow-toggle]");
     const inner = panel.querySelector("[data-flow-inner]");
@@ -234,12 +231,7 @@ function initFlowArt() {
     panel.classList.toggle("is-expanded", expanded);
     toggle.setAttribute("aria-expanded", String(expanded));
     inner.setAttribute("aria-hidden", String(!expanded));
-
-    if (!expanded) {
-      inner.style.transform = "none";
-    }
-
-    requestUpdate();
+    inner.style.transform = "none";
 
     if (expanded && shouldScroll) {
       window.requestAnimationFrame(() => {
@@ -284,42 +276,6 @@ function initFlowArt() {
       setExpanded(targetPanel, true, true);
     });
   });
-
-  function update() {
-    ticking = false;
-
-    const isMobile = window.innerWidth <= 768;
-
-    panels.forEach((panel) => {
-      const inner = panel.querySelector("[data-flow-inner]");
-      if (!inner) return;
-
-      if (!panel.classList.contains("is-expanded") || motionQuery.matches) {
-        inner.style.transform = "none";
-        return;
-      }
-
-      const rect = panel.getBoundingClientRect();
-      const scrollRange = Math.max(rect.height + window.innerHeight * 0.25, 1);
-      const progress = clamp((window.innerHeight - rect.top) / scrollRange, 0, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const rotation = lerp(isMobile ? 0 : 5, 0, eased);
-      const scale = lerp(isMobile ? 0.98 : 0.96, 1, eased);
-      const translate = lerp(28, 0, eased);
-      inner.style.transform = `translateY(${translate}px) rotateX(${rotation}deg) scale(${scale})`;
-    });
-  }
-
-  function requestUpdate() {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(update);
-  }
-
-  window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate);
-  motionQuery.addEventListener("change", requestUpdate);
-  update();
 }
 
 async function loadGithubRepos() {
