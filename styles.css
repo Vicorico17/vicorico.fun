@@ -965,54 +965,31 @@ nav a:hover {
 
 .flow-panel:nth-child(1) .flow-summary {
   background:
-    radial-gradient(circle at 12% 18%, rgba(255, 218, 92, 0.24), transparent 18rem),
-    linear-gradient(135deg, rgba(253, 82, 0, 0.3), rgba(25, 7, 5, 0.92));
-}
-
-.flow-panel:nth-child(2) .flow-summary,
-.flow-panel:nth-child(5) .flow-summary {
-  background:
-    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.12), transparent 14rem),
-    linear-gradient(135deg, rgba(37, 37, 37, 0.98), rgba(2, 2, 2, 0.96));
-}
-
-.flow-panel:nth-child(3) .flow-summary {
-  background:
     radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.34), transparent 14rem),
     linear-gradient(135deg, rgba(245, 240, 232, 0.92), rgba(139, 131, 120, 0.78));
   color: #080808;
 }
 
-.flow-panel:nth-child(3) .flow-summary strong,
-.flow-panel:nth-child(3) .flow-summary small,
-.flow-panel:nth-child(3) .flow-summary em {
+.flow-panel:nth-child(1) .flow-summary strong,
+.flow-panel:nth-child(1) .flow-summary small,
+.flow-panel:nth-child(1) .flow-summary em {
   color: #080808;
 }
 
-.flow-panel:nth-child(4) .flow-summary,
-.flow-panel:nth-child(6) .flow-summary {
+.flow-panel:nth-child(2) .flow-summary,
+.flow-panel:nth-child(4) .flow-summary {
   background:
     radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.28), transparent 16rem),
     linear-gradient(135deg, rgba(26, 61, 232, 0.82), rgba(3, 6, 20, 0.96));
 }
 
+.flow-panel:nth-child(3) .flow-summary {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.12), transparent 14rem),
+    linear-gradient(135deg, rgba(37, 37, 37, 0.98), rgba(2, 2, 2, 0.96));
+}
+
 .flow-panel:nth-child(1) .flow-inner {
-  border-color: rgba(255, 120, 64, 0.72);
-  background:
-    radial-gradient(circle at 12% 18%, rgba(255, 218, 92, 0.35), transparent 28rem),
-    linear-gradient(135deg, #fd5200 0%, #c73511 58%, #190705 100%);
-  color: #ffffff;
-}
-
-.flow-panel:nth-child(2) .flow-inner {
-  border-color: rgba(255, 255, 255, 0.18);
-  background:
-    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.14), transparent 24rem),
-    linear-gradient(135deg, #252525 0%, #0f0f0f 54%, #020202 100%);
-  color: #ffffff;
-}
-
-.flow-panel:nth-child(3) .flow-inner {
   border-color: rgba(245, 240, 232, 0.68);
   background:
     radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.72), transparent 24rem),
@@ -1020,7 +997,7 @@ nav a:hover {
   color: #080808;
 }
 
-.flow-panel:nth-child(4) .flow-inner {
+.flow-panel:nth-child(2) .flow-inner {
   border-color: rgba(92, 124, 255, 0.78);
   background:
     radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.55), transparent 26rem),
@@ -1028,7 +1005,7 @@ nav a:hover {
   color: #ffffff;
 }
 
-.flow-panel:nth-child(5) .flow-inner {
+.flow-panel:nth-child(3) .flow-inner {
   border-color: rgba(236, 72, 153, 0.54);
   background:
     radial-gradient(circle at 20% 80%, rgba(236, 72, 153, 0.32), transparent 28rem),
@@ -1036,7 +1013,7 @@ nav a:hover {
   color: #ffffff;
 }
 
-.flow-panel:nth-child(6) .flow-inner {
+.flow-panel:nth-child(4) .flow-inner {
   border-color: rgba(251, 113, 133, 0.5);
   background:
     radial-gradient(circle at 82% 72%, rgba(251, 113, 133, 0.32), transparent 24rem),
