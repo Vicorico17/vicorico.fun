@@ -1504,6 +1504,19 @@ button {
   animation-delay: calc(160ms + (var(--i) * 34ms));
 }
 
+.portal-value {
+  position: relative;
+  z-index: 2;
+  width: min(720px, calc(100vw - 40px));
+  margin: -10px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+  text-wrap: balance;
+}
+
 .portal-start .engage-button {
   z-index: 2;
   width: min(360px, calc(100vw - 32px));
@@ -3723,6 +3736,16 @@ dd {
 
   .portal-nav a {
     padding: 0.5rem 0.55rem;
+  }
+
+  .portal-start {
+    gap: 24px;
+  }
+
+  .portal-value {
+    width: min(340px, calc(100vw - 40px));
+    margin-top: -4px;
+    font-size: 0.96rem;
   }
 
   .hero,

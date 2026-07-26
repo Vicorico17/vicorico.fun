@@ -23,12 +23,11 @@ const castles = [
     color: "#f4bf45",
     position: [0, -24],
     detail:
-      "AI process architecture, local-first applications, GPU-backed model deployment, Kubernetes, second-brain knowledge bases, lead generation agents, support copilots, and internal workflows that reduce coordination.",
+      "The first gate hums with ideas. Build the systems that turn AI into useful work.",
     bullets: [
-      "Kubernetes and platform infrastructure",
-      "GPU containers and model serving",
-      "Context engineering and quality control",
-      "Privacy-preserving local AI for professional services",
+      "Deploy the model",
+      "Shape the context",
+      "Keep the data private",
     ],
   },
   {
@@ -38,8 +37,8 @@ const castles = [
     color: "#7cc77d",
     position: [0, -62],
     detail:
-      "Lead enrichment agents, first-touch emails, customer support copilots, meeting prep, content operations pipelines, second brains, review loops, and workflow automation.",
-    bullets: ["RevOps agents", "Support copilots", "Meeting prep", "Content pipelines"],
+      "Behind the second gate, repetitive work comes alive. Give every workflow a smarter next move.",
+    bullets: ["Enrich a lead", "Prep a meeting", "Help a customer", "Ship the pipeline"],
   },
   {
     id: "crypto",
@@ -48,8 +47,8 @@ const castles = [
     color: "#4f70ff",
     position: [0, -100],
     detail:
-      "Smart contracts, token standards, marketplaces, gaming loops, prediction markets, community coins, NFT systems, on-chain reputation, x402-style payments, and Solana tooling.",
-    bullets: ["ERC-20 / ERC-721 / ERC-1155", "$200K+ community funding", "$50K Polygon grant", "x402-style payments"],
+      "Blue rails run beneath the world. Turn ownership, payments, and communities into playable systems.",
+    bullets: ["Mint the asset", "Build the market", "Fund the community", "Connect the wallet"],
   },
   {
     id: "places",
@@ -58,7 +57,7 @@ const castles = [
     color: "#f97316",
     position: [0, -138],
     detail:
-      "Hands-on crypto context across major ecosystems and tooling surfaces, including Terra Luna, Polygon, Hyperliquid, and Thirdweb.",
+      "The orange gate is a map of past worlds. Each ecosystem left behind a different tool for the journey.",
     bullets: ["Terra Luna", "Polygon", "Hyperliquid", "Thirdweb"],
   },
   {
@@ -68,8 +67,8 @@ const castles = [
     color: "#d95f9d",
     position: [0, -176],
     detail:
-      "Automated video and content creation for Instagram, TikTok, YouTube, image models, repurposing systems, music video automation, storytelling, and growth experiments.",
-    bullets: ["ComfyUI workflows", "Seedance and Glif agents", "Short-form production", "YouTube repurposing"],
+      "Pink lights flicker inside the factory. One idea becomes a video, a story, and a reason to come back.",
+    bullets: ["Generate the scene", "Cut the short", "Remix the story", "Grow the channel"],
   },
   {
     id: "projects",
@@ -78,7 +77,7 @@ const castles = [
     color: "#6fd18c",
     position: [0, -214],
     detail:
-      "Active builds and artifacts: Arkadia Park, Baguri, Grand Cafe Bucharest, pump-bump, clip-ro, Marketz.ro, libergent, and commerce systems.",
+      "The project gate opens onto a workshop full of experiments. Pick a build and see the idea become real.",
     bullets: ["Arkadia Park", "Baguri", "libergent", "Grand Cafe Bucharest"],
   },
   {
@@ -88,8 +87,8 @@ const castles = [
     color: "#fb7185",
     position: [0, -252],
     detail:
-      "Games as living economies: mechanics, 3D models, progression, lore, communities, rewards, scarcity, marketplaces, wallets, collectibles, and distribution loops.",
-    bullets: ["Game systems", "Worldbuilding", "Player economies", "Web3 theme park"],
+      "At the final castle, the portfolio becomes a world. Design the rules, invite the players, and keep it moving.",
+    bullets: ["Design the loop", "Build the world", "Reward the player", "Grow the economy"],
   },
 ];
 
