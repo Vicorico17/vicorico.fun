@@ -52,13 +52,13 @@ const castles = [
   },
   {
     id: "places",
-    title: "Places Worked With Castle",
-    shortTitle: "Worked With",
+    title: "Places & Projects Castle",
+    shortTitle: "Places & Projects",
     color: "#f97316",
     position: [0, -138],
     detail:
-      "The orange gate is a map of past worlds. Each ecosystem left behind a different tool for the journey.",
-    bullets: ["Terra Luna", "Polygon", "Hyperliquid", "Thirdweb"],
+      "The orange gate is a map of places and projects worked with. Each ecosystem left behind a different tool for the journey — alongside 100+ other projects.",
+    bullets: ["Terra Luna", "Polygon", "Hyperliquid", "Thirdweb", "100+ other projects"],
   },
   {
     id: "creative",
@@ -78,7 +78,7 @@ const castles = [
     position: [0, -214],
     detail:
       "The project gate opens onto a workshop full of experiments. Pick a build and see the idea become real.",
-    bullets: ["Arkadia Park", "Baguri", "libergent", "Grand Cafe Bucharest"],
+    bullets: ["Arkadia Park", "Baguri", "libergent", "Grand Cafe Bucharest", "100+ other projects"],
   },
   {
     id: "games",
