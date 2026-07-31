@@ -1689,6 +1689,14 @@ button {
   font-weight: 750;
 }
 
+.bio-facts .bio-skills-row {
+  display: block;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
 .bio-skills {
   display: flex;
   flex-wrap: wrap;
