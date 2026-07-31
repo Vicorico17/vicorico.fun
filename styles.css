@@ -1092,6 +1092,26 @@ nav a:hover {
   line-height: 1.35;
 }
 
+.flow-principle {
+  max-width: 18ch;
+  margin: clamp(2rem, 5vw, 4rem) 0 0;
+  color: currentColor;
+  font-size: clamp(2.2rem, 5.2vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.flow-principle-detail {
+  max-width: 42ch;
+  margin: 1rem 0 0;
+  color: currentColor;
+  font-size: 1rem;
+  line-height: 1.4;
+  opacity: 0.68;
+}
+
 .flow-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
