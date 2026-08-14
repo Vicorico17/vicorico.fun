@@ -2451,6 +2451,123 @@ dd {
   gap: 8px;
 }
 
+.github-live,
+.github-history {
+  margin: 2rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: var(--shadow);
+  padding: clamp(1.1rem, 2.5vw, 1.6rem);
+}
+
+.github-live-heading,
+.github-history-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.github-live-heading h3,
+.github-history-heading h3 {
+  margin: 0.3rem 0 0;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 3vw, 2.3rem);
+}
+
+.github-live-heading p:not(.eyebrow) {
+  max-width: 60ch;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.github-live-heading > a {
+  flex: 0 0 auto;
+  color: #f7d58a;
+  font-size: 0.88rem;
+  font-weight: 850;
+  text-decoration: underline;
+  text-underline-offset: 0.24em;
+}
+
+.github-live-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.github-live-card,
+.github-history-list article {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(6, 5, 10, 0.54);
+  padding: 1rem;
+}
+
+.github-live-card {
+  display: flex;
+  min-height: 188px;
+  flex-direction: column;
+}
+
+.github-live-card span,
+.github-history-list time {
+  color: #d43d17;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.github-live-card h4,
+.github-history-list h4 {
+  margin: 0.45rem 0;
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.github-live-card p,
+.github-history-list p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.github-live-card footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.github-live-card time,
+.github-live-card a,
+.github-history-list a {
+  color: #f7d58a;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.github-history-list {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.github-history-list article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.github-history-list h4 {
+  margin-top: 0;
+}
+
 .proof-grid article {
   display: flex;
   min-height: 430px;
@@ -3716,6 +3833,8 @@ dd {
 
   .career-contact,
   .career-grid,
+  .github-live-grid,
+  .github-history-list,
   .proof-strip,
   .worked-place-grid,
   .career-links,
@@ -3817,6 +3936,8 @@ dd {
   .status-board,
   .github-panel,
   .github-repos,
+  .github-live-grid,
+  .github-history-list,
   .journey-list,
   .flow-grid,
   .crypto-grid,
@@ -3871,6 +3992,12 @@ dd {
 
   .proof-grid article {
     min-height: auto;
+  }
+
+  .github-live-heading,
+  .github-history-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .game-entry-preview {

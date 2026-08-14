@@ -1,7 +1,6 @@
 const githubUser = "Vicorico17";
-const reposNode = document.querySelector("[data-github-repos]");
-const starsNode = document.querySelector("[data-total-stars]");
-const totalReposNode = document.querySelector("[data-total-repos]");
+const latestReposNode = document.querySelector("[data-github-latest]");
+const historyNode = document.querySelector("[data-github-history]");
 const portalArtNode = document.querySelector("[data-portal-art]");
 
 function clamp(value, min, max) {
@@ -278,57 +277,135 @@ function initFlowArt() {
   });
 }
 
-async function loadGithubRepos() {
-  if (!reposNode || !starsNode || !totalReposNode) return;
+function formatGithubDate(value) {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+function githubLink(href, label) {
+  const link = document.createElement("a");
+  link.href = href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = label;
+  return link;
+}
+
+function githubFallback(node, message) {
+  if (!node) return;
+  const fallback = document.createElement("p");
+  fallback.className = "muted";
+  fallback.textContent = message;
+  node.replaceChildren(fallback);
+}
+
+function renderLatestRepos(repos) {
+  if (!latestReposNode) return;
+
+  latestReposNode.replaceChildren(
+    ...repos.slice(0, 6).map((repo) => {
+      const article = document.createElement("article");
+      article.className = "github-live-card";
+
+      const meta = document.createElement("span");
+      meta.textContent = `Active / ${repo.language || "Project"}`;
+
+      const title = document.createElement("h4");
+      title.append(githubLink(repo.html_url, repo.name));
+
+      const description = document.createElement("p");
+      description.textContent = repo.description || "Public GitHub repository in active development.";
+
+      const footer = document.createElement("footer");
+      const updated = document.createElement("time");
+      updated.dateTime = repo.pushed_at || repo.updated_at;
+      updated.textContent = `Updated ${formatGithubDate(repo.pushed_at || repo.updated_at)}`;
+      footer.append(updated);
+
+      if (repo.homepage) {
+        footer.append(githubLink(repo.homepage, "Open build"));
+      }
+
+      footer.append(githubLink(repo.html_url, "GitHub"));
+      article.append(meta, title, description, footer);
+      return article;
+    }),
+  );
+}
+
+function renderCommitHistory(events) {
+  if (!historyNode) return;
+
+  const commits = events
+    .filter((event) => event.type === "PushEvent" && event.repo?.name?.startsWith(`${githubUser}/`))
+    .flatMap((event) => (event.payload?.commits || []).map((commit) => ({
+      ...commit,
+      createdAt: event.created_at,
+      repo: event.repo.name,
+    })))
+    .slice(0, 8);
+
+  if (commits.length === 0) {
+    githubFallback(historyNode, "No recent public commits are available yet.");
+    return;
+  }
+
+  historyNode.replaceChildren(
+    ...commits.map((commit) => {
+      const article = document.createElement("article");
+      const time = document.createElement("time");
+      time.dateTime = commit.createdAt;
+      time.textContent = formatGithubDate(commit.createdAt);
+
+      const content = document.createElement("div");
+      const title = document.createElement("h4");
+      title.append(githubLink(`https://github.com/${commit.repo}/commit/${commit.sha}`, `${commit.repo.split("/")[1]} · ${commit.sha.slice(0, 7)}`));
+
+      const message = document.createElement("p");
+      message.textContent = commit.message.split("\n")[0];
+      content.append(title, message);
+      article.append(time, content);
+      return article;
+    }),
+  );
+}
+
+async function loadGithubActivity() {
+  const headers = { Accept: "application/vnd.github+json" };
+  const reposRequest = fetch(
+    `https://api.github.com/users/${githubUser}/repos?sort=updated&direction=desc&per_page=100`,
+    { headers },
+  );
+  const eventsRequest = fetch(
+    `https://api.github.com/users/${githubUser}/events/public?per_page=100`,
+    { headers },
+  );
 
   try {
-    const response = await fetch(
-      `https://api.github.com/users/${githubUser}/repos?sort=updated&per_page=100`,
-      { headers: { Accept: "application/vnd.github+json" } },
-    );
-
-    if (!response.ok) {
-      throw new Error(`GitHub API returned ${response.status}`);
-    }
-
+    const response = await reposRequest;
+    if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
     const repos = await response.json();
     const publicRepos = repos
-      .filter((repo) => !repo.fork)
-      .sort((a, b) => b.stargazers_count - a.stargazers_count || new Date(b.updated_at) - new Date(a.updated_at));
-    const totalStars = publicRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
-
-    starsNode.textContent = totalStars.toLocaleString();
-    totalReposNode.textContent = publicRepos.length.toLocaleString();
-
-    reposNode.replaceChildren(
-      ...publicRepos.slice(0, 6).map((repo) => {
-        const article = document.createElement("article");
-        article.className = "repo-card";
-
-        const title = document.createElement("a");
-        title.href = repo.html_url;
-        title.textContent = repo.name;
-
-        const meta = document.createElement("p");
-        meta.textContent = `${repo.stargazers_count.toLocaleString()} stars${repo.language ? ` / ${repo.language}` : ""}`;
-
-        const description = document.createElement("p");
-        description.textContent = repo.description || "Public GitHub repository.";
-
-        article.append(title, meta, description);
-        return article;
-      }),
-    );
+      .filter((repo) => !repo.fork && !repo.archived)
+      .sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
+    renderLatestRepos(publicRepos);
   } catch (error) {
-    reposNode.innerHTML = "";
-    const fallback = document.createElement("p");
-    fallback.className = "muted";
-    fallback.textContent = "GitHub data could not be loaded in this browser session.";
-    reposNode.append(fallback);
+    githubFallback(latestReposNode, "The latest GitHub projects could not be loaded in this browser session.");
+  }
+
+  try {
+    const response = await eventsRequest;
+    if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
+    renderCommitHistory(await response.json());
+  } catch (error) {
+    githubFallback(historyNode, "The recent commit history could not be loaded in this browser session.");
   }
 }
 
 initIntroGate();
 initPortalArt();
 initFlowArt();
-loadGithubRepos();
+loadGithubActivity();
