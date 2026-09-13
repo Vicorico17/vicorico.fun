@@ -405,7 +405,7 @@ async function loadGithubActivity() {
   }
 }
 
-initIntroGate();
+// Pages remain scrollable without an entrance interaction.
 initPortalArt();
 initFlowArt();
 loadGithubActivity();
