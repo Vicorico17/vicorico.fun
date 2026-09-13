@@ -1,92 +1,1601 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-locked">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Victor Cazacu — AI products, automation &amp; venture partnerships</title>
-    <meta name="description" content="I help founders and small teams build AI products and automate business operations. Explore my work and discuss a product, workflow, or venture partnership.">
-    <link rel="canonical" href="https://vicorico.fun/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Victor Cazacu — Build the product. Make it work.">
-    <meta property="og:description" content="AI products, practical automation, and venture partnerships for founders and small teams.">
-    <meta property="og:url" content="https://vicorico.fun/">
-    <meta name="twitter:card" content="summary">
+    <meta
+      name="description"
+      content="Vicorico's personal website for AI infrastructure, cloud engineering, crypto tooling, creative automation, and founder-engineer work."
+    >
+    <title>vicorico.fun</title>
     <link rel="icon" href="assets/vicorico-mark.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
-      window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments); };
-      plausible.init = plausible.init || function (i) { plausible.o = i || {}; };
+      window.plausible = window.plausible || function () {
+        (plausible.q = plausible.q || []).push(arguments);
+      };
+      plausible.init = plausible.init || function (i) {
+        plausible.o = i || {};
+      };
       plausible.init();
     </script>
-    <script src="home.js" defer></script>
   </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Vicorico home">vicorico<span>.fun</span></a>
-      <nav aria-label="Main navigation">
-        <a href="#work">Work</a><a href="#services">Ways to work together</a><a class="nav-contact" href="#contact">Let’s talk ↗</a>
-      </nav>
-    </header>
-    <main id="main">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow">Victor Cazacu / engineer &amp; founder</p>
-          <h1 id="hero-title">Build the product.<br><em>Make it work.</em></h1>
-          <p class="hero-lead">I help founders and small teams build AI products and automate business operations.</p>
-          <p class="intro">From the first working prototype to the workflows behind it, I connect engineering, product thinking, and distribution.</p>
-          <div class="actions"><a class="button" href="#contact">Discuss a project <span aria-hidden="true">↗</span></a><a class="text-link" href="#work">Explore selected work ↓</a></div>
-          <p class="hero-note">Based in Bucharest · Product builds · Automation · Venture partnerships</p>
+  <body class="home-page scroll-locked">
+    <svg class="glass-filter" aria-hidden="true" focusable="false">
+      <filter
+        id="glass-distortion"
+        x="0%"
+        y="0%"
+        width="100%"
+        height="100%"
+        filterUnits="objectBoundingBox"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.001 0.005"
+          numOctaves="1"
+          seed="17"
+          result="turbulence"
+        />
+        <feComponentTransfer in="turbulence" result="mapped">
+          <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+          <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+          <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+        </feComponentTransfer>
+        <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+        <feSpecularLighting
+          in="softMap"
+          surfaceScale="5"
+          specularConstant="1"
+          specularExponent="100"
+          lighting-color="white"
+          result="specLight"
+        >
+          <fePointLight x="-200" y="-200" z="300" />
+        </feSpecularLighting>
+        <feComposite
+          in="specLight"
+          operator="arithmetic"
+          k1="0"
+          k2="1"
+          k3="1"
+          k4="0"
+          result="litImage"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="softMap"
+          scale="120"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+    </svg>
+    <nav class="portal-nav" aria-label="Site shortcuts">
+      <a href="game.html">Game CV</a>
+      <a href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">PDF CV</a>
+    </nav>
+    <main>
+      <section class="portal-start section" aria-label="Enter vicorico.fun">
+        <canvas class="portal-orbit-field" data-portal-art aria-hidden="true"></canvas>
+        <h1 class="text-flip" aria-label="vicorico.fun">
+          <span aria-hidden="true" style="--i: 0">v</span>
+          <span aria-hidden="true" style="--i: 1">i</span>
+          <span aria-hidden="true" style="--i: 2">c</span>
+          <span aria-hidden="true" style="--i: 3">o</span>
+          <span aria-hidden="true" style="--i: 4">r</span>
+          <span aria-hidden="true" style="--i: 5">i</span>
+          <span aria-hidden="true" style="--i: 6">c</span>
+          <span aria-hidden="true" style="--i: 7">o</span>
+          <span aria-hidden="true" style="--i: 8">.</span>
+          <span aria-hidden="true" style="--i: 9">f</span>
+          <span aria-hidden="true" style="--i: 10">u</span>
+          <span aria-hidden="true" style="--i: 11">n</span>
+        </h1>
+        <p class="portal-value">
+          I build AI systems, automated products, interactive digital worlds &amp; experiences.
+        </p>
+        <a class="engage-button portal-enter" href="#about" aria-label="Explore my work" data-enter-site>
+          <span class="engage-button-surface">
+            <span>Explore my work</span>
+          </span>
+        </a>
+      </section>
+
+      <section id="about" class="about-intro section" aria-labelledby="about-title">
+        <div class="about-profile">
+          <h2 id="about-title">Engineer &amp; marketer</h2>
+          <dl class="bio-facts" aria-label="Basic information">
+            <div>
+              <dt>Age</dt>
+              <dd>26</dd>
+            </div>
+            <div>
+              <dt>Born</dt>
+              <dd>Bucharest</dd>
+            </div>
+            <div class="bio-skills-row">
+              <dd class="bio-skills">
+                <span><i aria-hidden="true">↗</i>Entrepreneurship</span>
+                <span><i aria-hidden="true">◇</i>Crypto</span>
+                <span><i aria-hidden="true">✦</i>AI systems</span>
+                <span><i aria-hidden="true">⌁</i>Agentic commerce</span>
+                <span><i aria-hidden="true">◌</i>Automated distribution</span>
+              </dd>
+            </div>
+          </dl>
+          <div class="profile-persona">
+            <h3>Building systems that move ideas into the world</h3>
+            <p>
+              I work across AI infrastructure, local-first applications, automation, crypto tooling,
+              creative systems, and internet-native distribution. I have been coding since I was 10,
+              with a focus on software architecture, maintainable systems, and products that reduce
+              coordination while expanding what small teams can build.
+            </p>
+          </div>
         </div>
-        <div class="system-art" aria-hidden="true">
-          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-          <span class="art-label art-top">01 / PRODUCT</span><span class="art-label art-bottom">03 / DISTRIBUTION</span>
-          <div class="art-core">idea<span>↓</span>working<br>system<span class="core-caption">02 / ENGINEERING</span></div>
-          <span class="art-cross">+</span>
+
+        <div class="journey-panel">
+          <div class="journey-list">
+            <article>
+              <span>2010</span>
+              <h3>Started young</h3>
+              <p>Selling cupcakes and learning early that products, margins, and distribution are a real game.</p>
+            </article>
+            <article>
+              <span>2015</span>
+              <h3>First sustainable revenue-generating business</h3>
+              <p>Built my first dropshipping website and started learning internet commerce from the inside.</p>
+            </article>
+            <article>
+              <span>2017</span>
+              <h3>First Bitcoin</h3>
+              <p>Got my first Bitcoin from trading CS:GO skins and went deeper into internet-native markets.</p>
+            </article>
+            <article>
+              <span>2019</span>
+              <h3>Baguri and Spritzbox</h3>
+              <p>Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.</p>
+            </article>
+            <article>
+              <span>2021</span>
+              <h3>All in crypto</h3>
+              <p>Went all in on crypto and built several projects, with Arkadia Park still running today, while building across blockchains such as Terra Luna, Polygon, and Solana.</p>
+            </article>
+            <article>
+              <span>2023</span>
+              <h3>Polygon community coin, $GONE</h3>
+              <p>Launched $GONE, the biggest community coin on Polygon, reaching $10M market cap and over 20k holders.</p>
+            </article>
+            <article>
+              <span>Now</span>
+              <h3>AI, crypto, and agentic commerce</h3>
+              <p>Right now I focus on AI x crypto tooling, agentic commerce, zero-human-company systems, local AI infrastructure, automated content generation, smart contract architecture, payment-enabled agents, and second brains.</p>
+            </article>
+          </div>
         </div>
       </section>
-      <section class="experience-strip" aria-label="Background">
-        <p><strong>Founder perspective</strong><span>Commerce ventures since 2015</span></p>
-        <p><strong>Product + distribution</strong><span>Marketplaces, communities, and launch systems</span></p>
-        <p><strong>Hands-on engineering</strong><span>AI workflows, internal tools, and infrastructure</span></p>
-      </section>
-      <section id="work" class="section" aria-labelledby="work-title">
-        <div class="section-heading"><div><p class="eyebrow">01 / Selected work</p><h2 id="work-title">A few things I’ve built.</h2></div><p>Independent builds that show how I approach practical problems. Explore the code and demos for a closer look.</p></div>
-        <article class="project">
-          <div class="project-visual signal-visual" aria-hidden="true"><span class="visual-label">ACLIENTI / CUSTOMER RESEARCH</span><div class="signal-line"><i></i>Public customer signals</div><div class="signal-path">↓</div><div class="signal-line"><i></i>Evidence + prioritization</div><div class="signal-path">↓</div><div class="signal-result">A clearer next move ↗</div><span class="visual-caption">Workflow illustration</span></div>
-          <div class="project-copy"><p class="eyebrow">AI workflows / Independent build</p><h3>AClienti</h3><p class="project-summary">Turn scattered customer signals into a focused research brief.</p><dl><dt>The problem</dt><dd>Public discussions contain useful customer needs, but finding and prioritizing them takes manual research.</dd><dt>What I built</dt><dd>A research desk with weighted opportunity scoring, evidence-linked prospect cards, content briefs, and JSON exports.</dd><dt>What it demonstrates</dt><dd>A workflow that keeps source evidence attached to recommendations so a person can review the reasoning.</dd></dl><a class="text-link" href="https://github.com/Vicorico17/ACLIENTI" data-event="Project Click" data-project="AClienti">Explore the code ↗</a></div>
-        </article>
-        <article class="project">
-          <div class="project-visual audit-visual" aria-hidden="true"><span class="visual-label">LEGIT AGENTIC / WEB AUDITS</span><div class="audit-window"><span>website → inspection</span><p>Discoverability <b>↗</b></p><p>Machine-readable structure <b>↗</b></p><p>Actionable report <b>↗</b></p></div><span class="visual-caption">Workflow illustration</span></div>
-          <div class="project-copy"><p class="eyebrow">Agent-ready websites / Independent build</p><h3>LEGIT AGENTIC</h3><p class="project-summary">Make agent readiness something you can inspect.</p><dl><dt>The problem</dt><dd>Teams need a concrete way to assess how their website is structured for software agents.</dd><dt>What I built</dt><dd>A web audit toolkit and CLI with structured checks and exportable Markdown and JSON reports.</dd><dt>What it demonstrates</dt><dd>Clear separation between deterministic checks and observational AI visibility research.</dd></dl><div class="actions"><a class="text-link" href="https://legit-agentic.vercel.app" data-event="Project Click" data-project="LEGIT AGENTIC">Open the build ↗</a><a class="secondary-link" href="https://github.com/Vicorico17/LEGIT-AGENTIC">Source code</a></div></div>
-        </article>
-        <article class="project">
-          <div class="project-visual commerce-visual" aria-hidden="true"><span class="visual-label">BAGURI / COMMERCE</span><div class="commerce-word">Independent<br>design.<br><em>Connected.</em></div><span class="visual-caption">Designers → marketplace → checkout</span></div>
-          <div class="project-copy"><p class="eyebrow">Commerce / Founder project</p><h3>Baguri</h3><p class="project-summary">Connect independent designers with the infrastructure to sell.</p><dl><dt>The context</dt><dd>I launched Baguri in 2019 as a Romanian marketplace for independent designers.</dd><dt>The current build</dt><dd>A commerce codebase covering product submissions, designer verification, influencer flows, RON payments with Stripe, and operational UI.</dd><dt>What it demonstrates</dt><dd>Product thinking across the customer journey and the day-to-day work behind a marketplace.</dd></dl><a class="text-link" href="https://github.com/Vicorico17/baguri" data-event="Project Click" data-project="Baguri">Explore the code ↗</a></div>
-        </article>
-        <div class="section-tail"><p>Want to explore the experiments, infrastructure, and crypto work too?</p><a class="text-link" href="lab.html">Visit the lab &amp; career archive ↗</a></div>
-      </section>
-      <section id="services" class="section" aria-labelledby="services-title">
-        <div class="section-heading"><div><p class="eyebrow">02 / Ways to work together</p><h2 id="services-title">Bring a problem.<br>Let’s define the build.</h2></div><p>You can come with a product idea, a repetitive workflow, or a venture that needs a technical partner.</p></div>
-        <div class="service-grid">
-          <article class="service-card"><span class="card-number">01</span><h3>Build a product</h3><p>For founders who need to turn a defined customer problem into a working first version.</p><ul><li>Product scope and architecture</li><li>Core user journey and integrations</li><li>Deployment, documentation, and handover</li></ul><p class="deliverable">Starting point: a focused MVP with clear acceptance criteria.</p><a class="text-link" href="mailto:vic.cazacu@gmail.com?subject=Product%20build%20inquiry" data-event="Contact Click" data-kind="product">Tell me what you’re building ↗</a></article>
-          <article class="service-card"><span class="card-number">02</span><h3>Automate a workflow</h3><p>For small teams spending too much time moving information between people and tools.</p><ul><li>Workflow mapping and integration</li><li>Research, content, or internal operations</li><li>Human review and monitoring where needed</li></ul><p class="deliverable">Starting point: one workflow, with an agreed measure of success.</p><a class="text-link" href="mailto:vic.cazacu@gmail.com?subject=Workflow%20automation%20inquiry" data-event="Contact Click" data-kind="automation">Show me the bottleneck ↗</a></article>
-          <article class="service-card"><span class="card-number">03</span><h3>Partner on a venture</h3><p>For operators with industry knowledge, customer access, or distribution who need a technical builder.</p><ul><li>Product and technical direction</li><li>Prototype and validation experiments</li><li>Launch and distribution planning</li></ul><p class="deliverable">Starting point: agree on the opportunity, contributions, and commercial structure.</p><a class="text-link" href="mailto:vic.cazacu@gmail.com?subject=Venture%20partnership%20inquiry" data-event="Contact Click" data-kind="partnership">Explore a partnership ↗</a></article>
+
+      <section id="chapters" class="system-map section" aria-label="Chapter relationship map">
+        <div class="system-map-grid chapters-grid" aria-label="Chapter relationship map">
+          <a class="chapter-card crypto-lane" href="#story-crypto">
+            <span>Chapter 1</span>
+            <h3>Crypto</h3>
+            <p>Tokens, marketplaces, prediction markets, payments, ownership, reputation, and on-chain coordination.</p>
+          </a>
+          <a class="chapter-card ai-lane" href="#story-ai">
+            <span>Chapter 2</span>
+            <h3>AI</h3>
+            <p>Local models, GPU infrastructure, agents, knowledge bases, automated content generation, and company operating systems.</p>
+          </a>
+          <a class="chapter-card agentic-commerce-lane" href="#story-crypto">
+            <span>Chapter 3</span>
+            <h3>Agentic Commerce</h3>
+            <p>Where AI and crypto meet: selling to AI agents, agent-ready products, ACP, AP2, x402, and new internet-native checkout rails.</p>
+          </a>
+          <a class="chapter-card security-lane" href="#story-ai">
+            <span>Chapter 4</span>
+            <h3>Security</h3>
+            <p>Agentic attacks, hacking, OSINT, threat modeling, wallet hygiene, and defensive workflows.</p>
+          </a>
+          <a class="chapter-card content-lane" href="#story-content">
+            <span>Chapter 5</span>
+            <h3>Automated Content Creation</h3>
+            <p>Video, generative art, repurposing, owned audiences, social content pipelines, and creative automation connected to AI systems.</p>
+          </a>
         </div>
-        <div class="process"><h3>How we start</h3><p><strong>Share the context.</strong> What are you trying to achieve, what exists today, and where are you stuck?</p><p><strong>Define the first useful step.</strong> We align on scope, deliverables, timing, and budget before committing to a build.</p></div>
       </section>
-      <section id="about" class="section about" aria-labelledby="about-title">
-        <div><p class="eyebrow">03 / The person behind the work</p><h2 id="about-title">An engineer with<br>a founder’s perspective.</h2></div>
-        <div class="about-copy"><p>I’m Victor, also known as vicorico. I’m based in Bucharest, and I’ve been coding since I was 10.</p><p>My path runs through internet commerce, independent-designer marketplaces, crypto communities, and now AI products and automation. Building my own ventures taught me to think about how a product reaches people and how it operates after launch.</p><p>I’m most useful where product decisions, engineering, and distribution meet: making a first version tangible, connecting a messy workflow, or helping a small team move an idea forward.</p><div class="actions"><a class="text-link" href="ats-cv.html">Read my CV ↗</a><a class="secondary-link" href="game.html">Or play it →</a></div></div>
+
+      <section id="proof" class="proof-section section" aria-labelledby="proof-title">
+        <div class="proof-heading">
+          <p class="eyebrow">Active Projects</p>
+          <h2 id="proof-title">Current Builds And Systems</h2>
+          <p>
+            Active builds across agent-ready websites, financial planning, privacy-preserving proof,
+            streaming, cloud infrastructure, venture studio operations, customer research, crypto
+            worlds, creator tooling, prediction games, Romanian commerce, and League of Legends products.
+          </p>
+        </div>
+
+        <div class="github-live" aria-labelledby="github-live-title">
+          <div class="github-live-heading">
+            <div>
+              <p class="eyebrow">Live from GitHub</p>
+              <h3 id="github-live-title">Latest Builds</h3>
+              <p>Automatically refreshed from public repositories, ordered by the most recently updated work.</p>
+            </div>
+            <a href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">View all GitHub projects</a>
+          </div>
+          <div class="github-live-grid" data-github-latest aria-live="polite">
+            <p class="muted">Loading the latest GitHub builds…</p>
+          </div>
+        </div>
+
+        <div class="github-history" aria-labelledby="github-history-title">
+          <div class="github-history-heading">
+            <p class="eyebrow">Build Log</p>
+            <h3 id="github-history-title">Recent Updates</h3>
+          </div>
+          <div class="github-history-list" data-github-history aria-live="polite">
+            <p class="muted">Loading recent commits…</p>
+          </div>
+        </div>
+
+        <div class="proof-grid">
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>TAPTIME</b>
+              <small>Tap In. Tap Out. Done.</small>
+            </div>
+            <span>Active / NFC Attendance</span>
+            <h3>TapTime</h3>
+            <p>A passive-NFC workplace attendance checkpoint that turns a simple tap into a secure, location-specific check-in or check-out flow.</p>
+            <ul>
+              <li>Printable, enclosed NFC checkpoint</li>
+              <li>Employee authentication and confirmation flow</li>
+              <li>Production-ready hardware upgrade path</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://taptime-mvp.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/tap-time">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>bvb.lol</b>
+              <small>Romanian Market Terminal</small>
+            </div>
+            <span>Active / Market Intelligence</span>
+            <h3>bvb.lol</h3>
+            <p>An open-source, read-only terminal that makes the Bucharest Stock Exchange easier to follow through clean instrument pages, filings, events, and market context.</p>
+            <ul>
+              <li>BVB and AeRO instrument discovery</li>
+              <li>Issuer filings and dividend events</li>
+              <li>Licensed-data-ready provider architecture</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://bvblol.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/bvb.lol">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Black Sea Compute</b>
+              <small>Offshore Cloud Concept</small>
+            </div>
+            <span>Active / Cloud Infrastructure</span>
+            <h3>Black Sea Compute</h3>
+            <p>Investor-facing concept for a resilient offshore cloud made from a fleet of autonomous data-center vessels in the Black Sea.</p>
+            <ul>
+              <li>Distributed maritime compute</li>
+              <li>Resilience and fleet operations</li>
+              <li>Responsive investor experience</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://blacksea-datacenter.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/BLACKSEA-DATACENTER">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>AClienti</b>
+              <small>Customer Signal Desk</small>
+            </div>
+            <span>Active / Market Intelligence</span>
+            <h3>AClienti</h3>
+            <p>Evidence-backed research desk that turns recent public customer signals into ranked opportunities and practical content direction.</p>
+            <ul>
+              <li>Weighted opportunity scoring</li>
+              <li>Evidence-linked prospect cards</li>
+              <li>Content briefs and JSON exports</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/ACLIENTI">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Neo Labs OS</b>
+              <small>Company Operating System</small>
+            </div>
+            <span>Active / Venture Studio</span>
+            <h3>Neo Labs</h3>
+            <p>A local company operating system for running Neo Labs as a venture studio today and an investment platform over time.</p>
+            <ul>
+              <li>Unified portfolio dashboard</li>
+              <li>Specialized agent workflows</li>
+              <li>Portable, versioned company state</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/neo-labs">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>LEGIT AGENTIC</b>
+              <small>Agent Readiness Audit</small>
+            </div>
+            <span>Active / Agentic Web</span>
+            <h3>LEGIT AGENTIC</h3>
+            <p>Transparent web audit toolkit that separates deterministic agent-readiness checks from observational AI visibility research.</p>
+            <ul>
+              <li>Web interface and zero-dependency CLI</li>
+              <li>Structured readiness scoring</li>
+              <li>Markdown and JSON reports</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://legit-agentic.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/LEGIT-AGENTIC">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>FinPath AI</b>
+              <small>Financial Planning Prototype</small>
+            </div>
+            <span>Active / AI Finance</span>
+            <h3>FinPath AI</h3>
+            <p>Research-informed financial-planning prototype that builds a structured profile and returns an assumption-aware action plan with visible guardrails.</p>
+            <ul>
+              <li>Context quality scoring</li>
+              <li>Structured decision briefs</li>
+              <li>Shock and rebalancing plans</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://finpath-ai-sigma.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/finfin">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>CARLY</b>
+              <small>Voice-First Daily Companion</small>
+            </div>
+            <span>Active / Accessible Care</span>
+            <h3>CARLY</h3>
+            <p>Voice-first browser prototype helping older adults maintain daily routines and stay connected to a consent-aware trusted care circle.</p>
+            <ul>
+              <li>Accessible companion interface</li>
+              <li>Routine and appointment support</li>
+              <li>Care-circle dashboard</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/CARLY">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Streamwin</b>
+              <small>Intelligent Live Studio</small>
+            </div>
+            <span>Active / Streaming</span>
+            <h3>Streamwin</h3>
+            <p>Interactive live-studio prototype combining real-time AI video, multistream distribution, IRL controls, and vision-aware Twitch automations.</p>
+            <ul>
+              <li>AI scenes and visual effects</li>
+              <li>Multistream destination controls</li>
+              <li>IRL and vision automation tools</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://streamwin.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/streamwin">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>REALSOUL</b>
+              <small>Proof of Human Presence</small>
+            </div>
+            <span>Active / Privacy Infrastructure</span>
+            <h3>REALSOUL</h3>
+            <p>Privacy-respecting protocol demo for issuing short-lived proof that a live human approved a specific call, message, or transaction.</p>
+            <ul>
+              <li>Ed25519-signed proof tokens</li>
+              <li>Audience and challenge binding</li>
+              <li>Replay-protected verification</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://realsoul-ten.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/REALSOUL">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Magic Dev</b>
+              <small>Developer-First VPS</small>
+            </div>
+            <span>Active / Developer Tools</span>
+            <h3>Magic Dev</h3>
+            <p>Interactive product concept for a persistent developer VPS that combines a real server with a browser workspace and automatic previews.</p>
+            <ul>
+              <li>Browser editor and terminal concept</li>
+              <li>Automatic HTTPS previews</li>
+              <li>Guided workspace builder</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://magic-dev-seven.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/magic-dev">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>BestRestShop</b>
+              <small>Commerce Build</small>
+            </div>
+            <span>Active / Commerce</span>
+            <h3>BestRestShop</h3>
+            <p>New commerce project currently taking shape in the active product portfolio.</p>
+            <ul>
+              <li>Active development</li>
+              <li>Product exploration</li>
+              <li>Open-source repository</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://bestrestshop.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/bestrestshop">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Accman</b>
+              <small>Account Management</small>
+            </div>
+            <span>Active / New Build</span>
+            <h3>Accman</h3>
+            <p>New account-management project currently taking shape in the active product portfolio.</p>
+            <ul>
+              <li>Active development</li>
+              <li>Product exploration</li>
+              <li>Open-source repository</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://accman-ochre.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/accman">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>eFans</b>
+              <small>New Build</small>
+            </div>
+            <span>Active / New Build</span>
+            <h3>eFans</h3>
+            <p>New project currently taking shape as part of the active product and automation portfolio.</p>
+            <ul>
+              <li>Active development</li>
+              <li>Early product exploration</li>
+              <li>Open-source repository</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://efans.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/efans">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>HomeSports</b>
+              <small>LoL Esports Matchboard</small>
+            </div>
+            <span>Active / Esports</span>
+            <h3>HomeSports</h3>
+            <p>Importance-ranked League of Legends esports matchboard, combining live schedules with transparent ratings for the matches that matter most.</p>
+            <ul>
+              <li>Live PandaScore match feed</li>
+              <li>Transparent importance ratings</li>
+              <li>League-wide match discovery</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://homesports.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/homesports">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Sprite LoL</b>
+              <small>AI League Companion</small>
+            </div>
+            <span>Active / AI Research</span>
+            <h3>Sprite LoL</h3>
+            <p>Research and architecture for an AI League of Legends companion players could message directly for concise, League-focused help.</p>
+            <ul>
+              <li>Command-first assistant flows</li>
+              <li>Player-safe interaction design</li>
+              <li>League client integration research</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/sprite-lol">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Prody</b>
+              <small>JavaScript Build</small>
+            </div>
+            <span>Active / JavaScript Build</span>
+            <h3>Prody</h3>
+            <p>New JavaScript project currently in active development, adding another build to the 100+ projects worked on across product, automation, and creative technology.</p>
+            <ul>
+              <li>Active development</li>
+              <li>JavaScript project</li>
+              <li>Open-source repository</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/prody">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact">
+              <img src="assets/project-previews/distronow.png" alt="DistroNow build preview" loading="lazy">
+            </div>
+            <span>Active / Distribution</span>
+            <h3>DistroNow</h3>
+            <p>Website-to-brand-profile system for distribution workflows, starting with Firecrawl extraction, Supabase storage, and social content generation.</p>
+            <ul>
+              <li>Brand extraction</li>
+              <li>Social draft generation</li>
+              <li>Supabase persistence</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://distronow.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/distronow">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact">
+              <img src="assets/project-previews/libergent.png" alt="libergent build preview" loading="lazy">
+            </div>
+            <span>Active / Marketplace Search</span>
+            <h3>libergent</h3>
+            <p>Romanian marketplace search tool with structured extraction, direct HTML parsing, fallback providers, local scoring, and cost-aware provider strategy.</p>
+            <ul>
+              <li>OLX, Vinted, Autovit, and more</li>
+              <li>Direct parsers and fallbacks</li>
+              <li>Price and offer scoring</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://libergent.com">Open build</a>
+              <a href="https://github.com/Vicorico17/libergent">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact">
+              <img src="assets/project-previews/clipro.png" alt="ClipRO build preview" loading="lazy">
+            </div>
+            <span>Active / Creator Platform</span>
+            <h3>ClipRO</h3>
+            <p>Creator-platform MVP that turns long-form YouTube videos and YouTube, Twitch, or Kick streams into ranked short clips.</p>
+            <ul>
+              <li>Creator onboarding</li>
+              <li>Source syncing and imports</li>
+              <li>Clip scoring and rendering states</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://clip-ro.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/clip-ro">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact">
+              <img src="assets/project-previews/bjj-predict.png" alt="BJJ Predict build preview" loading="lazy">
+            </div>
+            <span>Active / BJJ Game</span>
+            <h3>BJJ Predict</h3>
+            <p>BJJ-first free-play prediction-market MVP using Smoothcomp-style event data, winner shares, LMSR pricing, and leaderboards.</p>
+            <ul>
+              <li>Smoothcomp sync worker</li>
+              <li>Play-money markets</li>
+              <li>Portfolio and settlement flows</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://bjj-predict.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/bjj-predict">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact">
+              <img src="assets/project-previews/autoart.png" alt="AutoArt build preview" loading="lazy">
+            </div>
+            <span>Active / AI Label OS</span>
+            <h3>AutoArt</h3>
+            <p>Static MVP for managing AI artist catalogs, song briefs, release packages, promo plans, analytics imports, and local persistence.</p>
+            <ul>
+              <li>Artist roster and song lab</li>
+              <li>Release package exports</li>
+              <li>Promo and analytics workflows</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://autoart-nine.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/autoart">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-logo">
+              <img src="assets/project-previews/baguri.png" alt="Baguri logo preview" loading="lazy">
+            </div>
+            <span>Active / Marketplace</span>
+            <h3>Baguri</h3>
+            <p>Fashion commerce codebase covering product submission, designer/influencer flows, checkout, Stripe automation, and operational UI.</p>
+            <ul>
+              <li>Designer verification</li>
+              <li>RON payments with Stripe</li>
+              <li>Supabase auth and storage</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/baguri">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>Arkadia Park</b>
+              <small>Crypto Theme Park</small>
+            </div>
+            <span>Active / Crypto World</span>
+            <h3>Arkadia Park</h3>
+            <p>Long-running crypto theme park and community world built around games, culture, ownership, quests, and real participation.</p>
+            <ul>
+              <li>Community world</li>
+              <li>Web3 games</li>
+              <li>Quests and lore</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="#story-games">Open context</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
+              <b>masscall</b>
+              <small>AI Command Center</small>
+            </div>
+            <span>Active / AI Operations</span>
+            <h3>Masscall</h3>
+            <p>AI command center for turning natural-language requests into coordinated work across calendars, email, Slack, Notion, and connected tools.</p>
+            <ul>
+              <li>Natural-language commands</li>
+              <li>Connected app workflows</li>
+              <li>Activity and automation tracking</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://masscall.vercel.app">Open build</a>
+              <a href="https://github.com/Vicorico17/masscall">GitHub</a>
+            </div>
+          </article>
+          <article>
+            <div class="proof-artifact">
+              <img src="assets/project-previews/marketz.png" alt="Marketz.ro build preview" loading="lazy">
+            </div>
+            <span>Active / Prediction Market</span>
+            <h3>Marketz.ro</h3>
+            <p>Romania-focused prediction-market prototype with mock wallets, LMSR pricing, trading flows, market administration, and settlement mechanics.</p>
+            <ul>
+              <li>Romanian market discovery</li>
+              <li>Buy and sell trade flows</li>
+              <li>Portfolio and settlement</li>
+            </ul>
+            <div class="proof-actions">
+              <a href="https://github.com/Vicorico17/marketz.ro">GitHub</a>
+            </div>
+          </article>
+        </div>
       </section>
-      <section id="contact" class="section contact" aria-labelledby="contact-title">
-        <p class="eyebrow">04 / Start a conversation</p><h2 id="contact-title">What do you want<br>to make <em>work?</em></h2><p>Tell me what you’re building or trying to improve. Include your website or current setup, the outcome you want, and any timing or budget constraints.</p>
-        <a class="button" href="mailto:vic.cazacu@gmail.com?subject=Let%E2%80%99s%20build%20something&amp;body=Hi%20Victor%2C%0A%0AI%E2%80%99m%20working%20on%3A%0AThe%20outcome%20I%20want%3A%0ACurrent%20website%20or%20setup%3A%0ATiming%20and%20budget%20%28if%20known%29%3A%0A" data-event="Contact Click" data-kind="general">Email me about your project ↗</a>
-        <div class="contact-alternatives"><a href="mailto:vic.cazacu@gmail.com" data-event="Contact Click" data-kind="email">vic.cazacu@gmail.com</a><button type="button" id="copy-email">Copy email</button><span id="copy-status" role="status"></span></div>
-        <a class="secondary-link" href="https://x.com/Vicorico17" data-event="Contact Click" data-kind="x">Prefer X? Find me @Vicorico17 ↗</a>
+
+      <section id="game-cv" class="game-entry section" aria-labelledby="game-entry-title">
+        <div class="game-entry-copy">
+          <p class="eyebrow">Playable Route</p>
+          <h2 id="game-entry-title">Enter Vic's Quest</h2>
+          <p>
+            Vic's Quest turns the same career material into an explorable 3D world map with routes
+            through AI systems, crypto rails, creative automation, security, and game-world thinking.
+          </p>
+          <a class="button primary" href="game.html">Open Game</a>
+        </div>
+        <div class="game-entry-preview" aria-hidden="true">
+          <div class="game-preview-screen">
+            <span class="game-preview-player"></span>
+            <i style="--x: 14%; --y: 28%"></i>
+            <i style="--x: 62%; --y: 42%"></i>
+            <i style="--x: 78%; --y: 18%"></i>
+            <b>AI</b>
+            <b>Crypto</b>
+            <b>Games</b>
+          </div>
+        </div>
       </section>
+
+      <section id="story" class="flow-art" data-flow-art aria-label="Vicorico story scroll">
+        <article id="story-ai" class="flow-panel flow-paper" data-flow-panel aria-label="AI systems">
+          <button class="flow-summary" type="button" data-flow-toggle aria-expanded="false">
+            <span>01 / AI Systems</span>
+            <strong>Build AI Systems That Reduce Coordination</strong>
+            <small>Process architecture, agents, local models, GPU infrastructure, automation, and review loops.</small>
+            <em>Open details</em>
+          </button>
+          <div class="flow-inner" data-flow-inner>
+            <p class="flow-kicker">01 / AI Systems</p>
+            <div class="flow-rule"></div>
+            <h2 class="flow-title">Build AI Systems That Reduce Coordination</h2>
+            <div class="flow-rule"></div>
+            <p class="flow-copy">
+              I build AI systems around real business workflows: mapping process boundaries,
+              designing the context agents need, connecting company knowledge, running local and
+              cloud models, and adding human review where judgment matters. The focus is practical:
+              less coordination drag, faster operations, reliable outputs, and privacy-aware model infrastructure.
+            </p>
+            <p class="flow-principle">Even waiting must be built as an experience.</p>
+            <p class="flow-principle-detail">Clear progress, useful context, and a next step instead of a blank loading state.</p>
+            <div class="flow-grid flow-grid-dense">
+              <div>
+                <h3>Process Architecture</h3>
+                <p>Map workflows, decide what stays human, design context, and define reliable automation boundaries.</p>
+              </div>
+              <div>
+                <h3>Company Knowledge</h3>
+                <p>Build Obsidian second brains, retrieval workflows, business context, and internal knowledge bases.</p>
+              </div>
+              <div>
+                <h3>RevOps Agents</h3>
+                <p>Research accounts, enrich and score leads, generate personalized cold outreach, and route qualified replies into CRM workflows.</p>
+              </div>
+              <div>
+                <h3>Content Pipelines</h3>
+                <p>Turn one source asset into posts, newsletters, short-form clips, and scheduled distribution.</p>
+              </div>
+              <div>
+                <h3>Local AI Infrastructure</h3>
+                <p>Run privacy-aware local-first AI systems for sensitive professional workflows and client context.</p>
+              </div>
+              <div>
+                <h3>GPU And Containers</h3>
+                <p>Provision GPU VPS machines, package runtimes, mount GPUs into containers, and run Kubernetes pods.</p>
+              </div>
+              <div>
+                <h3>Model Serving</h3>
+                <p>Operate LLMs, image models, ComfyUI workflows, private inference endpoints, APIs, and auth layers.</p>
+              </div>
+              <div>
+                <h3>ComfyUI And MCP Tools</h3>
+                <p>Build reusable ComfyUI workflows and MCP servers that give agents controlled access to creative generation, business data, and operational tools.</p>
+              </div>
+              <div>
+                <h3>Agent Orchestration</h3>
+                <p>MCP servers, subagents, background agents, parallel agents, headless agent teams, routines, and agents managing agents.</p>
+              </div>
+              <div>
+                <h3>Self-Improving Loops</h3>
+                <p>Eval-driven loops, agents fixing their own tests, CI/CD run by agents, dynamic workflows, and multi-repo orchestration.</p>
+              </div>
+              <div>
+                <h3>Recursive Company Pipelines</h3>
+                <p>Design zero-human-company operating loops where agents research markets, qualify leads, run outreach, learn from replies, and improve the next cycle.</p>
+              </div>
+              <div>
+                <h3>Quality Control</h3>
+                <p>Create review loops, confidence checks, monitoring, escalation paths, and output-quality gates.</p>
+              </div>
+              <div>
+                <h3>Monitoring</h3>
+                <p>Track uptime, GPU usage, costs, logs, queues, failed jobs, and service health.</p>
+              </div>
+              <div>
+                <h3>Security Context</h3>
+                <p>Use Linux, OSINT, network basics, wallet hygiene, threat modeling, and sandboxing awareness.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="story-crypto" class="flow-panel flow-blue" data-flow-panel aria-label="Crypto systems">
+          <button class="flow-summary" type="button" data-flow-toggle aria-expanded="false">
+            <span>02 / Crypto</span>
+            <strong>Experienced Smart Contract Developer</strong>
+            <small>Token standards, on-chain products, agent payments, prediction markets, and crypto gaming.</small>
+            <em>Open details</em>
+          </button>
+          <div class="flow-inner" data-flow-inner>
+            <p class="flow-kicker">02 / Crypto</p>
+            <div class="flow-rule"></div>
+            <h2 class="flow-title">Experienced Smart Contract Developer</h2>
+            <div class="flow-rule"></div>
+            <p class="flow-copy">
+              I build on-chain products across token standards, marketplaces, gaming loops,
+              prediction markets, community coins, NFT and token projects, on-chain reputation,
+              agent-readable payments, x402, ACP, AP2, Solana tooling, Polygon communities, market
+              design, and community-owned internet economies.
+            </p>
+            <div class="flow-grid flow-grid-dense">
+              <div>
+                <h3>ERC-20</h3>
+                <p>Fungible tokens, community coins, incentives, liquidity mechanics, and launch flows.</p>
+              </div>
+              <div>
+                <h3>ERC-721</h3>
+                <p>NFT collections, minting systems, ownership experiences, and metadata-aware products.</p>
+              </div>
+              <div>
+                <h3>ERC-1155</h3>
+                <p>Multi-token systems for games, access passes, collectibles, and flexible economies.</p>
+              </div>
+              <div>
+                <h3>ERC-8004</h3>
+                <p>Agent identity, trust, reputation, and standards for AI x crypto coordination.</p>
+              </div>
+              <div>
+                <h3>Product Architecture</h3>
+                <p>Smart contract architecture, x402-style payment flows, ACP checkout patterns, AP2 agent payments, on-chain reputation, micropayments, and AI x crypto tooling.</p>
+              </div>
+              <div>
+                <h3>Agentic Commerce Protocols</h3>
+                <p>x402, OpenAI and Stripe ACP, Google and Coinbase AP2, machine-readable services, API monetization, and internet-native commerce rails.</p>
+              </div>
+              <div>
+                <h3>Prediction Markets</h3>
+                <p>Market mechanics, event-driven products, odds, settlement thinking, and user incentives.</p>
+              </div>
+              <div>
+                <h3>Crypto Gaming</h3>
+                <p>On-chain game loops, rewards, items, wallets, communities, and gamified distribution.</p>
+              </div>
+              <div>
+                <h3>Operator Path</h3>
+                <p>Crypto-native since 2017, from CS:GO skins for BTC to token launches, NFTs, and market-cycle building.</p>
+              </div>
+              <div>
+                <h3>Community Capital</h3>
+                <p>$200K+ community fundraising, $50K Polygon grant, and a $10M all-time-high Polygon culture coin.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="story-content" class="flow-panel flow-black" data-flow-panel aria-label="Automated content creation">
+          <button class="flow-summary" type="button" data-flow-toggle aria-expanded="false">
+            <span>03 / Automated Content Creation</span>
+            <strong>Automating Video And Content Creation</strong>
+            <small>Instagram, TikTok, YouTube, repurposing, creative automation, and growth loops.</small>
+            <em>Open details</em>
+          </button>
+          <div class="flow-inner" data-flow-inner>
+            <p class="flow-kicker">03 / Automated Content Creation</p>
+            <div class="flow-rule"></div>
+            <h2 class="flow-title">Automating Video And Content Creation For Distribution Platforms</h2>
+            <div class="flow-rule"></div>
+            <p class="flow-copy">
+              I can automate video and content creation for Instagram, TikTok, YouTube, and other
+              distribution platforms, turning ideas and raw assets into repeatable publishing systems.
+              I have experience running multiple workflows and creative pipelines, automated video
+              editing, and content creation with the latest image models. I also do growth hacking
+              around the content loops that work.
+            </p>
+            <div class="flow-grid flow-grid-dense">
+              <div>
+                <h3>Instagram</h3>
+                <p>Automated Reels, carousel ideas, captions, visual variations, and content packaging.</p>
+              </div>
+              <div>
+                <h3>TikTok</h3>
+                <p>Short-form workflows, hooks, edits, subtitles, music-driven content, and trend-ready formats.</p>
+              </div>
+              <div>
+                <h3>YouTube</h3>
+                <p>Shorts, long-form repurposing, thumbnails, descriptions, scripts, chapters, and assets.</p>
+              </div>
+              <div>
+                <h3>Repurposing</h3>
+                <p>Turn one idea, clip, stream, post, or product update into platform-native content.</p>
+              </div>
+              <div>
+                <h3>Creative AI Know-How</h3>
+                <p>Generative art, automated video music generation, vocal separation, TikTok production, presentations, and ComfyUI workflows.</p>
+              </div>
+              <div>
+                <h3>Growth Hacking</h3>
+                <p>Build calendars, queues, community loops, analytics feedback, and repeatable experiments.</p>
+              </div>
+              <div>
+                <h3>Owned Audiences</h3>
+                <p>Turn long-form assets into platform-ready posts, email, social content, and repeatable publishing systems.</p>
+              </div>
+              <div>
+                <h3>Community Loops</h3>
+                <p>Creator loops, memes, referrals, community quests, and content experiments that compound distribution.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="story-games" class="flow-panel flow-blue" data-flow-panel aria-label="Game systems">
+          <button class="flow-summary" type="button" data-flow-toggle aria-expanded="false">
+            <span>04 / Gaming And Worlds</span>
+            <strong>Build Games As Living Economies</strong>
+            <small>Game loops, 3D assets, economies, worldbuilding, ownership, and distribution.</small>
+            <em>Open details</em>
+          </button>
+          <div class="flow-inner" data-flow-inner>
+            <p class="flow-kicker">04 / Gaming And Worlds</p>
+            <div class="flow-rule"></div>
+            <h2 class="flow-title">Build Games As Living Economies</h2>
+            <div class="flow-rule"></div>
+            <p class="flow-copy">
+              I think about games as worlds: mechanics, 3D models, economies, progression,
+              lore, communities, and distribution loops all working together.
+            </p>
+            <div class="flow-grid flow-grid-dense">
+              <div>
+                <h3>Game Systems</h3>
+                <p>Design loops, progression, rewards, constraints, and feedback systems that keep play meaningful.</p>
+              </div>
+              <div>
+                <h3>3D Models</h3>
+                <p>Work with 3D assets, scenes, visual identity, interaction states, and real-time presentation.</p>
+              </div>
+              <div>
+                <h3>Economies</h3>
+                <p>Balance items, currencies, scarcity, rewards, marketplaces, sinks, and player incentives.</p>
+              </div>
+              <div>
+                <h3>Worldbuilding</h3>
+                <p>Create lore, factions, rules, maps, social rituals, and reasons for players to return.</p>
+              </div>
+              <div>
+                <h3>Crypto Gaming</h3>
+                <p>Connect ownership, wallets, collectibles, token-gated access, and on-chain game loops.</p>
+              </div>
+              <div>
+                <h3>Distribution</h3>
+                <p>Use quests, communities, memes, leaderboards, and social mechanics to grow the world.</p>
+              </div>
+              <div>
+                <h3>Arkadia Park</h3>
+                <p>Long-running community world and crypto theme park direction.</p>
+              </div>
+              <div>
+                <h3>Playable Site</h3>
+                <p>Vic's Quest turns the CV into an explorable route through systems, crypto, and worlds.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="career" class="career-data section" aria-label="Career record">
+        <div class="career-profile role-focus">
+          <span>Role Fit</span>
+          <h3>AI systems, automation, and venture tech</h3>
+          <p>
+            Best fit for roles that turn messy business workflows into working AI systems, internal
+            tools, automation, growth infrastructure, and practical venture-tech learning.
+          </p>
+          <h4>Strong matches</h4>
+          <ul class="career-list">
+            <li>AI Engineer or AI Solutions Engineer.</li>
+            <li>AI Integrator for teams that need practical automation.</li>
+            <li>Forward Deployed Engineer for automation-heavy teams.</li>
+            <li>Senior AI Systems Engineer for agent execution and orchestration.</li>
+            <li>Technical Lead for AI, automation, platform, and RevOps systems.</li>
+            <li>Head of AI or transformation lead for internal automation programs.</li>
+            <li>AI Product Engineer for internal tools, agent workflows, and local-first applications.</li>
+            <li>RevOps Automation Engineer for lead generation, enrichment, outreach, and routing systems.</li>
+            <li>Growth Engineer for distribution systems, content pipelines, and owned-audience loops.</li>
+            <li>Web3 Product Engineer for smart contracts, payments, reputation, and community products.</li>
+            <li>Developer Relations or technical community lead for AI, crypto, and startup ecosystems.</li>
+            <li>Venture builder or startup studio operator for MVP sprints and AI x crypto prototypes.</li>
+            <li>Entrepreneurship and tech lecturer or venture tech mentor.</li>
+          </ul>
+        </div>
+
+        <div class="proof-strip" aria-label="Selected career proof points">
+          <article>
+            <span>$10M</span>
+            <p>all-time-high market cap for a Polygon culture coin.</p>
+          </article>
+          <article>
+            <span>$200K+</span>
+            <p>raised from community supporters across projects.</p>
+          </article>
+          <article>
+            <span>$50K</span>
+            <p>Polygon grant received for ecosystem work.</p>
+          </article>
+          <article class="proof-workshops">
+            <span>Workshops</span>
+            <p>Hosted many workshops and Twitter Spaces for crypto and startup communities.</p>
+          </article>
+        </div>
+
+        <div class="career-thesis" aria-label="AI coordination thesis">
+          <p>AI matters economically when it reduces coordination across teams, tools, and decisions.</p>
+        </div>
+
+        <div class="career-profile">
+          <h3>Teaching and Workshops</h3>
+          <p>
+            I teach from operator experience: building ventures, launching communities, working with
+            AI automation, mapping tech stacks, and translating technical choices into growth,
+            positioning, and long-term strategy. I have hosted many workshops and Twitter Spaces,
+            which gives me practical experience explaining complex technology topics to founder audiences.
+          </p>
+        </div>
+
+        <div class="career-grid teaching-bubbles" aria-label="Teaching focus areas">
+          <article>
+            <h3>Tech strategy and growth</h3>
+            <p class="career-meta">Startup ecosystems / funnels / tech stacks / analytics</p>
+            <p>
+              I can teach entrepreneurs about community growth, platform thinking, funnels, APIs,
+              CRM-style automation, analytics, and AI operations to connect technology choices to
+              venture growth.
+            </p>
+          </article>
+          <article>
+            <h3>Tech trends and futures</h3>
+            <p class="career-meta">Trend radars / scenarios / systems thinking / responsible tech</p>
+            <p>
+              Facilitate emerging-tech analysis across AI, crypto, agentic commerce, x402, platform
+              shifts, local AI, and infrastructure using trend radars, weak signals, scenario
+              planning, responsible innovation, and systems thinking.
+            </p>
+          </article>
+          <article>
+            <h3>Venture tech capstone mentoring</h3>
+            <p class="career-meta">Audits / MVP sprints / strategy / reflective portfolios</p>
+            <p>
+              Mentor students through venture tech audits, MVP and automation sprints, masterclass
+              integration, reflective portfolios, and 6-12 month tech-for-growth strategies.
+            </p>
+          </article>
+        </div>
+
+        <div class="career-split">
+          <section aria-labelledby="teaching-methods-title">
+            <h3 id="teaching-methods-title">Teaching and Facilitation</h3>
+            <ul class="career-list">
+              <li>Workshop-style teaching around live venture challenges, not abstract technology lectures.</li>
+              <li>Experience hosting many workshops and Twitter Spaces for startup, crypto, and community audiences.</li>
+              <li>Tech stack audits covering tools, APIs, automations, data flows, scalability, and operational risk.</li>
+              <li>MVP and automation sprint coaching with demos, peer critique, and implementation checkpoints.</li>
+              <li>Portfolio assessment using evidence of strategic thinking, iteration, reflection, and practical execution.</li>
+              <li>Masterclass design across AI in business, platform ecosystems, crypto rails, and digital futures.</li>
+            </ul>
+          </section>
+          <section aria-labelledby="foresight-methods-title">
+            <h3 id="foresight-methods-title">Foresight and Responsible Tech</h3>
+            <ul class="career-list">
+              <li>Tech trend radar facilitation across AI, blockchain, agentic commerce, local models, XR, IoT, and platform shifts.</li>
+              <li>Weak signal detection from markets, open-source tools, startup products, protocol development, and online communities.</li>
+              <li>Scenario planning with possible, probable, and preferable futures for entrepreneurial decision-making.</li>
+              <li>Systems thinking using feedback loops, leverage points, incentives, externalities, and unintended consequences.</li>
+              <li>Responsible innovation discussions around sustainability, inclusion, privacy, automation, and platform power.</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="experience-timeline" aria-labelledby="timeline-title">
+          <h3 id="timeline-title">Experience Timeline</h3>
+          <article>
+            <span>2024 - Present</span>
+            <div>
+              <h4>AI systems builder and automation engineer</h4>
+              <p>
+                Building local-first AI applications, GPU-backed model workflows, agentic business
+                systems, content operations pipelines, marketplace search tools, and Kubernetes
+                infrastructure.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>2023 - Present</span>
+            <div>
+              <h4>Polygon ecosystem operator</h4>
+              <p>
+                Launched and grew Polygon-native community projects, including $GONE, community
+                fundraising, grant work, memes, launch mechanics, and on-chain culture experiments.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>2021 - 2024</span>
+            <div>
+              <h4>Crypto founder and product operator</h4>
+              <p>
+                Built through the Terra Luna cycle, NFT boom, Thirdweb tooling surfaces, token
+                communities, Discord worlds, minting systems, wallet flows, and crypto-native growth
+                loops.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>2019 - 2021</span>
+            <div>
+              <h4>Commerce founder</h4>
+              <p>
+                Launched Baguri, a Romanian independent-designer marketplace, and Spritzbox, a DIY
+                home cocktail delivery kit, while learning checkout, logistics, acquisition, and
+                creator operations from the inside.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>2017 - Present</span>
+            <div>
+              <h4>Crypto-native operator</h4>
+              <p>
+                Entered crypto by selling CS:GO skins for Bitcoin, then kept building across market
+                cycles, communities, NFTs, token launches, Solana tooling, Hyperliquid research, and
+                on-chain product experiments.
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <div class="career-profile worked-places">
+          <h3>Places &amp; Projects Worked With</h3>
+          <p class="worked-places-intro">
+            Selected places and projects worked with across AI, crypto, commerce, and creative
+            technology — plus 100+ other projects built, shipped, advised, or helped grow.
+          </p>
+          <div class="worked-place-grid" aria-label="Places and projects Victor has worked with">
+            <article>
+              <span>2021 cycle</span>
+              <h4><a href="https://www.terra.money/">Terra Luna</a></h4>
+              <p>Crypto product, community, and market-cycle experience during the Luna era.</p>
+            </article>
+            <article>
+              <span>2023 - Present</span>
+              <h4><a href="https://polygon.technology/">Polygon</a></h4>
+              <p>Community coin launch, grant work, culture campaigns, and ecosystem distribution.</p>
+            </article>
+            <article>
+              <span>Research / tooling</span>
+              <h4><a href="https://hyperliquid.xyz/">Hyperliquid</a></h4>
+              <p>Market-structure research, on-chain trading context, and crypto product tracking.</p>
+            </article>
+            <article>
+              <span>Web3 tooling</span>
+              <h4><a href="https://thirdweb.com/">Thirdweb</a></h4>
+              <p>NFT, wallet, contract, and minting tooling context across crypto builds.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="career-split">
+          <section aria-labelledby="stack-title">
+            <h3 id="stack-title">Current Stack</h3>
+            <ul class="pill-list">
+              <li>Kimi 2.6 open source</li>
+              <li>Qwen local models</li>
+              <li>GPT-2 experiments</li>
+              <li>Seedance</li>
+              <li>ComfyUI</li>
+              <li>ComfyUI workflow APIs</li>
+              <li>Glif agents</li>
+              <li>Cloudflare Workers</li>
+              <li>AWS</li>
+              <li>S3</li>
+              <li>EC2</li>
+              <li>Linux</li>
+              <li>Containers</li>
+              <li>Docker</li>
+              <li>Kubernetes</li>
+              <li>GPU runtimes</li>
+              <li>OpenClaw</li>
+              <li>WhatsApp automation</li>
+              <li>Uptime Kuma</li>
+              <li>Obsidian</li>
+              <li>Cron jobs</li>
+              <li>Reverse proxies</li>
+              <li>API endpoints</li>
+              <li>Auth layers</li>
+              <li>Private inference endpoints</li>
+              <li>Firecrawl</li>
+              <li>Supabase</li>
+              <li>Stripe</li>
+              <li>Agentmail</li>
+              <li>x402</li>
+              <li>ACP</li>
+              <li>AP2</li>
+              <li>ERC-8004</li>
+            </ul>
+          </section>
+          <section aria-labelledby="ai-skills-title">
+            <h3 id="ai-skills-title">AI Systems Skills</h3>
+            <ul class="pill-list">
+              <li>AI process architecture</li>
+              <li>Context engineering</li>
+              <li>Multi-agent orchestration</li>
+              <li>MCP server design</li>
+              <li>ComfyUI MCP integrations</li>
+              <li>Subagent systems</li>
+              <li>Background agents</li>
+              <li>Parallel agent execution</li>
+              <li>Headless agent teams</li>
+              <li>Agent routines</li>
+              <li>Agents managing agents</li>
+              <li>Self-improving loops</li>
+              <li>Eval-driven agent loops</li>
+              <li>Agents fixing their own tests</li>
+              <li>CI/CD run by agents</li>
+              <li>Dynamic agent workflows</li>
+              <li>Multi-repo orchestration</li>
+              <li>Skill-based agent workflows</li>
+              <li>AI-human workflow design</li>
+              <li>No-code system building</li>
+              <li>No-code AI workflow building</li>
+              <li>Training data curation</li>
+              <li>AI output quality control</li>
+              <li>Process mapping for automation</li>
+              <li>Strategic human judgment</li>
+              <li>Automation maintenance</li>
+              <li>Pattern recognition</li>
+              <li>Frontier agent evaluation</li>
+              <li>Agent workflow design</li>
+              <li>Tool orchestration</li>
+              <li>Retrieval workflow design</li>
+              <li>Knowledge base design</li>
+              <li>Company context design</li>
+              <li>System boundary design</li>
+              <li>Evaluation design</li>
+              <li>Quality review loops</li>
+              <li>Confidence thresholds</li>
+              <li>Escalation paths</li>
+              <li>Human review loops</li>
+              <li>Support copilot design</li>
+              <li>Meeting prep agents</li>
+              <li>Lead enrichment agents</li>
+              <li>Automated lead research</li>
+              <li>CRM scoring and routing</li>
+              <li>Personalized cold outreach pipelines</li>
+              <li>Recursive company operating loops</li>
+              <li>Content repurposing systems</li>
+              <li>Scheduling automation</li>
+              <li>Agent-ready product design</li>
+              <li>Machine-readable capability design</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="career-section-label">Best Use Cases of AI &amp; Agents</div>
+        <div class="career-grid">
+          <article>
+            <h3>AI infrastructure engineering</h3>
+            <p class="career-meta">Local models / GPU containers / Kubernetes / platform infrastructure</p>
+            <p>
+              Run models on GPUs through container runtimes, mount GPUs into Kubernetes pods,
+              work with platform infrastructure, and package local AI systems for privacy-sensitive
+              users such as law firms.
+            </p>
+          </article>
+          <article>
+            <h3>Zero-human-company orchestration</h3>
+            <p class="career-meta">Multi-agent workflows / cron jobs / business context</p>
+            <p>
+              Build company operating systems as file systems: business context, internal knowledge
+              bases, Obsidian second brains, automations, agents, cron jobs, monitoring, and human
+              review loops where needed.
+            </p>
+          </article>
+          <article>
+            <h3>AI x crypto products</h3>
+            <p class="career-meta">x402 / ACP / AP2 / micropayments / on-chain reputation</p>
+            <p>
+              Explore smart contract architecture, payment-enabled agents, x402-style tooling,
+              OpenAI and Stripe ACP, Google and Coinbase AP2, ERC-8004-style reputation, and
+              content around emerging crypto primitives.
+            </p>
+          </article>
+          <article>
+            <h3>Distribution engineering</h3>
+            <p class="career-meta">Marketing psychology / owned audiences / creator systems</p>
+            <p>
+              Pair product building with personal branding, community building, owned-audience
+              strategy, impactful writing, storytelling, and marketing systems that compound.
+            </p>
+          </article>
+        </div>
+
+        <div class="career-grid career-grid-compact">
+          <article>
+            <h3>AI process architecture</h3>
+            <p class="career-meta">Process mapping / context design / system boundaries</p>
+            <p>
+              Map existing business workflows, identify automation leverage points, design the
+              context each agent needs, and define where no-code systems are enough versus where
+              custom engineering is required.
+            </p>
+          </article>
+          <article>
+            <h3>AI output quality control</h3>
+            <p class="career-meta">Evaluation / review loops / reliability</p>
+            <p>
+              Create review steps, quality checks, confidence thresholds, and escalation paths so AI
+              systems produce usable work instead of just impressive demos.
+            </p>
+          </article>
+          <article>
+            <h3>Strategic human judgment</h3>
+            <p class="career-meta">Human-in-the-loop / risk / taste / leadership</p>
+            <p>
+              Separate repeatable work from judgment-heavy work, keeping sensitive decisions,
+              relationship moments, taste calls, and leadership responsibilities with people.
+            </p>
+          </article>
+          <article>
+            <h3>Lead generation and RevOps agents</h3>
+            <p class="career-meta">Research / enrichment / scoring / personalized outreach</p>
+            <p>
+              Build automated pipelines that research accounts, enrich and score prospects, create
+              personalized cold outreach, route replies, and use outcomes to improve targeting and
+              messaging on the next cycle.
+            </p>
+          </article>
+          <article>
+            <h3>Content operations pipelines</h3>
+            <p class="career-meta">YouTube repurposing / social / email / scheduling</p>
+            <p>
+              Build content pipelines that turn one YouTube link or long-form asset into ten
+              platform-ready posts, newsletters, short-form videos, and scheduled social content.
+            </p>
+          </article>
+          <article>
+            <h3>Internal second brains</h3>
+            <p class="career-meta">Company knowledge bases / world models / customer signal</p>
+            <p>
+              Create knowledge bases that get smarter over time by connecting operational context,
+              customer signals, documentation, and retrieval workflows so companies move as fast as
+              their information flows.
+            </p>
+          </article>
+          <article>
+            <h3>Operational copilots</h3>
+            <p class="career-meta">Support / meeting prep / workflow automation</p>
+            <p>
+              Scope customer support agents for common questions, meeting prep agents that research
+              attendees, and practical automations that reduce coordination costs inside the business.
+            </p>
+          </article>
+          <article>
+            <h3>Agent-ready products</h3>
+            <p>
+              Machine-readable capabilities, protocol-level pricing, automatable onboarding,
+              provable reliability, and API economics that make services faster, cheaper, or more
+              reliable than an agent computing the output itself.
+            </p>
+          </article>
+        </div>
+
+        <div class="career-profile">
+          <h3>Agent-Ready Product Architecture</h3>
+          <ul class="career-list">
+            <li>Machine-readable capabilities: structured manifests that explain what a service does in one request.</li>
+            <li>Pricing in the protocol: x402-style or HTTP 402-style payment flows that expose cost programmatically.</li>
+            <li>Agentic commerce protocols: ACP for agent-to-business checkout and AP2 for agent payments across traditional rails, stablecoins, and real-time transfers.</li>
+            <li>Automatable onboarding: programmatic authentication, payment, access, and provisioning.</li>
+            <li>Provable reliability: uptime, latency percentiles, accuracy metrics, and confidence scores.</li>
+            <li>API economics: services must be faster, cheaper, or more reliable than an agent computing the output itself.</li>
+          </ul>
+        </div>
+
+        <div class="career-profile">
+          <h3>Agentic Commerce Thesis</h3>
+          <p>
+            The internet is splitting in two: one surface for humans and one surface for agents.
+            I am interested in how to sell to AI agents, how agent-readable products get discovered,
+            priced, purchased, and trusted, and how popular human tools can be reimagined for agents.
+            Examples include <a href="https://www.agentmail.to/">Agentmail</a> as mail for agents,
+            content automation APIs, agent-ready marketplaces, and commerce protocols that let
+            agents transact without fragile browser work.
+          </p>
+          <ul class="career-list">
+            <li><a href="https://x402.org/">x402 tools</a>, <a href="https://eips.ethereum.org/EIPS/eip-8004">ERC-8004-style tools</a>, <a href="https://www.agenticcommerce.dev/">ACP</a>, <a href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol">AP2</a>, micropayments, on-chain reputation, and payment-enabled agents.</li>
+          </ul>
+        </div>
+
+        <div class="career-split">
+          <section aria-labelledby="technical-skills-title">
+            <h3 id="technical-skills-title">Technical Skills</h3>
+            <ul class="pill-list">
+              <li>AWS</li>
+              <li>S3</li>
+              <li>EC2</li>
+              <li>Linux</li>
+              <li>Containers</li>
+              <li>Kubernetes</li>
+              <li>GPU workloads</li>
+              <li>DevOps</li>
+              <li>Platform engineering</li>
+              <li>Security</li>
+              <li>Uptime Kuma</li>
+              <li>ComfyUI</li>
+              <li>Local LLMs</li>
+              <li>Qwen</li>
+              <li>Kimi</li>
+              <li>Cron jobs</li>
+              <li>Cloudflare Workers</li>
+              <li>Obsidian</li>
+              <li>Smart contracts</li>
+              <li>Solana tooling</li>
+              <li>x402</li>
+              <li>ERC-8004 concepts</li>
+              <li>Software architecture</li>
+              <li>Docker</li>
+              <li>Reverse proxies</li>
+              <li>API endpoints</li>
+              <li>Auth layers</li>
+              <li>Private inference endpoints</li>
+              <li>Monitoring</li>
+              <li>Context engineering</li>
+              <li>Multi-agent orchestration</li>
+              <li>Training data curation</li>
+              <li>Automation maintenance</li>
+              <li>Structured extraction</li>
+              <li>Direct HTML parsing</li>
+              <li>Marketplace search</li>
+              <li>Provider fallback design</li>
+              <li>Local scoring</li>
+              <li>Cost-aware systems</li>
+              <li>Stripe automation</li>
+              <li>Checkout flows</li>
+              <li>WhatsApp automation</li>
+              <li>ERC-20</li>
+              <li>ERC-721</li>
+              <li>ERC-1155</li>
+              <li>On-chain reputation</li>
+              <li>Micropayments</li>
+              <li>ACP</li>
+              <li>AP2</li>
+              <li>Polymarket tooling</li>
+              <li>Agent-readable manifests</li>
+              <li>Machine-readable APIs</li>
+              <li>Knowledge bases</li>
+            </ul>
+          </section>
+          <section aria-labelledby="product-skills-title">
+            <h3 id="product-skills-title">Product Skills</h3>
+            <ul class="pill-list">
+              <li>Growth hacking</li>
+              <li>Distribution engineering</li>
+              <li>Personal branding</li>
+              <li>Marketing psychology</li>
+              <li>Community building</li>
+              <li>Storytelling automation</li>
+              <li>Impactful writing</li>
+              <li>Leadership</li>
+              <li>Generative art</li>
+              <li>Music video automation</li>
+              <li>Creative agents</li>
+              <li>Lead generation automation</li>
+              <li>Cold outreach automation</li>
+              <li>Content pipelines</li>
+              <li>Owned audience strategy</li>
+              <li>Pitching</li>
+              <li>Grants</li>
+              <li>Technical writing</li>
+              <li>Low-debt software design</li>
+              <li>Startup strategy</li>
+              <li>Platform thinking</li>
+              <li>Marketplace design</li>
+              <li>Venture tech audits</li>
+              <li>MVP sprints</li>
+              <li>Automation sprints</li>
+              <li>Tech stack mapping</li>
+              <li>Funnel design</li>
+              <li>Customer journeys</li>
+              <li>Analytics feedback loops</li>
+              <li>Launch mechanics</li>
+              <li>Meme strategy</li>
+              <li>Referral loops</li>
+              <li>Community quests</li>
+              <li>Token launch strategy</li>
+              <li>Incentive design</li>
+              <li>Game economy design</li>
+              <li>Creator workflows</li>
+              <li>Designer onboarding</li>
+              <li>Influencer flows</li>
+              <li>Checkout flow design</li>
+              <li>Operational tooling</li>
+              <li>Workshop facilitation</li>
+              <li>Twitter Spaces</li>
+              <li>Masterclass delivery</li>
+              <li>Ecosystem partnerships</li>
+              <li>Grant positioning</li>
+              <li>AI product positioning</li>
+              <li>Agent-ready product strategy</li>
+              <li>API monetization</li>
+              <li>Responsible innovation</li>
+              <li>Systems thinking</li>
+              <li>Scenario planning</li>
+              <li>Tech trend analysis</li>
+              <li>AI search optimization</li>
+            </ul>
+          </section>
+        </div>
+
+      </section>
+
+      <section id="favorite-oss" class="oss-section section" aria-labelledby="favorite-oss-title">
+        <div class="oss-heading">
+          <h2 id="favorite-oss-title">Favorite OSS Projects</h2>
+        </div>
+
+        <div class="oss-grid">
+          <article><span>Go / 4,829 stars</span><h3>taigrr/spank</h3><p>MacBook accelerometer experiment for Apple Silicon using IOKit HID.</p><a href="https://github.com/taigrr/spank">GitHub</a></article>
+          <article><span>Swift / 9,589 stars</span><h3>palmier-io/palmier-pro</h3><p>macOS video editor built around AI workflows.</p><div class="oss-actions"><a href="https://palmier.io">Website</a><a href="https://github.com/palmier-io/palmier-pro">GitHub</a></div></article>
+          <article><span>Python / 79,417 stars</span><h3>pewdiepie-archdaemon/odysseus</h3><p>Self-hosted AI workspace for running an open local AI environment.</p><div class="oss-actions"><a href="https://pewdiepie-archdaemon.github.io/odysseus/">Website</a><a href="https://github.com/pewdiepie-archdaemon/odysseus">GitHub</a></div></article>
+          <article><span>TypeScript / 42,531 stars</span><h3>HeyPuter/puter</h3><p>Free, open-source, self-hostable internet computer environment.</p><div class="oss-actions"><a href="https://puter.com">Website</a><a href="https://github.com/HeyPuter/puter">GitHub</a></div></article>
+          <article><span>TypeScript / 434 stars</span><h3>b1rdmania/motif</h3><p>Game Boy MIDI synthesis engine for searching songs and generating 8-bit versions.</p><div class="oss-actions"><a href="https://wario.style">Website</a><a href="https://github.com/b1rdmania/motif">GitHub</a></div></article>
+          <article><span>Rust / 3,074 stars</span><h3>orhun/ratty</h3><p>GPU-rendered terminal emulator with inline 3D graphics.</p><div class="oss-actions"><a href="https://ratty-term.org/">Website</a><a href="https://github.com/orhun/ratty">GitHub</a></div></article>
+          <article><span>JavaScript / 2,496 stars</span><h3>mutonby/openshorts</h3><p>Open-source AI video platform for clips, shorts, and self-hosted creator workflows.</p><div class="oss-actions"><a href="https://www.openshorts.app/">Website</a><a href="https://github.com/mutonby/openshorts">GitHub</a></div></article>
+          <article><span>GitHub / Content automation</span><h3>FujiwaraChoki/MoneyPrinterV2</h3><p>Open-source content automation project for video generation and distribution experiments.</p><a href="https://github.com/FujiwaraChoki/MoneyPrinterV2">GitHub</a></article>
+          <article><span>JavaScript / 21,837 stars</span><h3>Anil-matcha/Open-Generative-AI</h3><p>Open-source image and video generation studio with many model integrations.</p><div class="oss-actions"><a href="https://muapi.ai/open-generative-ai?utm_source=github&amp;utm_medium=about&amp;utm_campaign=open-generative-ai">Website</a><a href="https://github.com/Anil-matcha/Open-Generative-AI">GitHub</a></div></article>
+          <article><span>Python / 8,769 stars</span><h3>zubair-trabzada/geo-seo-claude</h3><p>Claude Code skill for AI search optimization, citability, crawler analysis, and reports.</p><div class="oss-actions"><a href="https://www.skool.com/aiworkshop">Website</a><a href="https://github.com/zubair-trabzada/geo-seo-claude">GitHub</a></div></article>
+          <article><span>TypeScript / 72,253 stars</span><h3>paperclipai/paperclip</h3><p>Open-source app for managing agents at work.</p><div class="oss-actions"><a href="https://paperclip.ing">Website</a><a href="https://github.com/paperclipai/paperclip">GitHub</a></div></article>
+          <article><span>Python / 205,995 stars</span><h3>NousResearch/hermes-agent</h3><p>Agent framework from NousResearch focused on personal growth and long-running use.</p><div class="oss-actions"><a href="https://hermes-agent.nousresearch.com">Website</a><a href="https://github.com/NousResearch/hermes-agent">GitHub</a></div></article>
+          <article><span>TypeScript / 744 stars</span><h3>AgentWorkforce/relay</h3><p>Hosted messaging store and router for agent communication and retrieval.</p><div class="oss-actions"><a href="https://agentrelay.com">Website</a><a href="https://github.com/AgentWorkforce/relay">GitHub</a></div></article>
+          <article><span>TypeScript / 32,499 stars</span><h3>gitroomhq/postiz-app</h3><p>Agentic social media scheduling tool for publishing workflows.</p><div class="oss-actions"><a href="https://postiz.com">Website</a><a href="https://github.com/gitroomhq/postiz-app">GitHub</a></div></article>
+          <article><span>TypeScript / 51 stars</span><h3>zernio-dev/latewiz</h3><p>Open-source content scheduler powered by the Zernio API.</p><div class="oss-actions"><a href="https://latewiz.com">Website</a><a href="https://github.com/zernio-dev/latewiz">GitHub</a></div></article>
+          <article><span>TypeScript / 72 stars</span><h3>zernio-dev/zernflow</h3><p>Open-source ManyChat alternative for visual chatbot and social automation flows.</p><div class="oss-actions"><a href="https://zernflow.com">Website</a><a href="https://github.com/zernio-dev/zernflow">GitHub</a></div></article>
+          <article><span>TypeScript / 20,722 stars</span><h3>snarktank/ralph</h3><p>Autonomous AI agent loop that runs until product requirements are complete.</p><div class="oss-actions"><a href="https://x.com/ryancarson/status/2008548371712135632">Website</a><a href="https://github.com/snarktank/ralph">GitHub</a></div></article>
+          <article><span>Python / 94,435 stars</span><h3>hacksider/Deep-Live-Cam</h3><p>Real-time face swap and one-click video generation from a single image.</p><div class="oss-actions"><a href="https://deeplivecam.net/">Website</a><a href="https://github.com/hacksider/Deep-Live-Cam">GitHub</a></div></article>
+          <article><span>Python / 81 stars</span><h3>filliptm/Video-Caption-Suite</h3><p>Batch video captioning with a vision-language model.</p><a href="https://github.com/filliptm/Video-Caption-Suite">GitHub</a></article>
+          <article><span>Python / 128 stars</span><h3>filliptm/ComfyUI_FL-HeartMuLa</h3><p>ComfyUI nodes for multilingual AI music generation with lyrics.</p><a href="https://github.com/filliptm/ComfyUI_FL-HeartMuLa">GitHub</a></article>
+          <article><span>Python / 3,738 stars</span><h3>HeartMuLa/heartlib</h3><p>Open-source music generation model repository.</p><a href="https://github.com/HeartMuLa/heartlib">GitHub</a></article>
+          <article><span>TypeScript / 1,411 stars</span><h3>Nearcyan/vibecraft</h3><p>Experimental vibe-building project.</p><a href="https://github.com/Nearcyan/vibecraft">GitHub</a></article>
+          <article><span>TypeScript / 213 stars</span><h3>ilkerzg/ad-assets-generator</h3><p>Generator for ad assets and creative production experiments.</p><div class="oss-actions"><a href="https://ad-assets-generator-bice.vercel.app">Website</a><a href="https://github.com/ilkerzg/ad-assets-generator">GitHub</a></div></article>
+          <article><span>Python / 9,294 stars</span><h3>freemocap/freemocap</h3><p>Free motion capture tooling for accessible capture workflows.</p><div class="oss-actions"><a href="https://freemocap.org">Website</a><a href="https://github.com/freemocap/freemocap">GitHub</a></div></article>
+          <article><span>TypeScript / 45,278 stars</span><h3>KeygraphHQ/shannon</h3><p>Autonomous white-box AI pentester for web applications and APIs.</p><div class="oss-actions"><a href="https://keygraph.io/">Website</a><a href="https://github.com/KeygraphHQ/shannon">GitHub</a></div></article>
+          <article><span>TypeScript / 2,513 stars</span><h3>itshover/itshover</h3><p>Interactive icon system built around motion and intent.</p><div class="oss-actions"><a href="https://itshover.com">Website</a><a href="https://github.com/itshover/itshover">GitHub</a></div></article>
+          <article><span>Python / 287 stars</span><h3>dabit3/fabricate</h3><p>Research tool for fabricating GitHub personas with generated repositories.</p><a href="https://github.com/dabit3/fabricate">GitHub</a></article>
+          <article><span>TypeScript / 6,628 stars</span><h3>thewh1teagle/vibe</h3><p>Local transcription app for owning the transcription workflow.</p><div class="oss-actions"><a href="https://thewh1teagle.github.io/vibe/">Website</a><a href="https://github.com/thewh1teagle/vibe">GitHub</a></div></article>
+          <article><span>TypeScript / 749 stars</span><h3>TheOrcDev/warcraftcn-ui</h3><p>Accessible retro-inspired UI components for modern web and app interfaces.</p><div class="oss-actions"><a href="https://warcraftcn.com">Website</a><a href="https://github.com/TheOrcDev/warcraftcn-ui">GitHub</a></div></article>
+          <article><span>TypeScript / 171 stars</span><h3>0xGF/avatar-3d</h3><p>3D avatar project for web interfaces and experiments.</p><a href="https://github.com/0xGF/avatar-3d">GitHub</a></article>
+          <article><span>C++ / 1,050 stars</span><h3>flopperam/unreal-engine-mcp</h3><p>MCP integration for Unreal Engine agent workflows.</p><div class="oss-actions"><a href="https://www.tryaura.dev/?utm_source=youtube&amp;utm_medium=video&amp;utm_campaign=flop">Website</a><a href="https://github.com/flopperam/unreal-engine-mcp">GitHub</a></div></article>
+          <article><span>10,131 stars</span><h3>ZeroLu/awesome-nanobanana-pro</h3><p>Curated prompt examples and resources for Nano Banana pro image workflows.</p><div class="oss-actions"><a href="https://cyberbara.com/seedance2.0?utm_source=banana">Website</a><a href="https://github.com/ZeroLu/awesome-nanobanana-pro">GitHub</a></div></article>
+          <article><span>Python / 2,516 stars</span><h3>vita-epfl/Stable-Video-Infinity</h3><p>Infinite-length video generation research with error recycling.</p><div class="oss-actions"><a href="https://stable-video-infinity.github.io/homepage/">Website</a><a href="https://github.com/vita-epfl/Stable-Video-Infinity">GitHub</a></div></article>
+          <article><span>TypeScript / 18,654 stars</span><h3>elizaOS/eliza</h3><p>Open-source agentic operating system.</p><div class="oss-actions"><a href="https://elizaos.ai/">Website</a><a href="https://github.com/elizaOS/eliza">GitHub</a></div></article>
+          <article><span>HTML / 5,571 stars</span><h3>ultrasecurity/Storm-Breaker</h3><p>Security research tool for social-engineering awareness and device-signal testing.</p><div class="oss-actions"><a href="https://ultraamooz.com">Website</a><a href="https://github.com/ultrasecurity/Storm-Breaker">GitHub</a></div></article>
+          <article><span>TypeScript / 141,729 stars</span><h3>firecrawl/firecrawl</h3><p>API for search, scraping, and interacting with the web at scale.</p><div class="oss-actions"><a href="https://firecrawl.dev">Website</a><a href="https://github.com/firecrawl/firecrawl">GitHub</a></div></article>
+          <article><span>Python / 25,225 stars</span><h3>Anjok07/ultimatevocalremovergui</h3><p>GUI for vocal separation using deep neural networks.</p><a href="https://github.com/Anjok07/ultimatevocalremovergui">GitHub</a></article>
+          <article><span>HTML / 5,561 stars</span><h3>ngxson/smolvlm-realtime-webcam</h3><p>Real-time webcam demo with SmolVLM and a llama.cpp server.</p><div class="oss-actions"><a href="https://github.ngxson.com/smolvlm-realtime-webcam/">Website</a><a href="https://github.com/ngxson/smolvlm-realtime-webcam">GitHub</a></div></article>
+          <article><span>JavaScript / 658 stars</span><h3>l-portet/tiktok-warmup-bot</h3><p>TikTok account warmup automation experiment.</p><a href="https://github.com/l-portet/tiktok-warmup-bot">GitHub</a></article>
+          <article><span>Batchfile / 1,555 stars</span><h3>Tavris1/ComfyUI-Easy-Install</h3><p>Portable ComfyUI installer for Windows, macOS, and Linux.</p><a href="https://github.com/Tavris1/ComfyUI-Easy-Install">GitHub</a></article>
+          <article><span>TypeScript / 5,126 stars</span><h3>cloudflare/vibesdk</h3><p>Open-source vibe-coding platform built on the Cloudflare stack.</p><div class="oss-actions"><a href="https://build.cloudflare.dev">Website</a><a href="https://github.com/cloudflare/vibesdk">GitHub</a></div></article>
+          <article><span>TypeScript / 6,214 stars</span><h3>x402-foundation/x402</h3><p>HTTP-native payments protocol for the internet.</p><div class="oss-actions"><a href="https://x402.org">Website</a><a href="https://github.com/x402-foundation/x402">GitHub</a></div></article>
+          <article><span>GitHub / Prediction markets</span><h3>suhailkakar/prediction-market-starter-kit</h3><p>Starter kit for prediction-market products, market creation, trading flows, and crypto-native experiments.</p><a href="https://github.com/suhailkakar/prediction-market-starter-kit">GitHub</a></article>
+          <article><span>Python / 67,634 stars</span><h3>unslothai/unsloth</h3><p>Studio and tooling for training and running open models locally.</p><div class="oss-actions"><a href="https://unsloth.ai/docs">Website</a><a href="https://github.com/unslothai/unsloth">GitHub</a></div></article>
+          <article><span>GitLab / MIT</span><h3>here_forawhile/terminalphone</h3><p>Encrypted push-to-talk voice communication over Tor hidden services.</p><a href="https://gitlab.com/here_forawhile/terminalphone">GitLab</a></article>
+        </div>
+      </section>
+
+
+      <section class="social-end section" aria-label="Social links">
+        <a class="social-icon-link" href="https://x.com/Vicorico17" target="_blank" rel="noopener noreferrer" aria-label="Victor Cazacu on X">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.7l-5.2-6.8L5.6 22H2.3l7.7-8.8L1.8 2h6.8l4.7 6.2L18.9 2Zm-1.2 17.9h1.8L7.6 4H5.7l12 15.9Z" />
+          </svg>
+        </a>
+      </section>
+
     </main>
-    <footer><a class="brand" href="index.html">vicorico<span>.fun</span></a><p>Victor Cazacu · Bucharest, Romania</p><nav aria-label="More from Victor"><a href="lab.html">Lab</a><a href="https://github.com/Vicorico17">GitHub</a><a href="assets/victor-cazacu-cv.pdf">PDF CV</a><a href="game.html">Game CV</a></nav></footer>
+    <script src="site.js"></script>
   </body>
 </html>
