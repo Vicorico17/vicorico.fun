@@ -305,8 +305,19 @@ function githubFallback(node, message) {
 function renderLatestRepos(repos) {
   if (!latestReposNode) return;
 
+  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const orderedRepos = [...repos].sort(
+    (a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at),
+  );
+  const recentRepos = orderedRepos.filter(
+    (repo) => new Date(repo.pushed_at || repo.updated_at).getTime() >= thirtyDaysAgo,
+  );
+  const displayRepos = [...new Map(
+    [...recentRepos, ...orderedRepos.slice(0, 6)].map((repo) => [repo.id, repo]),
+  ).values()];
+
   latestReposNode.replaceChildren(
-    ...repos.slice(0, 6).map((repo) => {
+    ...displayRepos.map((repo) => {
       const article = document.createElement("article");
       article.className = "github-live-card";
 
