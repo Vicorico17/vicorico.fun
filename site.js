@@ -302,6 +302,29 @@ function githubFallback(node, message) {
   node.replaceChildren(fallback);
 }
 
+const githubProjectDescriptions = {
+  "studio-chat": "A macOS creative workspace that connects a local Codex chat flow to Logic Pro for music production, creative direction, and release planning.",
+  "vicorico.fun": "Personal operating system and project archive for Victor Cazacu’s AI, crypto, product, and venture work.",
+  distronow: "A distribution workspace for turning ideas and source material into repeatable content and audience workflows.",
+  homesports: "A sports product for following matches, teams, and community-driven football experiences.",
+  bestrestshop: "A commerce build for browsing products, making purchase decisions, and managing an online storefront.",
+  "LEGIT-AGENTIC": "A website and CLI audit toolkit for checking whether products are understandable and usable by software agents.",
+  squishy2brain: "A second-brain workspace for capturing knowledge, connecting context, and turning notes into useful action.",
+  LORO: "An experimental AI and automation project for coordinating tools, context, and repeatable work.",
+  "bvb.lol": "A read-only Bucharest Stock Exchange terminal for instruments, filings, dividend events, and market context.",
+  "tap-time": "A passive-NFC workplace attendance system that turns a tap into a secure, location-specific check-in or check-out.",
+  recomed: "A recommendation product exploring structured discovery and better decisions through personalized context.",
+  "neo-labs": "A local company operating system for running a venture studio through shared portfolio state and agent workflows.",
+  libergent: "An open-source workspace for connected AI tools, agents, and practical automation workflows.",
+  "BLACKSEA-DATACENTER": "An investor-facing concept for resilient offshore cloud infrastructure built from autonomous data-center vessels.",
+  ACLIENTI: "A customer-signal research desk that turns public evidence into ranked opportunities and practical briefs.",
+  finfin: "A financial-planning prototype that turns a structured personal profile into assumption-aware action plans.",
+  CARLY: "A voice-first daily companion exploring accessible routines, reminders, and supportive personal workflows.",
+  streamwin: "A streaming and distribution workspace for live content, audience workflows, and creator operations.",
+  REALSOUL: "A creative identity and content system for turning a personal point of view into an owned media presence.",
+  "magic-dev": "A developer productivity experiment for turning product intent into working software faster.",
+};
+
 function renderLatestRepos(repos) {
   if (!latestReposNode) return;
 
@@ -328,7 +351,9 @@ function renderLatestRepos(repos) {
       title.append(githubLink(repo.html_url, repo.name));
 
       const description = document.createElement("p");
-      description.textContent = repo.description || "Public GitHub repository in active development.";
+      description.textContent = repo.description
+        || githubProjectDescriptions[repo.name]
+        || `An active ${repo.language || "software"} project exploring ${repo.name}.`;
 
       const footer = document.createElement("footer");
       const updated = document.createElement("time");
