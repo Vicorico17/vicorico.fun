@@ -377,11 +377,11 @@ async function loadGithubActivity() {
   const headers = { Accept: "application/vnd.github+json" };
   const reposRequest = fetch(
     `https://api.github.com/users/${githubUser}/repos?sort=updated&direction=desc&per_page=100`,
-    { headers },
+    { headers, cache: "no-store" },
   );
   const eventsRequest = fetch(
     `https://api.github.com/users/${githubUser}/events/public?per_page=100`,
-    { headers },
+    { headers, cache: "no-store" },
   );
 
   try {
