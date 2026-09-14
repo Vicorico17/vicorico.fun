@@ -314,6 +314,8 @@ const githubProjectDescriptions = {
   "bvb.lol": "A read-only Bucharest Stock Exchange terminal for instruments, filings, dividend events, and market context.",
   "tap-time": "A passive-NFC workplace attendance system that turns a tap into a secure, location-specific check-in or check-out.",
   recomed: "A recommendation product exploring structured discovery and better decisions through personalized context.",
+  EZjobs: "A responsive job-discovery and quick-apply prototype with search, filters, saved roles, fit indicators, and streamlined applications.",
+  peptiderico: "An early-stage project exploring a new peptide-focused product experience.",
   "neo-labs": "A local company operating system for running a venture studio through shared portfolio state and agent workflows.",
   libergent: "An open-source workspace for connected AI tools, agents, and practical automation workflows.",
   "BLACKSEA-DATACENTER": "An investor-facing concept for resilient offshore cloud infrastructure built from autonomous data-center vessels.",
