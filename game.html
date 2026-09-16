@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta
       name="description"
-      content="Play Vic's Quest, an interactive platformer CV for AI infrastructure, cloud engineering, crypto tooling, and creative automation."
+      content="Play Vic's Quest, an interactive 3D CV: cross seven castles, collect artifacts, and reconnect a world of AI infrastructure, crypto rails, creative automation, and game worlds."
     >
     <title>Vic's Quest | vicorico.fun</title>
     <link rel="icon" href="assets/vicorico-mark.svg" type="image/svg+xml">
@@ -21,18 +21,19 @@
     </header>
 
     <main class="game-shell">
-      <div class="game-stage">
+      <div class="game-stage" data-game-stage data-phase="intro">
         <canvas id="game" aria-label="Vic's Quest 3D CV game"></canvas>
         <div class="game-hud" aria-live="polite">
           <div class="hud-topline">
             <div>
               <p class="hud-kicker">Vic's Quest 3D</p>
-              <strong data-game-zone>Entering the map</strong>
+              <strong data-game-zone>Vic's Quest</strong>
             </div>
             <div class="hud-progress" aria-label="Game CV progress">
-              <div class="hud-stats" aria-label="Combat status">
+              <div class="hud-stats" aria-label="Objective status">
                 <span class="hud-stat" title="Mobs remaining"><b aria-hidden="true">◆</b><i data-game-mobs>0</i></span>
-                <span class="hud-stat" title="Health"><b aria-hidden="true">♥</b><i data-game-health>100</i></span>
+                <span class="hud-stat hud-stat-nodes" title="Objective pieces remaining"><b aria-hidden="true">⬢</b><i data-game-nodes>0</i></span>
+                <span class="hud-stat hud-stat-health" title="Health"><b aria-hidden="true">♥</b><i data-game-health>100</i></span>
               </div>
               <div class="hud-health-track" aria-label="Health bar">
                 <i data-game-health-bar></i>
@@ -43,10 +44,11 @@
               </div>
             </div>
           </div>
+          <p class="hud-toast is-hidden" data-game-toast></p>
           <article class="hud-card is-hidden" data-game-card>
-            <p data-game-card-kicker>Current World</p>
+            <p data-game-card-kicker>Chapter</p>
             <h1 data-game-card-title>Follow The Road</h1>
-            <p data-game-card-copy>Fight the mobs before each castle, then walk into the ring to unlock the next category.</p>
+            <p data-game-card-copy>Clear the forecourt of each castle, then walk through the open gate.</p>
             <ul data-game-card-list>
               <li>WASD or arrows to move</li>
               <li>Space or E to attack</li>
@@ -54,28 +56,81 @@
             </ul>
           </article>
         </div>
+
         <aside class="pc-controls-panel" aria-label="PC controls">
           <p>PC Controls</p>
           <ul>
             <li><kbd>WASD</kbd> / <kbd>Arrows</kbd> Move</li>
             <li><kbd>Space</kbd> / <kbd>E</kbd> Attack</li>
             <li><kbd>Q</kbd> Switch <span data-game-weapon>Sword</span></li>
+            <li><kbd>1</kbd>–<kbd>3</kbd> Choose artifact</li>
             <li><kbd>R</kbd> Reset</li>
             <li><kbd>F</kbd> Fullscreen</li>
           </ul>
         </aside>
+
         <div class="touch-controls" aria-label="Touch game controls">
-          <div class="touch-cluster movement-controls">
-            <button class="touch-button dpad-button" type="button" data-game-key="ArrowLeft" aria-label="Move left">←</button>
-            <button class="touch-button dpad-button" type="button" data-game-key="ArrowUp" aria-label="Move forward">↑</button>
-            <button class="touch-button dpad-button" type="button" data-game-key="ArrowRight" aria-label="Move right">→</button>
+          <div class="joystick" data-game-joystick role="application" aria-label="Virtual joystick. Drag to move.">
+            <div class="joystick-base" aria-hidden="true">
+              <span class="joystick-arrow is-up">▲</span>
+              <span class="joystick-arrow is-right">▶</span>
+              <span class="joystick-arrow is-down">▼</span>
+              <span class="joystick-arrow is-left">◀</span>
+            </div>
+            <div class="joystick-knob" data-game-joystick-knob aria-hidden="true"></div>
           </div>
           <div class="touch-cluster action-controls">
-            <button class="touch-button start-button" type="button" data-game-tap="Reset" aria-label="Reset position">RESET</button>
+            <button class="touch-button start-button" type="button" data-game-tap="Reset" aria-label="Reset the quest">RESET</button>
             <button class="touch-button weapon-button" type="button" data-game-tap="Weapon" aria-label="Switch weapon">SWORD</button>
             <button class="touch-button attack-button" type="button" data-game-tap="Attack" aria-label="Attack mobs">ATTACK</button>
-            <button class="touch-button dpad-button" type="button" data-game-key="ArrowDown" aria-label="Move backward">↓</button>
           </div>
+        </div>
+
+        <div class="game-overlay" data-game-overlay>
+          <section class="game-panel game-intro" data-game-intro role="dialog" aria-modal="true" aria-labelledby="intro-title">
+            <p class="panel-kicker">Vic's Quest</p>
+            <h1 id="intro-title">The systems have become fragmented.</h1>
+            <p>Cross seven castles and reconnect the world. In every castle, choose one artifact to carry to the end.</p>
+            <div class="panel-actions">
+              <button class="panel-button primary" type="button" data-game-start>Begin the quest</button>
+            </div>
+            <p class="panel-hint">Move with WASD, the arrow keys, or the joystick. Space or Attack fights. Walk into things to collect them.</p>
+          </section>
+
+          <section class="game-panel game-discovery is-hidden" data-game-discovery role="dialog" aria-modal="true" aria-labelledby="discovery-title">
+            <p class="panel-kicker" data-discovery-kicker>Chapter 1</p>
+            <h2 id="discovery-title" data-discovery-title>Choose one artifact</h2>
+            <p data-discovery-intro>Three artifacts from this chapter. Pick one to carry to the end.</p>
+            <div class="artifact-choices" data-discovery-choices></div>
+            <div class="artifact-reveal is-hidden" data-discovery-reveal>
+              <p class="panel-kicker">Artifact collected</p>
+              <h3 data-reveal-title>Artifact</h3>
+              <p data-reveal-copy></p>
+              <div class="panel-actions">
+                <button class="panel-button primary" type="button" data-discovery-continue>Continue the quest</button>
+                <a class="panel-button" data-reveal-link href="index.html" target="_blank" rel="noopener">Open the project</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="game-panel game-ending is-hidden" data-game-ending role="dialog" aria-modal="true" aria-labelledby="ending-title">
+            <p class="panel-kicker">Quest complete</p>
+            <h2 id="ending-title">The world is reconnected.</h2>
+            <p data-ending-summary></p>
+            <div class="panel-actions">
+              <a class="panel-button primary" href="index.html#proof">View selected projects</a>
+              <a class="panel-button" href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">Download PDF CV</a>
+              <a class="panel-button" href="index.html">Return to the main site</a>
+              <button class="panel-button ghost" type="button" data-game-restart>Play again</button>
+            </div>
+            <p class="panel-kicker panel-kicker-spaced">Your artifacts</p>
+            <ul class="artifact-collection" data-ending-artifacts></ul>
+            <div class="panel-social" aria-label="Contact and social links">
+              <span>Say hello</span>
+              <a href="https://x.com/Vicorico17" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+              <a href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </section>
         </div>
       </div>
     </main>
