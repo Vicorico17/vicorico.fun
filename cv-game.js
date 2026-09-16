@@ -3836,6 +3836,8 @@ if (joystickNode && joystickKnobNode) {
     measureJoystick();
     setJoystickFromEvent(event);
   });
+  document.addEventListener("fullscreenchange", () => releaseJoystick());
+  window.addEventListener("resize", () => releaseJoystick());
   const endJoystick = (event) => {
     if (!state.joystick.active || event.pointerId !== state.joystick.pointerId) return;
     event.preventDefault();
