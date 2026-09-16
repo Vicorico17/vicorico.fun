@@ -1,106 +1,82 @@
-# Vic's Quest — Future Game Improvements
+# Vic's Quest — Roadmap & Status
 
-This file is a planning document only. These ideas are not currently implemented.
+This document tracks the Game CV (`game.html`, `cv-game.js`, `cv-game.css`). The first seven priorities from the original plan are now implemented; the notes below describe what shipped and what is still open.
 
 ## Main Direction
 
 Turn the Game CV from a combat corridor with portfolio cards into a short interactive story. Keep the existing world, castles, combat, and visual style, but give every action more meaning.
 
-## Priority 1 — Interactive Castle Artifacts
+## Implemented
 
-After entering a castle, let the player choose one of three artifacts connected to that subject.
+### Priority 1 — Interactive Castle Artifacts ✅
 
-Example for the AI Systems Castle:
+- After the forecourt objective is complete, walking into a castle opens a **Discovery** panel with exactly three artifacts for that chapter.
+- Choosing an artifact reveals one short real-world example, adds it to the player's collection, and offers a link to the related project or portfolio section (opens in a new tab so the run is not lost).
+- Every artifact carries a tag (infra, agents, revops, community, markets, commerce, product, creative, worlds). The ending summary is generated from the tags the player collected.
+- Keyboard: `1`–`3` choose, arrow keys move focus, `Enter`/`Space` continue. Mouse and touch work on the buttons directly.
+- Artifacts per castle (all copy lives in the `castles` array in `cv-game.js`):
+  - AI Systems: Model Deployment, Private AI (Neo Labs), Agent Workflows (Masscall)
+  - Automation: Lead Enrichment (AClienti), Distribution Pipeline (DistroNow), Self-Improving Loop
+  - Crypto Rails: Community Coin ($GONE), Prediction Market (BJJ Predict / Marketz.ro), Agent Payments (REALSOUL)
+  - Places & Projects: Terra Luna Cycle, Polygon Grant, Hyperliquid & Thirdweb
+  - Creative Factory: Clip Engine (ClipRO), AI Artist Catalog (AutoArt / Studio Chat), Live Studio (Streamwin)
+  - Projects: libergent, TapTime, bvb.lol
+  - Game Worlds: Arkadia Park, Esports Signal (HomeSports / Sprite LoL), Playable Portfolio (this game)
 
-- Model Deployment
-- Private AI
-- Agent Workflows
+### Priority 2 — Opening Story ✅
 
-Choosing an artifact should:
+- A three-line intro panel: "The systems have become fragmented. Cross seven castles and reconnect the world. In every castle, choose one artifact to carry to the end."
+- The player can begin immediately: the Begin button, `Enter`, `Space`, any movement key, the joystick, or the Attack button all start the run.
 
-1. Reveal one short real-world example.
-2. Add the artifact to the player's collection.
-3. Optionally link to the related project or portfolio section.
-4. Change the final summary based on what the player collected.
+### Priority 3 — Mobile Joystick ✅
 
-This is the strongest next improvement because it makes the portfolio genuinely interactive without requiring a different minigame for every castle.
+- The four directional buttons are replaced by an analog virtual joystick (bottom-left).
+- Drag in any direction to move; speed follows the drag distance (with a small dead zone); the knob springs back to the center on release.
+- Attack, Weapon, and Reset remain separate buttons (bottom-right).
+- WASD and arrow keys are unchanged on desktop. Layout adapts to portrait, landscape, and very short viewports.
 
-## Priority 2 — Opening Story
+### Priority 4 — Castle-Specific Objectives ✅
 
-Add a concise reason for the journey before combat begins.
+Every forecourt has three collectible pieces among the mobs. The mechanic is the same everywhere (walk into them); the shape, wording, and layout change per castle. The gate opens only when the mobs are cleared **and** the pieces are collected.
 
-Possible opening:
+- AI Systems: reconnect the model nodes (octahedra)
+- Automation: repair the broken workflow (gear steps)
+- Crypto Rails: unlock the transaction path (diamond keys)
+- Places & Projects: recover tools from past ecosystems (crates)
+- Creative Factory: collect the media fragments (film frames)
+- Projects: gather the build blueprints (scrolls)
+- Game Worlds: complete the player loop (orbiting loop tokens)
 
-> The systems have become fragmented.
-> Cross seven castles and reconnect the world.
+Collecting the last piece fires light beams from the pieces to the gate.
 
-Keep the introduction to two or three lines and let the player begin immediately.
+### Priority 5 — Stronger Castle Presentation ✅
 
-## Priority 3 — Mobile Joystick
+- HUD cards use "Chapter N" and the panel uses "Discovery"; "Castle Data" is gone.
+- Every castle introduction is two short sentences; every discovery prompt is one line.
+- Never more than three choices at once.
+- The castle name appears on the world label and in the discovery kicker; the HUD zone line shows the current objective or road instead.
+- Completed castles light up: accent roofs and caps glow, the icon brightens, and a light column rises above the castle.
 
-Replace the mobile directional buttons with an analog-style virtual joystick.
+### Priority 6 — Cleaner Combat Feedback ✅
 
-Requirements:
+- The trigger ring around a castle is hidden until the gate is open. A sword reach ring appears only during a swing.
+- Mobs spawn hit sparks when struck and burst into particles with a ground pulse when defeated.
+- Gates slide down with a particle burst and pulse when the objective is complete.
+- Enemies carry a castle-specific ornament (antenna, gear halo, gem, banner, film frame, wrench, pixel crown) and a body tint in the castle colour.
+- Combat is quicker: brute and sentinel health reduced by one. Falling in combat now respawns at the current forecourt with full health and keeps all progress instead of restarting the whole run.
+- A toast line under the HUD surfaces game messages that previously were computed but never shown.
 
-- Drag in any direction to move.
-- Movement speed follows the joystick distance.
-- The joystick returns to the center when released.
-- Keep Attack, Weapon, and Reset as separate buttons.
-- Preserve WASD and arrow-key controls on desktop.
-- Ensure the controls remain usable in portrait and landscape modes.
+### Priority 7 — Better Ending ✅
 
-## Priority 4 — Castle-Specific Objectives
+After the final castle the ending panel shows the collected artifacts (each with its link), a personalised summary generated from the artifact tags, and actions: View selected projects, Download PDF CV, Return to the main site, Play again, plus X and GitHub links.
 
-Give each castle a lightweight objective connected to its subject while reusing the current game systems.
+## Still Open / Ideas
 
-- AI Systems: reconnect model nodes.
-- Automation: repair a broken workflow.
-- Crypto Rails: unlock a transaction path.
-- Worked With: recover tools from previous ecosystems.
-- Creative Factory: collect story or media fragments.
-- Projects: choose a build artifact to inspect.
-- Game Worlds: complete the final player loop.
-
-These should be short interactions, not seven completely different games.
-
-## Priority 5 — Stronger Castle Presentation
-
-- Use “Chapter” or “Discovery” instead of “Castle Data.”
-- Keep every story introduction to two short sentences.
-- Show no more than three choices at once.
-- Avoid repeating the castle name across the HUD, world label, and card.
-- Make completed castles visually change or light up.
-
-## Priority 6 — Cleaner Combat Feedback
-
-- Hide the large attack-range circle until it is useful.
-- Give mobs clearer hit and defeat feedback.
-- Add a brief gate-opening animation after the final mob is defeated.
-- Use different colors or small visual traits for castle-specific enemies.
-- Keep combat quick so it does not delay the portfolio content.
-
-## Priority 7 — Better Ending
-
-After the final castle, show:
-
-- The artifacts selected by the player.
-- A short personalized summary based on those choices.
-- View Selected Projects.
-- Download PDF CV.
-- Return to the Main Site.
-- Contact or social links.
-
-The ending should give the player a meaningful next action instead of only confirming completion.
-
-## Suggested Implementation Order
-
-1. Add the opening story.
-2. Add the mobile joystick.
-3. Build the reusable artifact-selection interface.
-4. Write three artifacts for every castle.
-5. Connect artifacts to real projects and portfolio sections.
-6. Add castle-specific visual objectives.
-7. Improve combat feedback and the final reward screen.
+- Sound effects and a short music loop (with a mute toggle).
+- Persist the collection in `localStorage` so a refresh mid-run does not lose artifacts.
+- A shareable ending (copy a summary line or image).
+- Per-castle mini-interactions beyond collecting pieces, if playtesting shows the loop needs more variety.
+- Analytics events for artifact choices (Plausible is already on the main site).
 
 ## Scope Guardrails
 
@@ -110,3 +86,7 @@ The ending should give the player a meaningful next action instead of only confi
 - Make portfolio evidence more important than combat difficulty.
 - Keep desktop, mobile, keyboard, and touch controls supported.
 - Treat the game as an optional memorable path through the portfolio, not the only way to access important information.
+
+## Testing Notes
+
+`cv-game.js` exposes two hooks for automated playthroughs: `window.advanceTime(ms)` steps the simulation, and `window.render_game_to_text()` returns the phase, player position, live mob and objective positions, collected artifacts, and progress as JSON. Because the game is an ES module, serve the folder over HTTP (for example `python3 -m http.server 8765`) rather than opening `game.html` from the file system.
