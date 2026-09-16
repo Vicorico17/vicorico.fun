@@ -76,7 +76,7 @@
   inset: 0;
   z-index: 2;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   pointer-events: none;
   padding: 92px 24px 24px;
 }
@@ -440,7 +440,7 @@
 
 .panel-button:focus-visible,
 .artifact-choice:focus-visible,
-.hud-chip-button:focus-visible {
+.hud-cv-button:focus-visible {
   outline: 2px solid var(--castle-color, #ffffff);
   outline-offset: 3px;
 }
@@ -468,6 +468,11 @@
   border-color: rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
+}
+
+.panel-button.danger {
+  border-color: rgba(251, 113, 133, 0.7);
+  background: rgba(251, 113, 133, 0.18);
 }
 
 .artifact-choices {
@@ -647,12 +652,22 @@
 .action-controls {
   grid-column: 3;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
   grid-template-areas:
-    "reset weapon"
+    "weapon weapon"
     "attack attack";
   gap: 0.5rem;
   justify-items: stretch;
+}
+
+.game-stage[data-dash="true"] .action-controls {
+  grid-template-areas:
+    "weapon weapon"
+    "dash attack";
+}
+
+.game-stage[data-dash="false"] .dash-button {
+  display: none;
 }
 
 .touch-button {
@@ -684,15 +699,6 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-.start-button {
-  grid-area: reset;
-  min-width: 4.4rem;
-  background:
-    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.5), transparent 28%),
-    rgba(109, 78, 162, 0.52);
-  font-size: 0.74rem;
-}
-
 .weapon-button {
   grid-area: weapon;
   min-width: 4.4rem;
@@ -700,6 +706,20 @@
     radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.5), transparent 28%),
     rgba(244, 191, 69, 0.56);
   font-size: 0.74rem;
+}
+
+.dash-button {
+  grid-area: dash;
+  min-height: 4.6rem;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.45), transparent 28%),
+    conic-gradient(from -90deg, rgba(139, 211, 255, 0.78) calc(var(--cd, 1) * 1turn), rgba(139, 211, 255, 0.18) 0);
+  font-size: 0.82rem;
+  transition: opacity 160ms ease;
+}
+
+.dash-button.is-cooling {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .attack-button {
@@ -924,7 +944,6 @@
     min-height: 3.1rem;
   }
 
-  .start-button,
   .weapon-button {
     min-width: 4rem;
     font-size: 0.68rem;
@@ -968,6 +987,10 @@
     margin-top: 8px;
   }
 
+  .hud-card li:nth-child(n + 3) {
+    display: none;
+  }
+
   .joystick {
     width: 7.2rem;
     height: 7.2rem;
@@ -995,6 +1018,412 @@
   .game-panel h1,
   .game-panel h2 {
     font-size: 1.4rem;
+  }
+}
+
+
+/* HUD chips: build, weapon, dash cooldown */
+
+.hud-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.hud-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.86);
+  font: 850 0.72rem/1 Inter, ui-sans-serif, system-ui, sans-serif;
+  padding: 0 0.6rem;
+  white-space: nowrap;
+}
+
+.hud-chip b {
+  position: relative;
+  font-weight: 900;
+}
+
+.hud-chip i {
+  font-style: normal;
+}
+
+.hud-chip-dash {
+  border-color: rgba(139, 211, 255, 0.45);
+}
+
+.hud-chip-dash.is-hidden {
+  display: none;
+}
+
+.hud-chip-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: rgba(139, 211, 255, 0.32);
+  transform-origin: left center;
+  transform: scaleX(1);
+  transition: transform 90ms linear;
+}
+
+.hud-chip-dash.is-ready {
+  border-color: rgba(139, 211, 255, 0.9);
+}
+
+.hud-boss {
+  justify-self: center;
+  display: grid;
+  gap: 5px;
+  width: min(520px, 100%);
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid rgba(192, 132, 252, 0.45);
+  border-radius: 8px;
+  background: rgba(5, 7, 12, 0.6);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(18px);
+  transition: opacity 200ms ease;
+}
+
+.hud-boss.is-hidden {
+  display: none;
+}
+
+.hud-boss span {
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.hud-boss-track {
+  width: 100%;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.hud-boss-track b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #c084fc, #fb7185);
+  transition: width 160ms ease;
+}
+
+.hud-boss span i {
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: normal;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.pc-locked {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Panels: role line, reveal lines, unlock block, build lists */
+
+.panel-role {
+  margin: 0 0 10px !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+  font-weight: 650;
+}
+
+.panel-role strong {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.reveal-line {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: start;
+  margin-top: 8px !important;
+}
+
+.reveal-label {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  width: max-content;
+  min-height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 0 0.5rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.reveal-unlock {
+  margin-top: 14px;
+  border: 1px solid rgba(139, 211, 255, 0.45);
+  border-radius: 10px;
+  background: rgba(139, 211, 255, 0.1);
+  padding: 12px 14px;
+}
+
+.reveal-unlock.is-hidden {
+  display: none;
+}
+
+.reveal-unlock h3 {
+  margin-bottom: 4px;
+}
+
+.artifact-choice small {
+  grid-area: cv;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.8rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.artifact-choice {
+  min-height: 64px;
+  grid-template-areas:
+    "key lane"
+    "key title"
+    "key teaser"
+    "key cv";
+}
+
+.artifact-lane {
+  grid-area: lane;
+  display: inline-block;
+  color: var(--castle-color, #8bd3ff);
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.build-list,
+.role-list {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.build-list li,
+.role-list li {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 4px solid var(--castle-color, rgba(139, 211, 255, 0.8));
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.4;
+  padding: 8px 12px;
+}
+
+.build-list li b,
+.role-list li b {
+  display: block;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.build-list li span {
+  display: block;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.build-list li.is-empty {
+  border-left-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.role-list li b {
+  display: inline;
+  margin-right: 6px;
+}
+
+.game-stage[data-phase="cv"] .touch-controls {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.game-stage[data-phase="cv"] .hud-card {
+  opacity: 0;
+}
+
+@media (max-width: 760px), (pointer: coarse) {
+  .hud-chips {
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .hud-chip {
+    min-height: 22px;
+    font-size: 0.66rem;
+    padding: 0 0.5rem;
+  }
+
+  .hud-boss {
+    margin-top: 8px;
+    padding: 6px 10px;
+  }
+
+  .dash-button {
+    min-height: 4.1rem;
+  }
+}
+
+@media (max-height: 460px) and (pointer: coarse) {
+  .hud-chips {
+    display: none;
+  }
+
+  .dash-button,
+  .attack-button {
+    min-height: 3.6rem;
+  }
+}
+
+
+/* CV button inside the progress box */
+
+.hud-cv-button {
+  display: grid;
+  gap: 2px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  cursor: pointer;
+  font: 900 0.86rem/1.1 Inter, ui-sans-serif, system-ui, sans-serif;
+  padding: 6px 10px;
+  pointer-events: auto;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hud-cv-button small {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.hud-cv-button:hover,
+.hud-cv-button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.hud-health-track.is-low i {
+  background: linear-gradient(90deg, #fb7185, #f97316);
+}
+
+/* Screen-edge flash when the player is hurt */
+
+.game-stage.is-hurt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: inset 0 0 90px rgba(251, 113, 133, 0.55);
+  animation: hurtFlash 320ms ease-out forwards;
+}
+
+@keyframes hurtFlash {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* Reveal blocks and panel notes */
+
+.reveal-grid {
+  display: grid;
+  gap: 4px;
+}
+
+.panel-note {
+  margin-top: 8px !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 0.8rem;
+}
+
+.panel-summary {
+  margin-top: 14px !important;
+}
+
+.panel-actions-quiet {
+  margin-top: 10px;
+}
+
+.build-list li .artifact-lane,
+.artifact-collection li .artifact-lane {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.artifact-collection li strong {
+  flex-basis: 100%;
+}
+
+.artifact-collection li .artifact-lane {
+  flex-basis: 100%;
+  margin-bottom: 0;
+}
+
+@media (min-width: 620px) {
+  .reveal-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .reveal-line {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
+}
+
+@media (max-width: 760px), (pointer: coarse) {
+  .hud-kicker {
+    display: none;
+  }
+
+  .hud-cv-button {
+    min-height: 44px;
+  }
+
+  .hud-cv-button small {
+    display: none;
   }
 }
 
