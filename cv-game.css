@@ -76,7 +76,7 @@
   inset: 0;
   z-index: 2;
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto minmax(0, 1fr);
   pointer-events: none;
   padding: 92px 24px 24px;
 }
@@ -224,6 +224,8 @@
   margin: 0 auto 0 0;
   padding: clamp(16px, 2.8vw, 24px);
   border-left: 4px solid var(--castle-color, rgba(255, 255, 255, 0.4));
+  max-height: 100%;
+  overflow: hidden;
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
@@ -388,7 +390,15 @@
   line-height: 1.45;
 }
 
-.panel-kicker-spaced {
+.game-panel .panel-kicker {
+  margin: 0 0 4px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.game-panel .panel-kicker-spaced {
   margin-top: 18px;
 }
 
@@ -426,7 +436,13 @@
 .panel-button:focus-visible {
   border-color: rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.18);
-  outline: none;
+}
+
+.panel-button:focus-visible,
+.artifact-choice:focus-visible,
+.hud-chip-button:focus-visible {
+  outline: 2px solid var(--castle-color, #ffffff);
+  outline-offset: 3px;
 }
 
 .panel-button.primary {
@@ -447,14 +463,17 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.panel-button.ghost:hover,
+.panel-button.ghost:focus-visible {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
 .artifact-choices {
   display: grid;
   gap: 8px;
   margin-top: 16px;
-}
-
-.artifact-choices.is-hidden {
-  display: none;
 }
 
 .artifact-choice {
@@ -503,7 +522,6 @@
 .artifact-choice:focus-visible {
   border-color: var(--castle-color, #ffffff);
   background: rgba(255, 255, 255, 0.13);
-  outline: none;
   transform: translateX(2px);
 }
 
@@ -624,11 +642,6 @@
 .game-stage[data-phase="ending"] .hud-card,
 .game-stage[data-phase="intro"] .hud-card {
   opacity: 0;
-}
-
-.touch-cluster {
-  display: flex;
-  gap: 0.55rem;
 }
 
 .action-controls {
@@ -867,10 +880,6 @@
   .pc-controls-panel {
     display: none;
   }
-
-  :fullscreen .touch-controls {
-    display: grid;
-  }
 }
 
 @media (max-width: 420px) {
@@ -979,12 +988,18 @@
   }
 
   .game-panel {
-    max-height: calc(100dvh - 64px);
+    max-height: calc(100dvh - 64px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     padding: 14px 16px;
   }
 
   .game-panel h1,
   .game-panel h2 {
     font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .hud-card p:last-of-type {
+    display: none;
   }
 }

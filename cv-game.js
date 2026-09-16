@@ -69,7 +69,7 @@ const castles = [
         teaser: "Local-first models over company knowledge",
         tag: "infra",
         example:
-          "Neo Labs is a local company operating system: privacy-aware, local-first AI over Obsidian second brains and retrieval workflows for sensitive professional context.",
+          "Neo Labs is a local company operating system for running a venture studio: a portfolio dashboard, agent workflows, and portable, versioned company state that stays on your own machine.",
         link: { label: "Open Neo Labs on GitHub", href: "https://github.com/Vicorico17/neo-labs" },
       },
       {
@@ -103,7 +103,7 @@ const castles = [
         teaser: "Research, score, and route leads",
         tag: "revops",
         example:
-          "AClienti turns recent public customer signals into ranked opportunities and practical content direction, the research desk behind RevOps agents that enrich, score, and route leads into the CRM.",
+          "AClienti is an evidence-backed research desk that turns recent public customer signals into ranked opportunities and practical content direction, the research step that runs before any outreach.",
         link: { label: "Open AClienti on GitHub", href: "https://github.com/Vicorico17/ACLIENTI" },
       },
       {
@@ -448,7 +448,7 @@ const scene = new THREE.Scene();
 scene.background = state.themeColor.clone();
 scene.fog = new THREE.Fog(state.themeColor.clone(), 45, 115);
 
-const camera = new THREE.PerspectiveCamera(58, 16 / 9, 0.1, 240);
+const camera = new THREE.PerspectiveCamera(58, 16 / 9, 0.1, 130);
 camera.position.set(0, 15, 20);
 
 const ambient = new THREE.HemisphereLight(0xffffff, 0x10131d, 1.8);
@@ -650,7 +650,7 @@ scene.add(player);
 // The sword reach indicator only appears for the duration of a swing.
 const attackRing = new THREE.Mesh(
   new THREE.RingGeometry(attackRadius - 0.22, attackRadius, 48),
-  new THREE.MeshBasicMaterial({ color: "#fff6a3", transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }),
+  new THREE.MeshBasicMaterial({ color: "#fff6a3", transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, depthTest: false }),
 );
 attackRing.rotation.x = -Math.PI / 2;
 attackRing.position.y = 0.07;
@@ -1206,7 +1206,7 @@ function updateParticles(dt) {
 function spawnRingPulse(x, z, color, radius, duration = 0.5) {
   const mesh = new THREE.Mesh(
     pulseGeometry,
-    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false }),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false, depthTest: false }),
   );
   mesh.rotation.x = -Math.PI / 2;
   mesh.position.set(x, 0.06, z);
@@ -1448,11 +1448,11 @@ function updateMovement(dt) {
     state.player.z = gateZ;
     const mobsLeft = activeMobsForCastle(item.index).length;
     const nodesLeft = remainingNodes(item.index);
-    setMessage(
+    const text =
       mobsLeft > 0
         ? "Clear the mobs before the gate opens."
-        : `${nodesLeft} ${pluralize(item.castle.objective.noun, nodesLeft)} left to open the gate.`,
-    );
+        : `${nodesLeft} ${pluralize(item.castle.objective.noun, nodesLeft)} left to open the gate.`;
+    if (state.message !== text && clock.elapsedTime - state.messageAt > 1.2) setMessage(text);
   }
 }
 
@@ -1481,7 +1481,7 @@ function updateMobs(dt) {
   const activeIndex = state.unlockedIndex;
   mobs.forEach((mob) => {
     const isActive = mob.userData.alive && mob.userData.castleIndex === activeIndex;
-    mob.visible = mob.userData.alive && mob.userData.castleIndex >= activeIndex;
+    mob.visible = mob.userData.alive && mob.userData.castleIndex >= activeIndex && mob.userData.castleIndex <= activeIndex + 1;
     if (!mob.visible) return;
 
     const time = clock.elapsedTime + mob.userData.phase;
@@ -1570,7 +1570,7 @@ function updateNodes(dt) {
     const isCurrent = item.index === state.unlockedIndex;
     item.nodes.forEach((node, i) => {
       const data = node.userData;
-      node.visible = data.active && item.index >= state.unlockedIndex;
+      node.visible = data.active && item.index >= state.unlockedIndex && item.index <= state.unlockedIndex + 1;
       if (!node.visible) return;
       if (item.castle.nodeLayout === "orbit" && isCurrent) {
         const angle = data.angle + time * 0.9;
@@ -2125,7 +2125,8 @@ function chooseArtifact(index) {
   revealLinkNode.href = artifact.link.href;
   discoveryContinueNode.textContent = item.index === castles.length - 1 ? "See the ending" : "Continue the quest";
   discoveryRevealNode.classList.remove("is-hidden");
-  discoveryContinueNode.focus({ preventScroll: true });
+  discoveryContinueNode.focus();
+  discoveryRevealNode.scrollIntoView?.({ block: "nearest" });
   spawnBurst(item.x, 2.6, item.z, item.castle.color, 12, { speed: 2.8, lift: 3.4, life: 0.8 });
 }
 
@@ -2252,6 +2253,7 @@ function toggleFullscreen() {
 // 1-3 pick an artifact while a discovery panel is open.
 window.addEventListener("keydown", (event) => {
   const key = event.key;
+  if (event.repeat && !movementKeys.has(key)) return;
   if (key === "f" || key === "F") {
     toggleFullscreen();
     return;
@@ -2259,8 +2261,8 @@ window.addEventListener("keydown", (event) => {
 
   if (state.phase === "intro") {
     if (movementKeys.has(key) || key === " " || key === "Enter" || key === "e" || key === "E") {
-      if (key === " " || movementKeys.has(key)) event.preventDefault();
       if ((key === " " || key === "Enter") && introNode?.contains(document.activeElement)) return;
+      if (key === " " || movementKeys.has(key)) event.preventDefault();
       startGame();
       if (movementKeys.has(key)) keys.add(key);
     }
@@ -2272,7 +2274,10 @@ window.addEventListener("keydown", (event) => {
       chooseArtifact(Number(key) - 1);
       return;
     }
-    if (key === "ArrowLeft" || key === "ArrowUp" || key === "ArrowRight" || key === "ArrowDown") {
+    if (
+      (key === "ArrowLeft" || key === "ArrowUp" || key === "ArrowRight" || key === "ArrowDown") &&
+      document.activeElement?.classList.contains("artifact-choice")
+    ) {
       event.preventDefault();
       moveChoiceFocus(key === "ArrowLeft" || key === "ArrowUp" ? -1 : 1);
       return;
@@ -2376,8 +2381,13 @@ if (joystickNode && joystickKnobNode) {
   joystickNode.addEventListener("pointermove", (event) => {
     if (!state.joystick.active || event.pointerId !== state.joystick.pointerId) return;
     event.preventDefault();
+    const rect = joystickNode.getBoundingClientRect();
+    state.joystick.centerX = rect.left + rect.width / 2;
+    state.joystick.centerY = rect.top + rect.height / 2;
     setJoystickFromEvent(event);
   });
+  document.addEventListener("fullscreenchange", () => releaseJoystick());
+  window.addEventListener("resize", () => releaseJoystick());
   const endJoystick = (event) => {
     if (!state.joystick.active || event.pointerId !== state.joystick.pointerId) return;
     event.preventDefault();
@@ -2432,6 +2442,7 @@ for (const button of document.querySelectorAll("[data-game-tap]")) {
 document.querySelectorAll("[data-game-start]").forEach((button) => {
   button.addEventListener("click", (event) => {
     event.preventDefault();
+    enterMobileFullscreen();
     startGame();
   });
 });
