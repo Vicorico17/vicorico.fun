@@ -5,8 +5,8 @@ Static personal website for `vicorico.fun`.
 ## Files
 
 - `index.html` - public website home page.
-- `game.html` - playable Game CV page (Vic's Quest).
-- `cv-game.js` / `cv-game.css` - Three.js game logic, story panels, joystick, and game-only styling.
+- `game.html` - playable Game CV page (Vic's Quest): seven castles, upgrades that are real projects, a dash, a chain weapon, and a boss.
+- `cv-game.js` / `cv-game.css` - Three.js game logic, upgrade and perk system, panels, joystick, and game-only styling.
 - `GAME_ROADMAP.md` - Game CV roadmap and implementation status.
 - `ats-cv.html` / `teaching-portfolio.html` - standalone CV pages.
 - `styles.css` - shared screen and print styling.
