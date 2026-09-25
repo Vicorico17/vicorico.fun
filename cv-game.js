@@ -13,7 +13,12 @@ const cardKickerNode = document.querySelector("[data-game-card-kicker]");
 const cardTitleNode = document.querySelector("[data-game-card-title]");
 const cardCopyNode = document.querySelector("[data-game-card-copy]");
 const cardListNode = document.querySelector("[data-game-card-list]");
+const artifactNode = document.querySelector("[data-game-artifacts]");
+const gameLinksNode = document.querySelector("[data-game-links]");
+const joystickNode = document.querySelector("[data-game-joystick]");
+const joystickThumb = document.querySelector("[data-game-joystick-thumb]");
 const keys = new Set();
+const joystick = { x: 0, y: 0, pointerId: null };
 
 const castles = [
   {
@@ -22,12 +27,12 @@ const castles = [
     shortTitle: "AI Systems",
     color: "#f4bf45",
     position: [0, -24],
-    detail:
-      "The first gate hums with ideas. Build the systems that turn AI into useful work.",
-    bullets: [
-      "Deploy the model",
-      "Shape the context",
-      "Keep the data private",
+    detail: "I connect models, data, and tools to put useful AI into production.",
+    bullets: ["Model deployment", "Context and retrieval", "Private AI systems"],
+    artifacts: [
+      ["Model deployment", "Bring a model from a demo to a working product."],
+      ["Private AI", "Keep sensitive data inside a controlled environment."],
+      ["Agent workflows", "Connect tools, context, and actions into one system."],
     ],
   },
   {
@@ -36,9 +41,13 @@ const castles = [
     shortTitle: "Automation",
     color: "#7cc77d",
     position: [0, -62],
-    detail:
-      "Behind the second gate, repetitive work comes alive. Give every workflow a smarter next move.",
-    bullets: ["Enrich a lead", "Prep a meeting", "Help a customer", "Ship the pipeline"],
+    detail: "I turn repeated team tasks into reliable workflows with clear handoffs.",
+    bullets: ["Lead research", "Meeting preparation", "Customer support workflows"],
+    artifacts: [
+      ["Lead research", "Turn scattered company data into useful sales context."],
+      ["Meeting prep", "Give teams the brief and next steps before a call."],
+      ["Customer support", "Route requests and help people get answers faster."],
+    ],
   },
   {
     id: "crypto",
@@ -46,9 +55,13 @@ const castles = [
     shortTitle: "Crypto Rails",
     color: "#4f70ff",
     position: [0, -100],
-    detail:
-      "Blue rails run beneath the world. Turn ownership, payments, and communities into playable systems.",
-    bullets: ["Mint the asset", "Build the market", "Fund the community", "Connect the wallet"],
+    detail: "I build onchain products for wallets, payments, markets, and communities.",
+    bullets: ["Wallet experiences", "Trading and markets", "Community products"],
+    artifacts: [
+      ["Wallet experience", "Make onchain actions easier to understand and use."],
+      ["Market mechanics", "Design products around trading and digital ownership."],
+      ["Community rails", "Connect participation, rewards, and shared ownership."],
+    ],
   },
   {
     id: "places",
@@ -56,9 +69,13 @@ const castles = [
     shortTitle: "Places & Projects",
     color: "#f97316",
     position: [0, -138],
-    detail:
-      "The orange gate is a map of places and projects worked with. Each ecosystem left behind a different tool for the journey — alongside 100+ other projects.",
-    bullets: ["Terra Luna", "Polygon", "Hyperliquid", "Thirdweb", "100+ other projects"],
+    detail: "I have worked across crypto ecosystems, helping projects launch, find users, and grow.",
+    bullets: ["Terra Luna", "Polygon", "Hyperliquid", "Thirdweb", "100+ projects"],
+    artifacts: [
+      ["Ecosystem launches", "Help new products find users and build momentum."],
+      ["Partner operations", "Coordinate teams, integrations, and community work."],
+      ["Product discovery", "Turn ecosystem needs into practical product ideas."],
+    ],
   },
   {
     id: "creative",
@@ -66,9 +83,13 @@ const castles = [
     shortTitle: "Creative Factory",
     color: "#d95f9d",
     position: [0, -176],
-    detail:
-      "Pink lights flicker inside the factory. One idea becomes a video, a story, and a reason to come back.",
-    bullets: ["Generate the scene", "Cut the short", "Remix the story", "Grow the channel"],
+    detail: "I build AI-assisted workflows for video, stories, and digital media.",
+    bullets: ["Generative media", "Video production", "Content automation"],
+    artifacts: [
+      ["Generative media", "Use AI tools to create images, video, and concepts."],
+      ["Content pipelines", "Turn one idea into a repeatable publishing workflow."],
+      ["Creative products", "Build interactive experiences around stories and media."],
+    ],
   },
   {
     id: "projects",
@@ -76,9 +97,13 @@ const castles = [
     shortTitle: "Projects",
     color: "#6fd18c",
     position: [0, -214],
-    detail:
-      "The project gate opens onto a workshop full of experiments. Pick a build and see the idea become real.",
-    bullets: ["Arkadia Park", "Baguri", "libergent", "Grand Cafe Bucharest", "100+ other projects"],
+    detail: "A workshop of products, prototypes, and experiments. Choose a build to see the idea behind it.",
+    bullets: ["Arkadia Park", "Baguri", "libergent", "Latest builds"],
+    artifacts: [
+      ["Arkadia Park", "Explore a community-driven digital world."],
+      ["Baguri", "See a product experiment shaped around a clear user need."],
+      ["Latest builds", "Browse current prototypes and open-source work."],
+    ],
   },
   {
     id: "games",
@@ -86,14 +111,19 @@ const castles = [
     shortTitle: "Game Worlds",
     color: "#fb7185",
     position: [0, -252],
-    detail:
-      "At the final castle, the portfolio becomes a world. Design the rules, invite the players, and keep it moving.",
-    bullets: ["Design the loop", "Build the world", "Reward the player", "Grow the economy"],
+    detail: "I design interactive worlds where game loops, digital ownership, and community meet.",
+    bullets: ["Game design", "Interactive worlds", "Player economies"],
+    artifacts: [
+      ["Game loops", "Give players a clear reason to act, progress, and return."],
+      ["Playable worlds", "Connect world-building with useful product systems."],
+      ["Player economies", "Design rewards and ownership around player behavior."],
+    ],
   },
 ];
 
 const clock = new THREE.Clock();
 const visited = new Set();
+const collectedArtifacts = new Map();
 const worldObjects = [];
 const castleObjects = [];
 const buildingColliders = [];
@@ -116,11 +146,12 @@ const state = {
   themeColor: new THREE.Color("#111827"),
   unlockedIndex: 0,
   completed: false,
+  started: false,
   attackCooldown: 0,
   attackTimer: 0,
   weapon: "sword",
   playerHealth: 100,
-  message: "Follow the road. Defeat the mobs before each castle.",
+  message: "Choose a path through the portfolio.",
   player: {
     x: 0,
     z: 0,
@@ -659,12 +690,18 @@ function resetGame() {
   state.lastHudId = "";
   state.unlockedIndex = 0;
   state.completed = false;
+  state.started = false;
   state.attackCooldown = 0;
   state.attackTimer = 0;
   state.weapon = "sword";
   state.playerHealth = 100;
-  state.message = "Follow the road. Defeat the mobs before each castle.";
+  state.message = "Choose a path through the portfolio.";
   visited.clear();
+  collectedArtifacts.clear();
+  joystick.x = 0;
+  joystick.y = 0;
+  joystick.pointerId = null;
+  if (joystickThumb) joystickThumb.style.transform = "translate(0, 0)";
   mobs.forEach((mob) => {
     mob.userData.hp = mob.userData.maxHp;
     mob.userData.alive = true;
@@ -700,17 +737,19 @@ function update(dt) {
 }
 
 function updateMovement(dt) {
-  const forward = (keys.has("ArrowUp") || keys.has("w") || keys.has("W") ? 1 : 0) - (keys.has("ArrowDown") || keys.has("s") || keys.has("S") ? 1 : 0);
-  const strafe = (keys.has("ArrowRight") || keys.has("d") || keys.has("D") ? 1 : 0) - (keys.has("ArrowLeft") || keys.has("a") || keys.has("A") ? 1 : 0);
+  const forward = Math.max(-1, Math.min(1, (keys.has("ArrowUp") || keys.has("w") || keys.has("W") ? 1 : 0) - (keys.has("ArrowDown") || keys.has("s") || keys.has("S") ? 1 : 0) - joystick.y));
+  const strafe = Math.max(-1, Math.min(1, (keys.has("ArrowRight") || keys.has("d") || keys.has("D") ? 1 : 0) - (keys.has("ArrowLeft") || keys.has("a") || keys.has("A") ? 1 : 0) + joystick.x));
   const length = Math.hypot(strafe, forward);
-  const speed = 9.4;
+  const intensity = Math.min(1, length);
+  const speed = 9.4 * intensity;
 
   if (length > 0) {
-    const nx = strafe / length;
-    const nz = -forward / length;
-    state.player.x += nx * speed * dt;
-    state.player.z += nz * speed * dt;
-    state.player.rotation = Math.atan2(nx, nz);
+    state.started = true;
+    const directionX = strafe / length;
+    const directionZ = forward / length;
+    state.player.x += directionX * speed * dt;
+    state.player.z -= directionZ * speed * dt;
+    state.player.rotation = Math.atan2(directionX, -directionZ);
     state.player.speed = THREE.MathUtils.lerp(state.player.speed, speed, Math.min(1, dt * 8));
   } else {
     state.player.speed = THREE.MathUtils.lerp(state.player.speed, 0, Math.min(1, dt * 8));
@@ -1120,56 +1159,96 @@ function updateHud(castle, force = false) {
   if (!zoneNode || !progressNode || !progressBarNode || !mobsNode || !healthNode || !healthBarNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const nextCastle = castles[state.unlockedIndex];
   const activeMobs = nextCastle ? activeMobsForCastle(state.unlockedIndex).length : 0;
+  const selected = castle ? collectedArtifacts.get(castle.id) : null;
   const hudId = state.completed
     ? `complete-${Math.round(state.playerHealth)}`
-    : castle?.id || `road-${state.unlockedIndex}-${activeMobs}-${Math.round(state.playerHealth)}`;
+    : castle?.id || `road-${state.unlockedIndex}-${activeMobs}-${Math.round(state.playerHealth)}-${state.started}`;
   if (!force && state.lastHudId === hudId && Number(progressNode.dataset.count || 0) === visited.size) return;
   state.lastHudId = hudId;
   progressNode.dataset.count = String(visited.size);
 
   zoneNode.textContent = state.completed
-    ? "Congratulations, you completed the game CV."
+    ? "Field guide complete"
     : castle
-    ? castle.shortTitle
+    ? `Chapter ${castleObjects.findIndex((item) => item.castle.id === castle.id) + 1} · ${castle.shortTitle}`
     : nextCastle
       ? activeMobs > 0
-        ? nextCastle.shortTitle
-        : `${nextCastle.shortTitle}: gate open`
-      : "All castles unlocked";
+        ? `Chapter ${state.unlockedIndex + 1} · ${nextCastle.shortTitle}`
+        : `Chapter ${state.unlockedIndex + 1} · Gate open`
+      : "All chapters open";
   mobsNode.textContent = String(activeMobs);
   healthNode.textContent = String(Math.round(state.playerHealth));
   healthBarNode.style.width = `${state.playerHealth}%`;
   progressNode.textContent = `${visited.size}/${castles.length}`;
   progressBarNode.style.width = `${(visited.size / castles.length) * 100}%`;
-  cardNode.classList.toggle("is-hidden", !castle && !state.completed);
-  if (!castle && !state.completed) return;
-
-  if (state.completed) {
-    cardKickerNode.textContent = "Game CV Complete";
-    cardTitleNode.textContent = "Congratulations, you completed the game CV.";
-    cardCopyNode.textContent = "You unlocked every castle and reached the end of the interactive CV.";
-    cardListNode.replaceChildren(...castles.map((item) => {
+  cardNode.classList.toggle("is-hidden", !castle && !state.completed && state.started);
+  if (artifactNode) artifactNode.hidden = true;
+  if (gameLinksNode) gameLinksNode.hidden = true;
+  if (!castle && !state.completed) {
+    cardKickerNode.textContent = "Your field guide";
+    cardTitleNode.textContent = "Reconnect the systems";
+    cardCopyNode.textContent = "Travel through seven chapters in Victor’s work. Clear a path, then choose a portfolio artifact to inspect.";
+    cardListNode.replaceChildren(...["Move to travel", "Attack to clear a path", "Choose an artifact in each chapter"].map((text) => {
       const li = document.createElement("li");
-      li.textContent = item.shortTitle;
+      li.textContent = text;
       return li;
     }));
     return;
   }
 
-  cardKickerNode.textContent = castle ? "Castle Data" : "3D World";
-  cardTitleNode.textContent = castle ? castle.title : "Walk Into A Castle";
-  cardCopyNode.textContent = castle
-    ? castle.detail
-    : "Follow the road, fight the mobs in front of each castle, then go through the open gate to unlock the next category.";
+  if (state.completed) {
+    cardKickerNode.textContent = "Field guide complete";
+    cardTitleNode.textContent = "You reconnected the world.";
+    const choices = [...collectedArtifacts.values()];
+    cardCopyNode.textContent = choices.length
+      ? `You explored ${choices.length} portfolio ${choices.length === 1 ? "artifact" : "artifacts"}. Take a closer look at the work.`
+      : "You explored all seven chapters. Take a closer look at the work behind them.";
+    cardListNode.replaceChildren(...(choices.length ? choices.map((item) => {
+      const li = document.createElement("li");
+      li.textContent = item.title;
+      return li;
+    }) : castles.map((item) => {
+      const li = document.createElement("li");
+      li.textContent = item.shortTitle;
+      return li;
+    })));
+    if (gameLinksNode) gameLinksNode.hidden = false;
+    return;
+  }
 
-  const bullets = castle
-    ? castle.bullets
-    : ["WASD or arrow keys to move", "Space or E to attack", "R to reset", "F for fullscreen"];
+  cardKickerNode.textContent = `Chapter ${castle ? castleObjects.findIndex((item) => item.castle.id === castle.id) + 1 : 0} · Field notes`;
+  cardTitleNode.textContent = castle ? castle.shortTitle : "Your field guide";
+  cardCopyNode.textContent = castle
+    ? `${castle.detail} ${activeMobs > 0 ? `Clear ${activeMobs} ${activeMobs === 1 ? "enemy" : "enemies"} to open the gate.` : "Gate open. Choose one artifact before you move on."}`
+    : "Move down the road and clear the path to each chapter.";
+
+  const bullets = castle ? castle.bullets.slice(0, 3) : ["WASD or arrows to move", "Space or E to attack", "Q to switch weapon · R to restart"];
   cardListNode.replaceChildren(...bullets.map((bullet) => {
     const li = document.createElement("li");
     li.textContent = bullet;
     return li;
   }));
+
+  if (artifactNode && castle && activeMobs === 0) {
+    artifactNode.hidden = false;
+    artifactNode.setAttribute("aria-label", `Choose one ${castle.shortTitle} artifact`);
+    artifactNode.replaceChildren(...castle.artifacts.map(([title, detail]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "artifact-choice";
+      button.textContent = title;
+      button.setAttribute("aria-pressed", String(selected?.title === title));
+      button.title = detail;
+      button.addEventListener("click", () => {
+        collectedArtifacts.set(castle.id, { title, detail, castle: castle.shortTitle });
+        cardCopyNode.textContent = detail;
+        state.lastHudId = "";
+        updateHud(state.activeCastle, true);
+      });
+      return button;
+    }));
+    if (selected) cardCopyNode.textContent = selected.detail;
+  }
 }
 
 function updateWeaponUi() {
@@ -1202,15 +1281,6 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
-function isTouchLayout() {
-  return window.matchMedia("(max-width: 760px), (pointer: coarse)").matches;
-}
-
-function enterMobileFullscreen() {
-  if (!isTouchLayout() || document.fullscreenElement) return;
-  document.documentElement.requestFullscreen?.().catch(() => {});
-}
-
 function toggleFullscreen() {
   if (document.fullscreenElement) {
     document.exitFullscreen();
@@ -1220,6 +1290,7 @@ function toggleFullscreen() {
 }
 
 window.addEventListener("keydown", (event) => {
+  if (event.target.closest?.("button, a, [role='button']")) return;
   if (event.key === "f" || event.key === "F") {
     toggleFullscreen();
     return;
@@ -1249,42 +1320,46 @@ window.addEventListener("blur", () => {
   keys.clear();
 });
 
-for (const button of document.querySelectorAll("[data-game-key]")) {
-  const key = button.dataset.gameKey;
-  const press = (event) => {
-    event.preventDefault();
-    enterMobileFullscreen();
-    try {
-      button.setPointerCapture?.(event.pointerId);
-    } catch {
-      // Pointer capture is best-effort on touch devices.
-    }
-    keys.add(key);
-    button.classList.add("is-pressed");
+if (joystickNode) {
+  const updateJoystick = (event) => {
+    const bounds = joystickNode.getBoundingClientRect();
+    const radius = Math.min(bounds.width, bounds.height) * 0.36;
+    const dx = event.clientX - (bounds.left + bounds.width / 2);
+    const dy = event.clientY - (bounds.top + bounds.height / 2);
+    const length = Math.hypot(dx, dy);
+    const scale = length > radius ? radius / length : 1;
+    const x = dx * scale / radius;
+    const y = dy * scale / radius;
+    joystick.x = x;
+    joystick.y = y;
+    joystickThumb.style.transform = `translate(${x * radius}px, ${y * radius}px)`;
   };
-  const release = (event) => {
-    event.preventDefault();
-    try {
-      button.releasePointerCapture?.(event.pointerId);
-    } catch {
-      // Some browsers release capture automatically.
-    }
-    keys.delete(key);
-    button.classList.remove("is-pressed");
+  const releaseJoystick = (event) => {
+    if (joystick.pointerId !== event.pointerId) return;
+    joystick.pointerId = null;
+    joystick.x = 0;
+    joystick.y = 0;
+    joystickThumb.style.transform = "translate(0, 0)";
   };
-
-  button.addEventListener("pointerdown", press);
-  button.addEventListener("pointerup", release);
-  button.addEventListener("pointercancel", release);
-  button.addEventListener("pointerleave", release);
-  button.addEventListener("contextmenu", (event) => event.preventDefault());
+  joystickNode.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    joystick.pointerId = event.pointerId;
+    joystickNode.setPointerCapture(event.pointerId);
+    updateJoystick(event);
+  });
+  joystickNode.addEventListener("pointermove", (event) => {
+    if (joystick.pointerId === event.pointerId) updateJoystick(event);
+  });
+  joystickNode.addEventListener("pointerup", releaseJoystick);
+  joystickNode.addEventListener("pointercancel", releaseJoystick);
+  joystickNode.addEventListener("lostpointercapture", releaseJoystick);
+  joystickNode.addEventListener("contextmenu", (event) => event.preventDefault());
 }
 
 for (const button of document.querySelectorAll("[data-game-tap]")) {
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
     button.dataset.ignoreClick = "true";
-    enterMobileFullscreen();
     if (button.dataset.gameTap === "Attack") {
       attack();
     } else if (button.dataset.gameTap === "Weapon") {
@@ -1328,7 +1403,7 @@ window.advanceTime = (ms) => {
 
 window.render_game_to_text = () => JSON.stringify({
   renderer: "threejs",
-  mode: "linear-castle-combat",
+  mode: "chapter-field-guide",
   active: state.activeCastle?.id || "hub",
   unlockedIndex: state.unlockedIndex,
   completed: state.completed,
@@ -1345,6 +1420,7 @@ window.render_game_to_text = () => JSON.stringify({
   pickupCount: pickups.length,
   visitedCount: visited.size,
   visitedIds: [...visited],
+  collectedArtifacts: [...collectedArtifacts.entries()],
   castleCount: castles.length,
   canvas: {
     width: canvas.width,
