@@ -11,6 +11,10 @@ const healthNode = document.querySelector("[data-game-health]");
 const healthBarNode = document.querySelector("[data-game-health-bar]");
 const healthTrackNode = document.querySelector(".hud-health-track");
 const weaponNodes = document.querySelectorAll("[data-game-weapon]");
+const ammoChipNode = document.querySelector("[data-game-ammo-chip]");
+const ammoCountNode = document.querySelector("[data-game-ammo]");
+const ammoIconNode = document.querySelector("[data-game-ammo-icon] use");
+const touchAmmoNode = document.querySelector("[data-game-touch-ammo]");
 const toastNode = document.querySelector("[data-game-toast]");
 const cardNode = document.querySelector("[data-game-card]");
 const cardKickerNode = document.querySelector("[data-game-card-kicker]");
@@ -56,6 +60,16 @@ const joystickNode = document.querySelector("[data-game-joystick]");
 const joystickKnobNode = document.querySelector("[data-game-joystick-knob]");
 const keys = new Set();
 const movementKeys = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d", "W", "A", "S", "D"]);
+
+function createPowerIcon(name) {
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.classList.add("power-icon");
+  icon.setAttribute("aria-hidden", "true");
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  use.setAttribute("href", `#power-${name.toLowerCase()}`);
+  icon.append(use);
+  return icon;
+}
 
 const roleLine = "Forward Deployed Engineer & Graph Engineer";
 const pitchLine = "He turns messy workflows into working AI systems, agents, and payment rails.";
@@ -427,7 +441,7 @@ const coreUnlocks = {
     name: "Graph Arc",
     kind: "new weapon",
     control: "Q or WEAPON cycles to it, then attack",
-    effect: "A bolt that strikes the nearest enemy and chains to up to three more.",
+    effect: "A bolt that strikes the nearest enemy and chains to up to three more. Four charges regenerate over time.",
     cv: "Graph Engineer: connected data, knowledge graphs, and agent-ready relationships. One strike travels every edge.",
   },
 };
@@ -498,6 +512,10 @@ const worldEndZ = -300;
 const triggerRadius = 5.8;
 const attackRadius = 3.2;
 const bowRange = 15;
+const bowMagazine = 12;
+const bowReloadDuration = 1.6;
+const arcCapacity = 4;
+const arcRechargeDuration = 2.4;
 const arcRange = 11;
 const arcChainRange = 5;
 const attackDuration = 0.42;
@@ -570,6 +588,7 @@ const state = {
   attackHeld: false,
   weapon: "sword",
   weapons: ["sword", "bow"],
+  ammo: { bow: bowMagazine, bowReload: 0, arc: arcCapacity, arcRecharge: 0, lastEmptyMessage: null },
   abilities: { dash: false, arc: false },
   perks: basePerks(),
   playerHealth: 100,
@@ -663,10 +682,13 @@ function material(color, options = {}) {
 }
 
 // Arrows share one geometry/material pair so Multi-Shot never allocates GPU resources.
-const arrowShaftGeometry = new THREE.BoxGeometry(0.09, 0.09, 1.05);
-const arrowHeadGeometry = new THREE.ConeGeometry(0.14, 0.32, 8);
-const arrowShaftMaterial = material("#fff6a3", { emissive: "#f4bf45", emissiveIntensity: 0.85, roughness: 0.26 });
-const arrowHeadMaterial = material("#6fd18c", { emissive: "#6fd18c", emissiveIntensity: 0.9, roughness: 0.3 });
+const arrowShaftGeometry = new THREE.BoxGeometry(0.16, 0.16, 1.3);
+const arrowHeadGeometry = new THREE.ConeGeometry(0.21, 0.38, 8);
+const arrowGlowGeometry = new THREE.BoxGeometry(0.28, 0.28, 1.1);
+const arrowShaftMaterial = material("#fff6a3", { emissive: "#f4bf45", emissiveIntensity: 1.4, roughness: 0.26 });
+const arrowHeadMaterial = material("#8bf3be", { emissive: "#8bf3be", emissiveIntensity: 1.4, roughness: 0.3 });
+const arrowGlowMaterial = new THREE.MeshBasicMaterial({ color: "#b7ffd8", transparent: true, opacity: 0.4, depthWrite: false });
+const arcBoltGeometry = new THREE.SphereGeometry(0.3, 12, 8);
 const boltGeometry = new THREE.SphereGeometry(0.24, 14, 10);
 const boltMaterials = new Map();
 
@@ -1713,6 +1735,27 @@ function spawnBeam(fromX, fromZ, toX, toZ, color, duration = 1.3, y = 1.1) {
   scene.add(mesh);
 }
 
+function spawnArcBolt(fromX, fromZ, toX, toZ) {
+  const mesh = new THREE.Mesh(
+    arcBoltGeometry,
+    new THREE.MeshBasicMaterial({ color: "#b8f1ff", transparent: true, opacity: 1, depthWrite: false, depthTest: false }),
+  );
+  mesh.position.set(fromX, 1.3, fromZ);
+  mesh.renderOrder = 13;
+  effects.push({
+    kind: "arc-bolt",
+    mesh,
+    age: 0,
+    maxAge: 0.3,
+    tick(t) {
+      mesh.position.set(fromX + (toX - fromX) * t, 1.3 + Math.sin(t * Math.PI) * 0.15, fromZ + (toZ - fromZ) * t);
+      mesh.scale.setScalar(1 + Math.sin(t * Math.PI) * 0.6);
+      mesh.material.opacity = 1 - t;
+    },
+  });
+  scene.add(mesh);
+}
+
 // Project-name feedback: a floating label at the point where an upgrade fired.
 // Textures are cached per label; each label shows at most once per six seconds.
 function showProjectSprite(key, text, x, z, color = "#ffffff") {
@@ -1842,6 +1885,7 @@ function resetGame() {
   state.attackHeld = false;
   state.weapon = "sword";
   state.weapons = ["sword", "bow"];
+  state.ammo = { bow: bowMagazine, bowReload: 0, arc: arcCapacity, arcRecharge: 0, lastEmptyMessage: null };
   state.abilities = { dash: false, arc: false };
   state.perks = basePerks();
   state.playerHealth = state.perks.maxHealth;
@@ -1918,6 +1962,7 @@ function respawn() {
   state.invulnTimer = Math.max(state.invulnTimer, 2, state.perks.checkpointShield);
   state.dash.timer = 0;
   state.attackHeld = false;
+  state.ammo = { bow: bowMagazine, bowReload: 0, arc: arcCapacity, arcRecharge: 0, lastEmptyMessage: null };
   projectiles.splice(0).forEach((projectile) => scene.remove(projectile));
   enemyProjectiles.splice(0).forEach((projectile) => scene.remove(projectile));
   if (state.boss.stage === "fight") {
@@ -1958,6 +2003,7 @@ function update(dt) {
   state.attackTimer = Math.max(0, state.attackTimer - dt);
   if (playing) {
     state.attackCooldown = Math.max(0, state.attackCooldown - dt);
+    updateAmmo(dt);
     state.player.hitCooldown = Math.max(0, state.player.hitCooldown - dt);
     state.invulnTimer = Math.max(0, state.invulnTimer - dt);
     state.rallyCooldown = Math.max(0, state.rallyCooldown - dt);
@@ -1985,6 +2031,26 @@ function update(dt) {
   updateCamera(dt);
   animateWorld(dt);
   updateHud();
+}
+
+function updateAmmo(dt) {
+  const ammo = state.ammo;
+  if (ammo.bowReload > 0) {
+    ammo.bowReload = Math.max(0, ammo.bowReload - dt);
+    if (ammo.bowReload === 0) {
+      ammo.bow = bowMagazine;
+      ammo.lastEmptyMessage = null;
+    }
+  }
+  if (ammo.arc < arcCapacity) {
+    ammo.arcRecharge = Math.max(0, ammo.arcRecharge - dt);
+    if (ammo.arcRecharge === 0) {
+      ammo.arc += 1;
+      ammo.arcRecharge = ammo.arc < arcCapacity ? arcRechargeDuration : 0;
+      ammo.lastEmptyMessage = null;
+    }
+  }
+  updateAmmoUi();
 }
 
 function currentInput() {
@@ -2788,6 +2854,13 @@ function swordRadius() {
 
 function attack() {
   if (state.phase !== "play" || state.attackCooldown > 0 || state.dash.timer > 0) return;
+  if ((state.weapon === "bow" && state.ammo.bow === 0) || (state.weapon === "arc" && state.ammo.arc === 0)) {
+    if (state.ammo.lastEmptyMessage !== state.weapon) {
+      setMessage(state.weapon === "bow" ? `Bow reloading. Use the sword${state.abilities.arc ? " or Graph Arc" : ""} for now.` : "Graph Arc recharging. Use the sword or bow for now.");
+      state.ammo.lastEmptyMessage = state.weapon;
+    }
+    return;
+  }
   const base = state.weapon === "bow" ? 0.48 : state.weapon === "arc" ? 1.0 : 0.38;
   state.attackCooldown = base * state.perks.cooldownMult;
   state.attackTimer = attackDuration;
@@ -2870,6 +2943,9 @@ function aimAngle() {
 }
 
 function fireArrows() {
+  state.ammo.bow -= 1;
+  if (state.ammo.bow === 0) state.ammo.bowReload = bowReloadDuration;
+  updateAmmoUi();
   const count = Math.max(1, Math.round(state.perks.arrowCount));
   const baseAngle = aimAngle();
   const speed = 25 * state.perks.arrowSpeedMult;
@@ -2882,9 +2958,11 @@ function fireArrows() {
     const arrow = new THREE.Group();
     const shaft = new THREE.Mesh(arrowShaftGeometry, arrowShaftMaterial);
     const head = new THREE.Mesh(arrowHeadGeometry, arrowHeadMaterial);
-    head.position.z = -0.68;
+    const glow = new THREE.Mesh(arrowGlowGeometry, arrowGlowMaterial);
+    glow.position.z = 0.55;
+    head.position.z = -0.85;
     head.rotation.x = -Math.PI / 2;
-    arrow.add(shaft, head);
+    arrow.add(shaft, head, glow);
     arrow.position.set(state.player.x + dirX * 0.9, 1.08, state.player.z + dirZ * 0.9);
     arrow.rotation.y = Math.atan2(-dirX, -dirZ);
     arrow.userData = { vx: dirX * speed, vz: dirZ * speed, age: 0, maxAge: range / speed };
@@ -2905,8 +2983,15 @@ function fireArc() {
       first = mob;
     }
   });
+  state.ammo.arc -= 1;
+  if (state.ammo.arc < arcCapacity && state.ammo.arcRecharge === 0) state.ammo.arcRecharge = arcRechargeDuration;
+  updateAmmoUi();
   if (!first) {
-    setMessage("No enemy in arc range.");
+    const endX = state.player.x + Math.sin(state.player.rotation) * range;
+    const endZ = state.player.z + Math.cos(state.player.rotation) * range;
+    spawnArcBolt(state.player.x, state.player.z, endX, endZ);
+    spawnBeam(state.player.x, state.player.z, endX, endZ, "#8bd3ff", 0.2, 1.3);
+    setMessage("Graph Arc missed. Move closer to an enemy.");
     return;
   }
   const chain = [first];
@@ -2930,6 +3015,7 @@ function fireArc() {
   let fromZ = state.player.z;
   chain.forEach((mob) => {
     spawnBeam(fromX, fromZ, mob.position.x, mob.position.z, "#8bd3ff", 0.35, 1.3);
+    spawnArcBolt(fromX, fromZ, mob.position.x, mob.position.z);
     fromX = mob.position.x;
     fromZ = mob.position.z;
     damageMob(mob, 1, 0.4, { source: "arc" });
@@ -3277,15 +3363,42 @@ function updateHud(force = false) {
 }
 
 const weaponLabels = { sword: "Sword", bow: "Bow", arc: "Graph Arc" };
+let lastAmmoLabel = "";
+
+function updateAmmoUi(force = false) {
+  const weapon = state.weapon;
+  const hasAmmo = weapon === "bow" || weapon === "arc";
+  const remaining = weapon === "bow" ? state.ammo.bow : state.ammo.arc;
+  const capacity = weapon === "bow" ? bowMagazine : arcCapacity;
+  const label = hasAmmo ? remaining === 0 ? `0/${capacity} ↻` : `${remaining}/${capacity}` : "";
+  const signature = `${weapon}:${label}`;
+  if (!force && signature === lastAmmoLabel) return;
+  lastAmmoLabel = signature;
+  ammoChipNode?.classList.toggle("is-hidden", !hasAmmo);
+  if (ammoChipNode && hasAmmo) ammoChipNode.setAttribute("aria-label", remaining === 0 ? `${weaponLabels[weapon]} ${weapon === "bow" ? "reloading" : "recharging"}` : `${weaponLabels[weapon]} ammunition: ${remaining} of ${capacity}`);
+  if (ammoCountNode) ammoCountNode.textContent = label;
+  if (ammoIconNode && hasAmmo) ammoIconNode.setAttribute("href", `#power-${weapon}`);
+  if (touchAmmoNode) {
+    touchAmmoNode.hidden = !hasAmmo;
+    touchAmmoNode.textContent = hasAmmo ? `${remaining}/${capacity}` : "";
+  }
+  document.querySelectorAll('[data-game-tap="Weapon"]').forEach((button) => {
+    button.setAttribute("aria-label", hasAmmo ? `Switch weapon. ${weaponLabels[weapon]} has ${remaining} of ${capacity} shots.` : "Switch weapon. Sword selected.");
+  });
+}
 
 function updateWeaponUi() {
   const label = weaponLabels[state.weapon] || "Sword";
   weaponNodes.forEach((node) => {
     node.textContent = label;
   });
-  document.querySelectorAll('[data-game-tap="Weapon"]').forEach((button) => {
-    button.textContent = state.weapon === "arc" ? "ARC" : label.toUpperCase();
+  document.querySelectorAll("[data-game-weapon-icon] use").forEach((icon) => {
+    icon.setAttribute("href", `#power-${state.weapon}`);
   });
+  document.querySelectorAll("[data-game-weapon-label]").forEach((node) => {
+    node.textContent = state.weapon === "arc" ? "ARC" : label.toUpperCase();
+  });
+  updateAmmoUi(true);
 }
 
 function updateAbilityUi() {
@@ -3298,7 +3411,8 @@ function switchWeapon() {
   const index = state.weapons.indexOf(state.weapon);
   state.weapon = state.weapons[(index + 1) % state.weapons.length];
   state.attackCooldown = Math.min(state.attackCooldown, 0.12);
-  setMessage(`${weaponLabels[state.weapon]} ready.`);
+  const ammoHint = state.weapon === "bow" ? " Twelve shots per magazine; reloads automatically." : state.weapon === "arc" ? " Four charges regenerate over time." : "";
+  setMessage(`${weaponLabels[state.weapon]} ready.${ammoHint}`);
   updateWeaponUi();
   updateHud(true);
 }
@@ -3371,7 +3485,7 @@ function openDiscovery(item) {
       key.textContent = String(index + 1);
       const lane = document.createElement("em");
       lane.className = "artifact-lane";
-      lane.textContent = artifact.upgrade.lane;
+      lane.append(createPowerIcon(artifact.upgrade.lane), document.createTextNode(artifact.upgrade.lane));
       const title = document.createElement("b");
       title.textContent = artifact.upgrade.name;
       const teaser = document.createElement("span");
@@ -3404,7 +3518,7 @@ function chooseArtifact(index) {
   discoveryChoicesNode.querySelectorAll("button").forEach((button, buttonIndex) => {
     button.classList.toggle("is-selected", buttonIndex === index);
   });
-  if (revealLaneNode) revealLaneNode.textContent = artifact.upgrade.lane;
+  if (revealLaneNode) revealLaneNode.replaceChildren(createPowerIcon(artifact.upgrade.lane), document.createTextNode(artifact.upgrade.lane));
   revealTitleNode.textContent = artifact.upgrade.name;
   revealGameNode.textContent = artifact.upgrade.effect;
   revealRealNode.textContent = `${artifact.title}. ${artifact.example}`;
@@ -3414,7 +3528,7 @@ function chooseArtifact(index) {
   if (revealUnlockNode) {
     revealUnlockNode.classList.toggle("is-hidden", !unlock);
     if (unlock) {
-      revealUnlockTitleNode.textContent = `${unlock.name} (${unlock.kind})`;
+      revealUnlockTitleNode.replaceChildren(createPowerIcon(unlock.id), document.createTextNode(`${unlock.name} (${unlock.kind})`));
       revealUnlockCopyNode.textContent = `${unlock.effect} ${unlock.control}. ${unlock.cv}`;
     }
   }
@@ -3505,7 +3619,7 @@ function renderBuildEntry(found, withLink) {
   li.style.setProperty("--castle-color", found.castle.color);
   const lane = document.createElement("em");
   lane.className = "artifact-lane";
-  lane.textContent = found.artifact.upgrade.lane;
+  lane.append(createPowerIcon(found.artifact.upgrade.lane), document.createTextNode(found.artifact.upgrade.lane));
   const title = document.createElement("b");
   title.textContent = found.artifact.upgrade.name;
   li.append(lane, title, document.createTextNode(found.artifact.upgrade.effect + " "));
@@ -3533,7 +3647,7 @@ function renderAbilityList(node) {
       const li = document.createElement("li");
       if (!owned) li.classList.add("is-empty");
       const title = document.createElement("b");
-      title.textContent = owned ? unlock.name : `${unlock.name} (locked)`;
+      title.append(createPowerIcon(unlock.id), document.createTextNode(owned ? unlock.name : `${unlock.name} (locked)`));
       li.append(title, document.createTextNode(owned ? `${unlock.effect} ${unlock.control}. ` : `${lockedText} `));
       const meta = document.createElement("span");
       meta.textContent = unlock.cv;
@@ -4009,6 +4123,12 @@ window.render_game_to_text = () => {
     playerHealth: Math.round(state.playerHealth),
     maxHealth: state.perks.maxHealth,
     weapon: state.weapon,
+    ammo: {
+      bow: state.ammo.bow,
+      bowReload: Number(state.ammo.bowReload.toFixed(2)),
+      arc: state.ammo.arc,
+      arcRecharge: Number(state.ammo.arcRecharge.toFixed(2)),
+    },
     weapons: [...state.weapons],
     abilities: { ...state.abilities },
     dash: { cooldown: Number(state.dash.cooldown.toFixed(2)), active: state.dash.timer > 0 },

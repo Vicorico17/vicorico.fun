@@ -13,6 +13,16 @@
     <link rel="stylesheet" href="cv-game.css">
   </head>
   <body class="game-page">
+    <svg class="game-icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="power-sword" viewBox="0 0 24 24"><path d="M4 20 16 8m-3-3 6-2 2 2-2 6-2-2M3 15l6 6m-2-3-3 3"/></symbol>
+      <symbol id="power-bow" viewBox="0 0 24 24"><path d="M17 3c-9 4-9 14 0 18M17 3v18M3 12h17m-4-4 4 4-4 4"/></symbol>
+      <symbol id="power-arc" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="m7 10 3-3m4 0 3 3m0 4-3 3m-4 0-3-3"/></symbol>
+      <symbol id="power-dash" viewBox="0 0 24 24"><path d="M2 6h8M1 12h7m-6 6h8m3-15 8 9-8 9m-2-9h10"/></symbol>
+      <symbol id="power-strike" viewBox="0 0 24 24"><path d="m12 2-2 8-7 2 7 2 2 8 2-8 7-2-7-2-2-8Z"/></symbol>
+      <symbol id="power-guard" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3 8 8 11 5-3 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="power-flow" viewBox="0 0 24 24"><path d="M19 7a8 8 0 0 0-14-1L3 9m0-5v5h5m-3 8a8 8 0 0 0 14 1l2-3m0 5v-5h-5"/></symbol>
+      <symbol id="power-all" viewBox="0 0 24 24"><path d="M12 2v5m0 10v5M2 12h5m10 0h5M5 5l3.5 3.5m7 7L19 19m0-14-3.5 3.5m-7 7L5 19"/><circle cx="12" cy="12" r="3"/></symbol>
+    </svg>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="vicorico.fun home">
         <img src="assets/vicorico-mark.svg" alt="" width="36" height="36">
@@ -29,9 +39,11 @@
               <p class="hud-kicker">Vic's Quest 3D</p>
               <strong data-game-zone>Vic's Quest</strong>
               <div class="hud-chips">
-                <span class="hud-chip hud-chip-weapon" title="Current weapon"><b data-game-weapon>Sword</b></span>
+                <span class="hud-chip hud-chip-weapon" title="Current weapon"><svg class="power-icon" data-game-weapon-icon aria-hidden="true"><use href="#power-sword"></use></svg><b data-game-weapon>Sword</b></span>
+                <span class="hud-chip hud-chip-ammo is-hidden" data-game-ammo-chip title="Weapon ammunition"><svg class="power-icon" data-game-ammo-icon aria-hidden="true"><use href="#power-bow"></use></svg><b data-game-ammo>12/12</b></span>
                 <span class="hud-chip hud-chip-dash is-hidden" data-game-dash title="Dash cooldown">
                   <i class="hud-chip-fill" data-game-dash-fill></i>
+                  <svg class="power-icon" aria-hidden="true"><use href="#power-dash"></use></svg>
                   <b>Dash</b>
                 </span>
               </div>
@@ -95,9 +107,9 @@
             <div class="joystick-knob" data-game-joystick-knob aria-hidden="true"></div>
           </div>
           <div class="action-controls">
-            <button class="touch-button weapon-button" type="button" data-game-tap="Weapon" aria-label="Switch weapon">SWORD</button>
-            <button class="touch-button dash-button" type="button" data-game-tap="Dash" aria-label="Dash">DASH</button>
-            <button class="touch-button attack-button" type="button" data-game-tap="Attack" aria-label="Attack. Hold to keep attacking.">ATTACK</button>
+            <button class="touch-button weapon-button" type="button" data-game-tap="Weapon" aria-label="Switch weapon"><svg class="power-icon" data-game-weapon-icon aria-hidden="true"><use href="#power-sword"></use></svg><span data-game-weapon-label>SWORD</span><small data-game-touch-ammo hidden></small></button>
+            <button class="touch-button dash-button" type="button" data-game-tap="Dash" aria-label="Dash"><svg class="power-icon" aria-hidden="true"><use href="#power-dash"></use></svg><span>DASH</span></button>
+            <button class="touch-button attack-button" type="button" data-game-tap="Attack" aria-label="Attack. Hold to keep attacking."><svg class="power-icon" aria-hidden="true"><use href="#power-strike"></use></svg><span>ATTACK</span></button>
           </div>
         </div>
 

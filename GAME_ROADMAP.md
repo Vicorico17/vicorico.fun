@@ -52,6 +52,7 @@ A short dungeon-crawler route through the portfolio. Every castle is a chapter, 
 
 ### Phone
 
+- Bow volleys use a 12-shot magazine with automatic reload; Graph Arc has four regenerating charges. Both show ammunition in the HUD and touch controls, with clearer projectile effects and power icons.
 - Thumb cluster is WEAPON, DASH (appears after the unlock), ATTACK. RESET moved into the CV panel behind a confirm. ATTACK repeats while held.
 - DASH shows a conic cooldown ring; a screen-edge flash marks damage; the health bar turns orange under 40%.
 - Adaptive quality on coarse pointers: pixel ratio capped at 1.5, 1024 shadow map, fewer trees, particle and beam caps; arrows and bolts share geometry and materials.
