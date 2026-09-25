@@ -1,6 +1,10 @@
 const githubUser = "Vicorico17";
 const latestReposNode = document.querySelector("[data-github-latest]");
-const historyNode = document.querySelector("[data-github-history]");
+const githubCarouselNode = document.querySelector("[data-github-carousel]");
+const githubPositionNode = document.querySelector("[data-github-position]");
+const githubPrevNode = document.querySelector("[data-github-prev]");
+const githubNextNode = document.querySelector("[data-github-next]");
+const githubPauseNode = document.querySelector("[data-github-pause]");
 const portalArtNode = document.querySelector("[data-portal-art]");
 
 function clamp(value, min, max) {
@@ -313,171 +317,189 @@ function githubLink(href, label) {
   return link;
 }
 
-function githubFallback(node, message) {
-  if (!node) return;
-  const fallback = document.createElement("p");
-  fallback.className = "muted";
-  fallback.textContent = message;
-  node.replaceChildren(fallback);
+const githubReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let githubCarouselCards = [];
+let githubCarouselIndex = 0;
+let githubCarouselDirection = 1;
+let githubCarouselPaused = false;
+let githubCarouselInView = true;
+let githubManualUntil = 0;
+
+function githubVisibleCards() {
+  if (!latestReposNode || githubCarouselCards.length === 0) return 1;
+  const cardWidth = githubCarouselCards[0].getBoundingClientRect().width;
+  const gap = Number.parseFloat(window.getComputedStyle(latestReposNode).columnGap) || 0;
+  return Math.max(1, Math.min(githubCarouselCards.length, Math.floor((latestReposNode.clientWidth + gap) / (cardWidth + gap) + 0.02)));
 }
 
-const githubProjectDescriptions = {
-  "studio-chat": "A macOS creative workspace that connects a local Codex chat flow to Logic Pro for music production, creative direction, and release planning.",
-  "vicorico.fun": "Personal operating system and project archive for Victor Cazacu’s AI, crypto, product, and venture work.",
-  distronow: "A distribution workspace for turning ideas and source material into repeatable content and audience workflows.",
-  homesports: "A sports product for following matches, teams, and community-driven football experiences.",
-  bestrestshop: "A commerce build for browsing products, making purchase decisions, and managing an online storefront.",
-  "LEGIT-AGENTIC": "A website and CLI audit toolkit for checking whether products are understandable and usable by software agents.",
-  squishy2brain: "A second-brain workspace for capturing knowledge, connecting context, and turning notes into useful action.",
-  LORO: "An experimental AI and automation project for coordinating tools, context, and repeatable work.",
-  "bvb.lol": "A read-only Bucharest Stock Exchange terminal for instruments, filings, dividend events, and market context.",
-  "tap-time": "A passive-NFC workplace attendance system that turns a tap into a secure, location-specific check-in or check-out.",
-  recomed: "A recommendation product exploring structured discovery and better decisions through personalized context.",
-  EZjobs: "A responsive job-discovery and quick-apply prototype with search, filters, saved roles, fit indicators, and streamlined applications.",
-  peptiderico: "An early-stage project exploring a new peptide-focused product experience.",
-  "neo-labs": "A local company operating system for running a venture studio through shared portfolio state and agent workflows.",
-  libergent: "An open-source workspace for connected AI tools, agents, and practical automation workflows.",
-  "BLACKSEA-DATACENTER": "An investor-facing concept for resilient offshore cloud infrastructure built from autonomous data-center vessels.",
-  ACLIENTI: "A customer-signal research desk that turns public evidence into ranked opportunities and practical briefs.",
-  finfin: "A financial-planning prototype that turns a structured personal profile into assumption-aware action plans.",
-  CARLY: "A voice-first daily companion exploring accessible routines, reminders, and supportive personal workflows.",
-  streamwin: "A streaming and distribution workspace for live content, audience workflows, and creator operations.",
-  REALSOUL: "A creative identity and content system for turning a personal point of view into an owned media presence.",
-  "magic-dev": "A developer productivity experiment for turning product intent into working software faster.",
-};
-
-function renderLatestRepos(repos) {
-  if (!latestReposNode) return;
-
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  const orderedRepos = [...repos].sort(
-    (a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at),
-  );
-  const recentRepos = orderedRepos.filter(
-    (repo) => new Date(repo.pushed_at || repo.updated_at).getTime() >= thirtyDaysAgo,
-  );
-  const displayRepos = [...new Map(
-    [...recentRepos, ...orderedRepos.slice(0, 6)].map((repo) => [repo.id, repo]),
-  ).values()];
-
-  if (displayRepos.length === 0) return;
-  const cards = displayRepos.map((repo) => {
-    const article = document.createElement("article");
-    article.className = "github-live-card";
-
-    const meta = document.createElement("span");
-    meta.textContent = `Active / ${repo.language || "Project"}`;
-
-    const title = document.createElement("h4");
-    title.append(githubLink(repo.html_url, repo.name));
-
-    const description = document.createElement("p");
-    description.textContent = repo.description
-      || githubProjectDescriptions[repo.name]
-      || `An active ${repo.language || "software"} project exploring ${repo.name}.`;
-
-    const footer = document.createElement("footer");
-    const updated = document.createElement("time");
-    updated.dateTime = repo.pushed_at || repo.updated_at;
-    updated.textContent = `Updated ${formatGithubDate(repo.pushed_at || repo.updated_at)}`;
-    footer.append(updated);
-
-    if (repo.homepage) {
-      footer.append(githubLink(repo.homepage, "Open build"));
-    }
-
-    footer.append(githubLink(repo.html_url, "GitHub"));
-    article.append(meta, title, description, footer);
-    return article;
-  });
-  latestReposNode.replaceChildren(...cards.slice(0, 3));
-  if (cards.length > 3) latestReposNode.append(activityMore(cards.slice(3), "more recent builds", "github-live-grid"));
-}
-
-function activityMore(items, label, gridClass) {
-  const details = document.createElement("details");
-  details.className = "activity-more";
-  const summary = document.createElement("summary");
-  summary.textContent = `See ${items.length} ${label}`;
-  const grid = document.createElement("div");
-  grid.className = gridClass;
-  grid.append(...items);
-  details.append(summary, grid);
-  return details;
-}
-
-function renderCommitHistory(events) {
-  if (!historyNode) return;
-
-  const commits = events
-    .filter((event) => event.type === "PushEvent" && event.repo?.name?.startsWith(`${githubUser}/`))
-    .flatMap((event) => (event.payload?.commits || []).map((commit) => ({
-      ...commit,
-      createdAt: event.created_at,
-      repo: event.repo.name,
-    })))
-    .slice(0, 8);
-
-  if (commits.length === 0) {
-    githubFallback(historyNode, "No recent public commits are available yet.");
-    return;
+function updateGithubCarouselControls() {
+  const visible = githubVisibleCards();
+  const maxIndex = Math.max(0, githubCarouselCards.length - visible);
+  githubCarouselIndex = Math.min(githubCarouselIndex, maxIndex);
+  githubCarouselCards.forEach((card, index) => card.classList.toggle("is-current", index === githubCarouselIndex));
+  if (githubPositionNode) {
+    githubPositionNode.textContent = `${githubCarouselIndex + 1}–${Math.min(githubCarouselIndex + visible, githubCarouselCards.length)} of ${githubCarouselCards.length}`;
   }
+  if (githubPrevNode) githubPrevNode.disabled = githubCarouselIndex === 0;
+  if (githubNextNode) githubNextNode.disabled = githubCarouselIndex === maxIndex;
+  if (githubCarouselNode) githubCarouselNode.querySelector(".github-carousel-controls").hidden = maxIndex === 0;
+}
 
-  const entries = commits.map((commit) => {
-    const article = document.createElement("article");
-    const time = document.createElement("time");
-    time.dateTime = commit.createdAt;
-    time.textContent = formatGithubDate(commit.createdAt);
+function showGithubCarouselCard(index, behavior = "smooth") {
+  if (!latestReposNode || githubCarouselCards.length === 0) return;
+  const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
+  githubCarouselIndex = Math.min(maxIndex, Math.max(0, index));
+  const first = githubCarouselCards[0];
+  const card = githubCarouselCards[githubCarouselIndex];
+  latestReposNode.scrollTo({ left: card.offsetLeft - first.offsetLeft, behavior: githubReducedMotion.matches ? "auto" : behavior });
+  updateGithubCarouselControls();
+}
 
-    const content = document.createElement("div");
-    const title = document.createElement("h4");
-    title.append(githubLink(`https://github.com/${commit.repo}/commit/${commit.sha}`, `${commit.repo.split("/")[1]} · ${commit.sha.slice(0, 7)}`));
+function setGithubCarouselCards(cards) {
+  if (!latestReposNode) return;
+  latestReposNode.replaceChildren(...cards);
+  githubCarouselCards = cards;
+  githubCarouselIndex = 0;
+  githubCarouselDirection = 1;
+  latestReposNode.scrollLeft = 0;
+  window.requestAnimationFrame(updateGithubCarouselControls);
+}
 
-    const message = document.createElement("p");
-    message.textContent = commit.message.split("\n")[0];
-    content.append(title, message);
-    article.append(time, content);
-    return article;
+function initGithubCarousel() {
+  if (!latestReposNode || !githubCarouselNode) return;
+  githubCarouselCards = [...latestReposNode.querySelectorAll(".github-live-card")];
+  window.requestAnimationFrame(updateGithubCarouselControls);
+  window.addEventListener("resize", () => showGithubCarouselCard(githubCarouselIndex, "auto"));
+  latestReposNode.addEventListener("pointerdown", () => { githubManualUntil = Date.now() + 10000; });
+  latestReposNode.addEventListener("scroll", () => {
+    window.requestAnimationFrame(() => {
+      const first = githubCarouselCards[0];
+      if (!first) return;
+      let nearest = 0;
+      let distance = Number.POSITIVE_INFINITY;
+      githubCarouselCards.forEach((card, index) => {
+        const delta = Math.abs(card.offsetLeft - first.offsetLeft - latestReposNode.scrollLeft);
+        if (delta < distance) { distance = delta; nearest = index; }
+      });
+      githubCarouselIndex = Math.min(nearest, Math.max(0, githubCarouselCards.length - githubVisibleCards()));
+      updateGithubCarouselControls();
+    });
+  }, { passive: true });
+  githubPrevNode?.addEventListener("click", () => {
+    githubManualUntil = Date.now() + 10000;
+    showGithubCarouselCard(githubCarouselIndex - 1);
   });
-  historyNode.replaceChildren(...entries.slice(0, 2));
-  if (entries.length > 2) historyNode.append(activityMore(entries.slice(2), "more updates", "github-history-list"));
+  githubNextNode?.addEventListener("click", () => {
+    githubManualUntil = Date.now() + 10000;
+    showGithubCarouselCard(githubCarouselIndex + 1);
+  });
+  githubPauseNode?.addEventListener("click", () => {
+    githubCarouselPaused = !githubCarouselPaused;
+    githubPauseNode.textContent = githubCarouselPaused ? "Play" : "Pause";
+  });
+  if (githubPauseNode) {
+    githubPauseNode.hidden = githubReducedMotion.matches;
+    githubReducedMotion.addEventListener("change", () => {
+      githubPauseNode.hidden = githubReducedMotion.matches;
+    });
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([entry]) => {
+      githubCarouselInView = entry.isIntersecting;
+    }, { threshold: 0.1 }).observe(githubCarouselNode);
+  }
+  window.setInterval(() => {
+    if (githubReducedMotion.matches || document.hidden || !githubCarouselInView || githubCarouselPaused || Date.now() < githubManualUntil) return;
+    if (latestReposNode.matches(":hover") || latestReposNode.contains(document.activeElement)) return;
+    const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
+    if (maxIndex === 0) return;
+    if (githubCarouselIndex >= maxIndex) githubCarouselDirection = -1;
+    if (githubCarouselIndex <= 0) githubCarouselDirection = 1;
+    showGithubCarouselCard(githubCarouselIndex + githubCarouselDirection);
+  }, 5000);
+}
+
+function latestGithubRepos(repos) {
+  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const ordered = [...repos].sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
+  const recent = ordered.filter((repo) => new Date(repo.pushed_at || repo.updated_at).getTime() >= thirtyDaysAgo);
+  return [...new Map([...recent, ...ordered.slice(0, 6)].map((repo) => [repo.id, repo])).values()].slice(0, 8);
+}
+
+function makeGithubCommitCard(repo) {
+  const article = document.createElement("article");
+  article.className = "github-live-card";
+  const label = document.createElement("span");
+  label.textContent = "Latest commit";
+  const title = document.createElement("h4");
+  title.append(githubLink(repo.html_url, repo.name));
+  const message = document.createElement("p");
+  message.textContent = "Loading latest commit…";
+  const footer = document.createElement("footer");
+  footer.append(githubLink(`${repo.html_url}/commits`, "View commits"));
+  article.append(label, title, message, footer);
+  return article;
+}
+
+async function getLatestGithubCommit(repo) {
+  const key = `vicorico-commit:${repo.full_name}`;
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(key) || "null");
+    if (cached && Date.now() - cached.savedAt < 5 * 60 * 1000) return cached.commit;
+  } catch { /* Storage may be disabled. */ }
+
+  const url = new URL(`https://api.github.com/repos/${githubUser}/${encodeURIComponent(repo.name)}/commits`);
+  url.searchParams.set("per_page", "1");
+  if (repo.default_branch) url.searchParams.set("sha", repo.default_branch);
+  const response = await fetch(url, { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" });
+  if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
+  const [commit] = await response.json();
+  if (!commit?.sha || !commit.commit?.message) throw new Error("No commit available");
+  try { sessionStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), commit })); } catch { /* Storage may be disabled. */ }
+  return commit;
+}
+
+async function fillGithubCommitCard(repo, card) {
+  const message = card.querySelector("p");
+  const footer = card.querySelector("footer");
+  try {
+    const commit = await getLatestGithubCommit(repo);
+    message.textContent = commit.commit.message.split("\n")[0].trim() || "Untitled commit";
+    const date = commit.commit.committer?.date || commit.commit.author?.date;
+    const link = githubLink(commit.html_url, `Commit ${commit.sha.slice(0, 7)} ↗`);
+    const time = document.createElement("time");
+    if (date) {
+      time.dateTime = date;
+      time.textContent = formatGithubDate(date);
+    }
+    footer.replaceChildren(...(date ? [link, time] : [link]));
+  } catch {
+    message.textContent = "Latest commit unavailable right now.";
+  }
 }
 
 async function loadGithubActivity() {
-  const headers = { Accept: "application/vnd.github+json" };
-  const reposRequest = fetch(
-    `https://api.github.com/users/${githubUser}/repos?sort=updated&direction=desc&per_page=100`,
-    { headers, cache: "no-store" },
-  );
-  const eventsRequest = fetch(
-    `https://api.github.com/users/${githubUser}/events/public?per_page=100`,
-    { headers, cache: "no-store" },
-  );
-
   try {
-    const response = await reposRequest;
+    const response = await fetch(
+      `https://api.github.com/users/${githubUser}/repos?sort=updated&direction=desc&per_page=100`,
+      { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" },
+    );
     if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
-    const repos = await response.json();
-    const publicRepos = repos
-      .filter((repo) => !repo.fork && !repo.archived)
-      .sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
-    renderLatestRepos(publicRepos);
-  } catch (error) {
-    if (!latestReposNode?.querySelector(".github-live-card")) {
-      githubFallback(latestReposNode, "The latest GitHub projects could not be loaded in this browser session.");
+    const repos = (await response.json()).filter((repo) => !repo.fork && !repo.archived);
+    const recent = latestGithubRepos(repos);
+    if (recent.length === 0) return;
+    const cards = recent.map(makeGithubCommitCard);
+    setGithubCarouselCards(cards);
+    for (let index = 0; index < recent.length; index += 1) {
+      await fillGithubCommitCard(recent[index], cards[index]);
     }
-  }
-
-  try {
-    const response = await eventsRequest;
-    if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
-    renderCommitHistory(await response.json());
-  } catch (error) {
-    githubFallback(historyNode, "The recent commit history could not be loaded in this browser session.");
+  } catch {
+    // Keep the linked fallback cards when GitHub is unavailable.
   }
 }
 
 initIntroGate();
 initPortalArt();
 initFlowArt();
+initGithubCarousel();
 loadGithubActivity();
