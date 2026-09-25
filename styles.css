@@ -2279,6 +2279,26 @@ dd {
   font-size: 1.08rem;
 }
 
+.proof-jump-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.4rem;
+  margin-top: 1.2rem;
+}
+
+.proof-jump-links a {
+  color: #f7d58a;
+  font-size: 0.92rem;
+  font-weight: 850;
+  text-decoration: underline;
+  text-underline-offset: 0.24em;
+}
+
+.proof-jump-links a:hover,
+.proof-jump-links a:focus-visible {
+  color: #ffffff;
+}
+
 .system-map-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2483,7 +2503,8 @@ dd {
   color: rgba(255, 255, 255, 0.68);
 }
 
-.github-live-heading > a {
+.github-live-heading > a,
+.github-history-heading > a {
   flex: 0 0 auto;
   color: #f7d58a;
   font-size: 0.88rem;
@@ -2562,6 +2583,33 @@ dd {
   grid-template-columns: auto 1fr;
   align-items: start;
   gap: 0.75rem;
+}
+
+.activity-more {
+  grid-column: 1 / -1;
+}
+
+.activity-more summary {
+  width: max-content;
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: #f7d58a;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 850;
+  padding: 0.65rem 1rem;
+}
+
+.activity-more summary:hover,
+.activity-more summary:focus-visible {
+  border-color: #f7d58a;
+  color: #ffffff;
+}
+
+.activity-more > .github-live-grid,
+.activity-more > .github-history-list {
+  margin-top: 0.8rem;
 }
 
 .github-history-list h4 {

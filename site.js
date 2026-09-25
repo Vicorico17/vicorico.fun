@@ -360,37 +360,50 @@ function renderLatestRepos(repos) {
     [...recentRepos, ...orderedRepos.slice(0, 6)].map((repo) => [repo.id, repo]),
   ).values()];
 
-  latestReposNode.replaceChildren(
-    ...displayRepos.map((repo) => {
-      const article = document.createElement("article");
-      article.className = "github-live-card";
+  if (displayRepos.length === 0) return;
+  const cards = displayRepos.map((repo) => {
+    const article = document.createElement("article");
+    article.className = "github-live-card";
 
-      const meta = document.createElement("span");
-      meta.textContent = `Active / ${repo.language || "Project"}`;
+    const meta = document.createElement("span");
+    meta.textContent = `Active / ${repo.language || "Project"}`;
 
-      const title = document.createElement("h4");
-      title.append(githubLink(repo.html_url, repo.name));
+    const title = document.createElement("h4");
+    title.append(githubLink(repo.html_url, repo.name));
 
-      const description = document.createElement("p");
-      description.textContent = repo.description
-        || githubProjectDescriptions[repo.name]
-        || `An active ${repo.language || "software"} project exploring ${repo.name}.`;
+    const description = document.createElement("p");
+    description.textContent = repo.description
+      || githubProjectDescriptions[repo.name]
+      || `An active ${repo.language || "software"} project exploring ${repo.name}.`;
 
-      const footer = document.createElement("footer");
-      const updated = document.createElement("time");
-      updated.dateTime = repo.pushed_at || repo.updated_at;
-      updated.textContent = `Updated ${formatGithubDate(repo.pushed_at || repo.updated_at)}`;
-      footer.append(updated);
+    const footer = document.createElement("footer");
+    const updated = document.createElement("time");
+    updated.dateTime = repo.pushed_at || repo.updated_at;
+    updated.textContent = `Updated ${formatGithubDate(repo.pushed_at || repo.updated_at)}`;
+    footer.append(updated);
 
-      if (repo.homepage) {
-        footer.append(githubLink(repo.homepage, "Open build"));
-      }
+    if (repo.homepage) {
+      footer.append(githubLink(repo.homepage, "Open build"));
+    }
 
-      footer.append(githubLink(repo.html_url, "GitHub"));
-      article.append(meta, title, description, footer);
-      return article;
-    }),
-  );
+    footer.append(githubLink(repo.html_url, "GitHub"));
+    article.append(meta, title, description, footer);
+    return article;
+  });
+  latestReposNode.replaceChildren(...cards.slice(0, 3));
+  if (cards.length > 3) latestReposNode.append(activityMore(cards.slice(3), "more recent builds", "github-live-grid"));
+}
+
+function activityMore(items, label, gridClass) {
+  const details = document.createElement("details");
+  details.className = "activity-more";
+  const summary = document.createElement("summary");
+  summary.textContent = `See ${items.length} ${label}`;
+  const grid = document.createElement("div");
+  grid.className = gridClass;
+  grid.append(...items);
+  details.append(summary, grid);
+  return details;
 }
 
 function renderCommitHistory(events) {
@@ -410,24 +423,24 @@ function renderCommitHistory(events) {
     return;
   }
 
-  historyNode.replaceChildren(
-    ...commits.map((commit) => {
-      const article = document.createElement("article");
-      const time = document.createElement("time");
-      time.dateTime = commit.createdAt;
-      time.textContent = formatGithubDate(commit.createdAt);
+  const entries = commits.map((commit) => {
+    const article = document.createElement("article");
+    const time = document.createElement("time");
+    time.dateTime = commit.createdAt;
+    time.textContent = formatGithubDate(commit.createdAt);
 
-      const content = document.createElement("div");
-      const title = document.createElement("h4");
-      title.append(githubLink(`https://github.com/${commit.repo}/commit/${commit.sha}`, `${commit.repo.split("/")[1]} · ${commit.sha.slice(0, 7)}`));
+    const content = document.createElement("div");
+    const title = document.createElement("h4");
+    title.append(githubLink(`https://github.com/${commit.repo}/commit/${commit.sha}`, `${commit.repo.split("/")[1]} · ${commit.sha.slice(0, 7)}`));
 
-      const message = document.createElement("p");
-      message.textContent = commit.message.split("\n")[0];
-      content.append(title, message);
-      article.append(time, content);
-      return article;
-    }),
-  );
+    const message = document.createElement("p");
+    message.textContent = commit.message.split("\n")[0];
+    content.append(title, message);
+    article.append(time, content);
+    return article;
+  });
+  historyNode.replaceChildren(...entries.slice(0, 2));
+  if (entries.length > 2) historyNode.append(activityMore(entries.slice(2), "more updates", "github-history-list"));
 }
 
 async function loadGithubActivity() {
@@ -450,7 +463,9 @@ async function loadGithubActivity() {
       .sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
     renderLatestRepos(publicRepos);
   } catch (error) {
-    githubFallback(latestReposNode, "The latest GitHub projects could not be loaded in this browser session.");
+    if (!latestReposNode?.querySelector(".github-live-card")) {
+      githubFallback(latestReposNode, "The latest GitHub projects could not be loaded in this browser session.");
+    }
   }
 
   try {
