@@ -1,10 +1,6 @@
 const githubUser = "Vicorico17";
 const latestReposNode = document.querySelector("[data-github-latest]");
 const githubCarouselNode = document.querySelector("[data-github-carousel]");
-const githubPositionNode = document.querySelector("[data-github-position]");
-const githubPrevNode = document.querySelector("[data-github-prev]");
-const githubNextNode = document.querySelector("[data-github-next]");
-const githubPauseNode = document.querySelector("[data-github-pause]");
 const portalArtNode = document.querySelector("[data-portal-art]");
 
 function clamp(value, min, max) {
@@ -300,11 +296,15 @@ function initFlowArt() {
   window.addEventListener("hashchange", expandFromHash);
 }
 
-function formatGithubDate(value) {
+function formatGithubDateTime(value) {
   return new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZoneName: "short",
   }).format(new Date(value));
 }
 
@@ -321,9 +321,7 @@ const githubReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)"
 let githubCarouselCards = [];
 let githubCarouselIndex = 0;
 let githubCarouselDirection = 1;
-let githubCarouselPaused = false;
 let githubCarouselInView = true;
-let githubManualUntil = 0;
 
 function githubVisibleCards() {
   if (!latestReposNode || githubCarouselCards.length === 0) return 1;
@@ -332,17 +330,11 @@ function githubVisibleCards() {
   return Math.max(1, Math.min(githubCarouselCards.length, Math.floor((latestReposNode.clientWidth + gap) / (cardWidth + gap) + 0.02)));
 }
 
-function updateGithubCarouselControls() {
+function updateGithubCarouselState() {
   const visible = githubVisibleCards();
   const maxIndex = Math.max(0, githubCarouselCards.length - visible);
   githubCarouselIndex = Math.min(githubCarouselIndex, maxIndex);
   githubCarouselCards.forEach((card, index) => card.classList.toggle("is-current", index === githubCarouselIndex));
-  if (githubPositionNode) {
-    githubPositionNode.textContent = `${githubCarouselIndex + 1}–${Math.min(githubCarouselIndex + visible, githubCarouselCards.length)} of ${githubCarouselCards.length}`;
-  }
-  if (githubPrevNode) githubPrevNode.disabled = githubCarouselIndex === 0;
-  if (githubNextNode) githubNextNode.disabled = githubCarouselIndex === maxIndex;
-  if (githubCarouselNode) githubCarouselNode.querySelector(".github-carousel-controls").hidden = maxIndex === 0;
 }
 
 function showGithubCarouselCard(index, behavior = "smooth") {
@@ -352,7 +344,7 @@ function showGithubCarouselCard(index, behavior = "smooth") {
   const first = githubCarouselCards[0];
   const card = githubCarouselCards[githubCarouselIndex];
   latestReposNode.scrollTo({ left: card.offsetLeft - first.offsetLeft, behavior: githubReducedMotion.matches ? "auto" : behavior });
-  updateGithubCarouselControls();
+  updateGithubCarouselState();
 }
 
 function setGithubCarouselCards(cards) {
@@ -362,55 +354,22 @@ function setGithubCarouselCards(cards) {
   githubCarouselIndex = 0;
   githubCarouselDirection = 1;
   latestReposNode.scrollLeft = 0;
-  window.requestAnimationFrame(updateGithubCarouselControls);
+  window.requestAnimationFrame(updateGithubCarouselState);
 }
 
 function initGithubCarousel() {
   if (!latestReposNode || !githubCarouselNode) return;
   githubCarouselCards = [...latestReposNode.querySelectorAll(".github-live-card")];
-  window.requestAnimationFrame(updateGithubCarouselControls);
+  window.requestAnimationFrame(updateGithubCarouselState);
   window.addEventListener("resize", () => showGithubCarouselCard(githubCarouselIndex, "auto"));
-  latestReposNode.addEventListener("pointerdown", () => { githubManualUntil = Date.now() + 10000; });
-  latestReposNode.addEventListener("scroll", () => {
-    window.requestAnimationFrame(() => {
-      const first = githubCarouselCards[0];
-      if (!first) return;
-      let nearest = 0;
-      let distance = Number.POSITIVE_INFINITY;
-      githubCarouselCards.forEach((card, index) => {
-        const delta = Math.abs(card.offsetLeft - first.offsetLeft - latestReposNode.scrollLeft);
-        if (delta < distance) { distance = delta; nearest = index; }
-      });
-      githubCarouselIndex = Math.min(nearest, Math.max(0, githubCarouselCards.length - githubVisibleCards()));
-      updateGithubCarouselControls();
-    });
-  }, { passive: true });
-  githubPrevNode?.addEventListener("click", () => {
-    githubManualUntil = Date.now() + 10000;
-    showGithubCarouselCard(githubCarouselIndex - 1);
-  });
-  githubNextNode?.addEventListener("click", () => {
-    githubManualUntil = Date.now() + 10000;
-    showGithubCarouselCard(githubCarouselIndex + 1);
-  });
-  githubPauseNode?.addEventListener("click", () => {
-    githubCarouselPaused = !githubCarouselPaused;
-    githubPauseNode.textContent = githubCarouselPaused ? "Play" : "Pause";
-  });
-  if (githubPauseNode) {
-    githubPauseNode.hidden = githubReducedMotion.matches;
-    githubReducedMotion.addEventListener("change", () => {
-      githubPauseNode.hidden = githubReducedMotion.matches;
-    });
-  }
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(([entry]) => {
       githubCarouselInView = entry.isIntersecting;
     }, { threshold: 0.1 }).observe(githubCarouselNode);
   }
   window.setInterval(() => {
-    if (githubReducedMotion.matches || document.hidden || !githubCarouselInView || githubCarouselPaused || Date.now() < githubManualUntil) return;
-    if (latestReposNode.matches(":hover") || latestReposNode.contains(document.activeElement)) return;
+    if (githubReducedMotion.matches || document.hidden || !githubCarouselInView) return;
+    if (latestReposNode.contains(document.activeElement)) return;
     const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
     if (maxIndex === 0) return;
     if (githubCarouselIndex >= maxIndex) githubCarouselDirection = -1;
@@ -470,7 +429,7 @@ async function fillGithubCommitCard(repo, card) {
     const time = document.createElement("time");
     if (date) {
       time.dateTime = date;
-      time.textContent = formatGithubDate(date);
+      time.textContent = formatGithubDateTime(date);
     }
     footer.replaceChildren(...(date ? [link, time] : [link]));
   } catch {
