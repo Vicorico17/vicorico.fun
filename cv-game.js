@@ -3756,10 +3756,20 @@ window.addEventListener("keyup", (event) => {
   keys.delete(event.key);
 });
 
-window.addEventListener("blur", () => {
+function clearHeldInput() {
   keys.clear();
   state.attackHeld = false;
   releaseJoystick();
+  document.querySelectorAll(".touch-button.is-pressed").forEach((button) => {
+    button.classList.remove("is-pressed");
+    delete button.dataset.ignoreClick;
+  });
+}
+
+window.addEventListener("blur", clearHeldInput);
+window.addEventListener("pagehide", clearHeldInput);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) clearHeldInput();
 });
 
 function setJoystickFromEvent(event) {
@@ -3841,10 +3851,10 @@ if (joystickNode && joystickKnobNode) {
   };
   joystickNode.addEventListener("pointerup", endJoystick);
   joystickNode.addEventListener("pointercancel", endJoystick);
-  joystickNode.addEventListener("lostpointercapture", () => releaseJoystick());
+  joystickNode.addEventListener("lostpointercapture", (event) => {
+    if (state.joystick.active && event.pointerId === state.joystick.pointerId) releaseJoystick();
+  });
   joystickNode.addEventListener("contextmenu", (event) => event.preventDefault());
-  document.addEventListener("fullscreenchange", () => releaseJoystick());
-  window.addEventListener("resize", () => releaseJoystick());
 }
 
 function handleTap(action) {
@@ -3866,6 +3876,11 @@ for (const button of document.querySelectorAll("[data-game-tap]")) {
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
     button.dataset.ignoreClick = "true";
+    try {
+      button.setPointerCapture(event.pointerId);
+    } catch {
+      // Pointer capture is best-effort on browsers with partial Pointer Events support.
+    }
     handleTap(action);
     if (action === "Attack" && state.phase === "play") state.attackHeld = true;
     button.classList.add("is-pressed");
@@ -3876,8 +3891,11 @@ for (const button of document.querySelectorAll("[data-game-tap]")) {
     button.classList.remove("is-pressed");
   };
   button.addEventListener("pointerup", release);
-  button.addEventListener("pointercancel", release);
-  button.addEventListener("pointerleave", release);
+  button.addEventListener("pointercancel", (event) => {
+    delete button.dataset.ignoreClick;
+    release(event);
+  });
+  button.addEventListener("lostpointercapture", release);
   button.addEventListener("click", (event) => {
     event.preventDefault();
     if (button.dataset.ignoreClick === "true") {
