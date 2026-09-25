@@ -48,7 +48,8 @@ body.home-page {
   background: #06050a;
   color: var(--ink);
   min-height: 100svh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body.home-page.scroll-locked {
