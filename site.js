@@ -275,6 +275,25 @@ function initFlowArt() {
       setExpanded(targetPanel, true, true);
     });
   });
+
+  // Deep links from other pages (the Game CV links to #story-* anchors) should
+  // land on an open panel, not a collapsed one.
+  function expandFromHash() {
+    const hash = window.location.hash;
+    if (!hash || !hash.startsWith("#story-")) return;
+    let targetPanel = null;
+    try {
+      targetPanel = document.querySelector(hash);
+    } catch {
+      return;
+    }
+    if (!targetPanel || !targetPanel.matches("[data-flow-panel]")) return;
+    panels.forEach((panel) => setExpanded(panel, false));
+    setExpanded(targetPanel, true, true);
+  }
+
+  expandFromHash();
+  window.addEventListener("hashchange", expandFromHash);
 }
 
 function formatGithubDate(value) {

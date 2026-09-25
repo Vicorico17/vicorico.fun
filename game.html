@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta
       name="description"
-      content="Play Vic's Quest, an interactive platformer CV for AI infrastructure, cloud engineering, crypto tooling, and creative automation."
+      content="Play Vic's Quest, Victor Cazacu's interactive 3D CV: cross seven castles, pick upgrades that are real projects, and beat the Fragmenter. AI infrastructure, automation, crypto rails, creative pipelines, and game worlds."
     >
     <title>Vic's Quest | vicorico.fun</title>
     <link rel="icon" href="assets/vicorico-mark.svg" type="image/svg+xml">
@@ -21,67 +21,167 @@
     </header>
 
     <main class="game-shell">
-      <div class="game-stage">
+      <div class="game-stage" data-game-stage data-phase="intro" data-dash="false">
         <canvas id="game" aria-label="Vic's Quest 3D CV game"></canvas>
         <div class="game-hud" aria-live="polite">
           <div class="hud-topline">
-            <div>
+            <div class="hud-zone">
               <p class="hud-kicker">Vic's Quest 3D</p>
-              <strong data-game-zone>Entering the map</strong>
+              <strong data-game-zone>Vic's Quest</strong>
+              <div class="hud-chips">
+                <span class="hud-chip hud-chip-weapon" title="Current weapon"><b data-game-weapon>Sword</b></span>
+                <span class="hud-chip hud-chip-dash is-hidden" data-game-dash title="Dash cooldown">
+                  <i class="hud-chip-fill" data-game-dash-fill></i>
+                  <b>Dash</b>
+                </span>
+              </div>
             </div>
             <div class="hud-progress" aria-label="Game CV progress">
-              <div class="hud-stats" aria-label="Combat status">
+              <div class="hud-stats" aria-label="Objective status">
                 <span class="hud-stat" title="Mobs remaining"><b aria-hidden="true">◆</b><i data-game-mobs>0</i></span>
-                <span class="hud-stat" title="Health"><b aria-hidden="true">♥</b><i data-game-health>100</i></span>
+                <span class="hud-stat hud-stat-nodes" title="Objective pieces remaining"><b aria-hidden="true">⬢</b><i data-game-nodes>0</i></span>
+                <span class="hud-stat hud-stat-health" title="Health"><b aria-hidden="true">♥</b><i data-game-health>100</i></span>
               </div>
               <div class="hud-health-track" aria-label="Health bar">
                 <i data-game-health-bar></i>
               </div>
-              <span class="hud-progress-count" data-game-progress>0/7</span>
+              <button class="hud-cv-button" type="button" data-game-open-cv aria-expanded="false" aria-label="Open the CV summary">
+                <span data-game-progress>CV 0/7</span>
+                <small>Tap for the 30-second CV</small>
+              </button>
               <div class="hud-progress-track">
                 <i data-game-progress-bar></i>
               </div>
             </div>
           </div>
+          <div class="hud-boss is-hidden" data-game-boss aria-label="Boss health">
+            <span>The Fragmenter <i data-game-boss-text></i></span>
+            <div class="hud-boss-track"><b data-game-boss-fill></b></div>
+          </div>
+          <p class="hud-toast is-hidden" data-game-toast></p>
           <article class="hud-card is-hidden" data-game-card>
-            <p data-game-card-kicker>Your field guide</p>
-            <h1 data-game-card-title>Reconnect the systems</h1>
-            <p data-game-card-copy>Travel through seven chapters in Victor’s work. Clear a path, then choose a portfolio artifact to inspect.</p>
+            <p data-game-card-kicker>Chapter</p>
+            <h1 data-game-card-title>Follow The Road</h1>
+            <p data-game-card-copy>Clear the forecourt of each castle, then walk through the open gate.</p>
             <ul data-game-card-list>
-              <li>Move to travel</li>
-              <li>Attack to clear a path</li>
-              <li>Choose an artifact in each chapter</li>
+              <li>WASD or arrows to move</li>
+              <li>Space or E to attack</li>
+              <li>R to reset</li>
             </ul>
-            <div class="artifact-choices" data-game-artifacts hidden aria-label="Choose a portfolio artifact"></div>
-            <div class="game-links" data-game-links hidden>
-              <a href="index.html#proof">View projects</a>
-              <a href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">Download CV</a>
-              <a href="mailto:vic.cazacu@gmail.com">Contact Victor</a>
-              <a href="index.html">Main site</a>
-            </div>
           </article>
         </div>
+
         <aside class="pc-controls-panel" aria-label="PC controls">
           <p>PC Controls</p>
           <ul>
             <li><kbd>WASD</kbd> / <kbd>Arrows</kbd> Move</li>
             <li><kbd>Space</kbd> / <kbd>E</kbd> Attack</li>
-            <li><kbd>Q</kbd> Switch <span data-game-weapon>Sword</span></li>
-            <li><kbd>R</kbd> Reset</li>
-            <li><kbd>F</kbd> Fullscreen</li>
+            <li><kbd>Shift</kbd> Dash <span class="pc-locked" data-game-dash-hint>(unlocks after castle 1)</span></li>
+            <li><kbd>Q</kbd> Weapon</li>
+            <li><kbd>1</kbd>–<kbd>3</kbd> Choose upgrade</li>
+            <li><kbd>Tab</kbd> Your CV</li>
+            <li><kbd>R</kbd> Reset · <kbd>F</kbd> Fullscreen</li>
           </ul>
         </aside>
+
         <div class="touch-controls" aria-label="Touch game controls">
-          <div class="touch-cluster movement-controls">
-            <div class="virtual-joystick" data-game-joystick role="application" aria-label="Movement joystick. Drag to move." tabindex="0">
-              <span class="joystick-thumb" data-game-joystick-thumb></span>
+          <div class="joystick" data-game-joystick role="application" aria-label="Virtual joystick. Drag to move.">
+            <div class="joystick-base" aria-hidden="true">
+              <span class="joystick-arrow is-up">▲</span>
+              <span class="joystick-arrow is-right">▶</span>
+              <span class="joystick-arrow is-down">▼</span>
+              <span class="joystick-arrow is-left">◀</span>
             </div>
+            <div class="joystick-knob" data-game-joystick-knob aria-hidden="true"></div>
           </div>
-          <div class="touch-cluster action-controls">
-            <button class="touch-button start-button" type="button" data-game-tap="Reset" aria-label="Reset position">RESET</button>
+          <div class="action-controls">
             <button class="touch-button weapon-button" type="button" data-game-tap="Weapon" aria-label="Switch weapon">SWORD</button>
-            <button class="touch-button attack-button" type="button" data-game-tap="Attack" aria-label="Attack mobs">ATTACK</button>
+            <button class="touch-button dash-button" type="button" data-game-tap="Dash" aria-label="Dash">DASH</button>
+            <button class="touch-button attack-button" type="button" data-game-tap="Attack" aria-label="Attack. Hold to keep attacking.">ATTACK</button>
           </div>
+        </div>
+
+        <div class="game-overlay" data-game-overlay>
+          <section class="game-panel game-intro" data-game-intro role="dialog" aria-modal="true" aria-labelledby="intro-title">
+            <p class="panel-kicker">Vic's Quest · The playable CV</p>
+            <h1 id="intro-title">The systems have become fragmented.</h1>
+            <p class="panel-role"><strong>Victor Cazacu</strong> · Forward Deployed Engineer &amp; Graph Engineer. He turns messy workflows into working AI systems, agents, and payment rails.</p>
+            <p>Cross seven castles. Every upgrade you pick is a real project, and your build shapes the ending. Tap CV any time for the summary.</p>
+            <div class="panel-actions">
+              <button class="panel-button primary" type="button" data-game-start>Begin the quest</button>
+              <button class="panel-button" type="button" data-game-open-cv>Just show me the CV</button>
+            </div>
+            <p class="panel-hint">Joystick or WASD to move, ATTACK or Space to fight, WEAPON or Q to switch. New abilities unlock as you go.</p>
+          </section>
+
+          <section class="game-panel game-discovery is-hidden" data-game-discovery role="dialog" aria-modal="true" aria-labelledby="discovery-title">
+            <p class="panel-kicker" data-discovery-kicker>Chapter 1</p>
+            <h2 id="discovery-title" data-discovery-title>Choose your upgrade</h2>
+            <p data-discovery-intro>Three upgrades from this chapter. Each one is a real project.</p>
+            <div class="artifact-choices" data-discovery-choices></div>
+            <div class="artifact-reveal is-hidden" data-discovery-reveal>
+              <p class="panel-kicker">Upgrade acquired · <em class="artifact-lane" data-reveal-lane>STRIKE</em></p>
+              <h3 data-reveal-title>Upgrade</h3>
+              <div class="reveal-grid">
+                <p class="reveal-line"><span class="reveal-label">In the game</span> <span data-reveal-game></span></p>
+                <p class="reveal-line"><span class="reveal-label">In real life</span> <span data-reveal-real></span></p>
+              </div>
+              <div class="reveal-unlock is-hidden" data-reveal-unlock>
+                <p class="panel-kicker">New ability unlocked</p>
+                <h3 data-reveal-unlock-title>Forward Deploy</h3>
+                <p data-reveal-unlock-copy></p>
+              </div>
+              <div class="panel-actions">
+                <button class="panel-button primary" type="button" data-discovery-continue>Continue the quest</button>
+                <a class="panel-button" data-reveal-link href="index.html" target="_blank" rel="noopener">Open the project</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="game-panel game-cv is-hidden" data-game-cv role="dialog" aria-modal="true" aria-labelledby="cv-title">
+            <p class="panel-kicker">Your CV so far</p>
+            <h2 id="cv-title">Victor Cazacu</h2>
+            <p class="panel-role">Forward Deployed Engineer &amp; Graph Engineer. He turns messy workflows into working AI systems, agents, and payment rails.</p>
+            <p class="panel-kicker panel-kicker-spaced">Core abilities</p>
+            <ul class="build-list" data-cv-abilities></ul>
+            <p class="panel-kicker panel-kicker-spaced">Your upgrades</p>
+            <ul class="build-list" data-cv-upgrades></ul>
+            <p class="panel-note" data-cv-stack hidden></p>
+            <div class="panel-actions">
+              <button class="panel-button primary" type="button" data-cv-close>Back to the quest</button>
+              <a class="panel-button" href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">Download PDF CV</a>
+              <a class="panel-button" href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a class="panel-button" href="https://x.com/Vicorico17" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+              <a class="panel-button" href="index.html">Main site</a>
+            </div>
+            <div class="panel-actions panel-actions-quiet">
+              <button class="panel-button ghost" type="button" data-cv-skip hidden>Skip to the summary</button>
+              <button class="panel-button ghost" type="button" data-cv-reset>Reset the run</button>
+              <button class="panel-button danger" type="button" data-cv-reset-confirm hidden>Reset the run? Yes, start over</button>
+            </div>
+          </section>
+
+          <section class="game-panel game-ending is-hidden" data-game-ending role="dialog" aria-modal="true" aria-labelledby="ending-title">
+            <p class="panel-kicker">Quest complete</p>
+            <h2 id="ending-title">The world is reconnected.</h2>
+            <p class="panel-role"><strong>Victor Cazacu</strong> · Forward Deployed Engineer &amp; Graph Engineer</p>
+            <p class="panel-note" data-ending-stats></p>
+            <p class="panel-kicker panel-kicker-spaced">What Victor does</p>
+            <ul class="role-list" data-ending-does></ul>
+            <p class="panel-summary" data-ending-summary></p>
+            <div class="panel-actions">
+              <a class="panel-button primary" href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">Download PDF CV</a>
+              <a class="panel-button" href="index.html#proof">View selected projects</a>
+              <a class="panel-button" href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a class="panel-button" href="https://x.com/Vicorico17" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+              <a class="panel-button" href="index.html">Main site</a>
+              <button class="panel-button ghost" type="button" data-game-restart>Play again</button>
+            </div>
+            <p class="panel-kicker panel-kicker-spaced">Your build</p>
+            <ul class="artifact-collection" data-ending-artifacts></ul>
+            <p class="panel-kicker panel-kicker-spaced">Core abilities</p>
+            <ul class="build-list" data-ending-abilities></ul>
+          </section>
         </div>
       </div>
     </main>
