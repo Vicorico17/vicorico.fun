@@ -2,6 +2,7 @@ const githubUser = "Vicorico17";
 const latestReposNode = document.querySelector("[data-github-latest]");
 const githubCarouselNode = document.querySelector("[data-github-carousel]");
 const portalArtNode = document.querySelector("[data-portal-art]");
+const projectArchiveNode = document.querySelector("#projects .proof-grid");
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -457,8 +458,92 @@ async function loadGithubActivity() {
   }
 }
 
+function readCachedCommitCount(repo) {
+  try {
+    const cached = JSON.parse(localStorage.getItem(`vicorico-commit-count:${repo}`) || "null");
+    if (Number.isInteger(cached?.count) && Date.now() - cached.savedAt < 6 * 60 * 60 * 1000) {
+      return cached.count;
+    }
+  } catch { /* Storage may be disabled. */ }
+  return null;
+}
+
+async function getGithubCommitCount(repo) {
+  const response = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`, {
+    headers: { Accept: "application/vnd.github+json" },
+  });
+  if (!response.ok && response.status !== 409) throw new Error(`GitHub API returned ${response.status}`);
+
+  const links = response.headers.get("Link");
+  const lastPage = links?.match(/<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/);
+  if (links && !lastPage) throw new Error("GitHub did not provide the last page");
+  const commits = response.status === 409 ? [] : await response.json(); // 409 means an empty repository.
+  const count = lastPage ? Number(lastPage[1]) : commits.length;
+  if (!Number.isInteger(count)) throw new Error("Invalid commit count");
+  try {
+    localStorage.setItem(`vicorico-commit-count:${repo}`, JSON.stringify({ count, savedAt: Date.now() }));
+  } catch { /* Storage may be disabled. */ }
+  return count;
+}
+
+function initProjectCommitCounts() {
+  if (!projectArchiveNode) return;
+  const pending = [];
+  let active = 0;
+
+  function runPending() {
+    while (active < 3 && pending.length) {
+      const { repo, badge } = pending.shift();
+      active += 1;
+      getGithubCommitCount(repo)
+        .then((count) => { badge.textContent = `${count.toLocaleString()} ${count === 1 ? "commit" : "commits"}`; })
+        .catch(() => { badge.textContent = "Commit count unavailable"; })
+        .finally(() => { active -= 1; runPending(); });
+    }
+  }
+
+  const observer = "IntersectionObserver" in window
+    ? new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        pending.push(entry.target.commitCountTask);
+      });
+      runPending();
+    }, { rootMargin: "250px 0px" })
+    : null;
+
+  projectArchiveNode.querySelectorAll("article").forEach((card) => {
+    const status = card.querySelector(":scope > span");
+    if (!status) return;
+    const github = [...card.querySelectorAll(".proof-actions a")]
+      .find((link) => /^https:\/\/github\.com\/[^/]+\/[^/]+\/?$/.test(link.href));
+    const badge = document.createElement(github ? "a" : "span");
+    badge.className = "proof-commit-count";
+    if (!github) {
+      badge.textContent = "Commits not public";
+      status.after(badge);
+      return;
+    }
+
+    const repo = new URL(github.href).pathname.slice(1).replace(/\/$/, "");
+    badge.href = `${github.href.replace(/\/$/, "")}/commits`;
+    badge.target = "_blank";
+    badge.rel = "noopener noreferrer";
+    const cached = readCachedCommitCount(repo);
+    badge.textContent = cached === null ? "Loading commits…" : `${cached.toLocaleString()} ${cached === 1 ? "commit" : "commits"}`;
+    status.after(badge);
+    if (cached !== null) return;
+    card.commitCountTask = { repo, badge };
+    if (observer) observer.observe(card);
+    else pending.push(card.commitCountTask);
+  });
+  if (!observer) runPending();
+}
+
 initIntroGate();
 initPortalArt();
 initFlowArt();
 initGithubCarousel();
+initProjectCommitCounts();
 loadGithubActivity();
