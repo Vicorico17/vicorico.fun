@@ -1,7 +1,18 @@
 import * as THREE from "./vendor/three.module.js";
+import { createGameAudio } from "./game-audio.js";
 
 const canvas = document.getElementById("game");
 const stageNode = document.querySelector("[data-game-stage]");
+const soundButtonNode = document.querySelector("[data-game-sound]");
+const soundLabelNode = document.querySelector("[data-game-sound-label]");
+const gameAudio = createGameAudio();
+
+function syncSoundButton() {
+  if (!soundButtonNode) return;
+  soundButtonNode.setAttribute("aria-pressed", String(gameAudio.muted));
+  soundButtonNode.setAttribute("aria-label", gameAudio.muted ? "Unmute game audio" : "Mute game audio");
+  if (soundLabelNode) soundLabelNode.textContent = gameAudio.muted ? "Sound off" : "Sound on";
+}
 const zoneNode = document.querySelector("[data-game-zone]");
 const progressNode = document.querySelector("[data-game-progress]");
 const progressBarNode = document.querySelector("[data-game-progress-bar]");
@@ -1850,6 +1861,7 @@ function resize() {
 function setPhase(phase) {
   state.phase = phase;
   if (stageNode) stageNode.dataset.phase = phase;
+  gameAudio.setPlaying(phase === "play" && !document.hidden);
 }
 
 function showPanel(node) {
@@ -1949,6 +1961,7 @@ function resetGame() {
 // its spawn points but keeps the damage it took. Two falls in the same forecourt
 // quietly soften the pack once.
 function respawn() {
+  gameAudio.cue("fall");
   const item = castleObjects[state.unlockedIndex];
   const combat = combatIndex();
   state.deaths += 1;
@@ -2094,6 +2107,7 @@ function startDash() {
   state.player.vx = 0;
   state.player.vz = 0;
   spawnRingPulse(state.player.x, state.player.z, "#8bd3ff", 2.4, 0.35);
+  gameAudio.cue("dash");
   vibrate(12);
 }
 
@@ -2297,6 +2311,7 @@ function startBossFight() {
   if (arena.boundary) arena.boundary.visible = true;
   spawnBurst(bossArena.x, 2.5, bossArena.z - 5, "#c084fc", 30, { speed: 5, lift: 5, life: 1 });
   spawnRingPulse(bossArena.x, bossArena.z, "#c084fc", 12, 1.0);
+  gameAudio.cue("boss");
   setMessage("The Fragmenter. Break the four fragments, then the core.");
   vibrate(25);
   updateHud(true);
@@ -2467,6 +2482,7 @@ function onBossDefeated(mob) {
     spawnBeam(mob.position.x, mob.position.z, entry.pillar.position.x, entry.pillar.position.z, entry.cap.material.color.getStyle(), 1.6, 2.4);
   });
   setMessage("Systems reconnected.");
+  gameAudio.cue("win");
   vibrate(40);
 }
 
@@ -2533,6 +2549,7 @@ function updatePickups(dt) {
       pickup.visible = false;
       const healed = heal(22);
       spawnBurst(pickup.position.x, pickup.position.y, pickup.position.z, "#fb7185", 8, { speed: 2.6, lift: 3, life: 0.6, scale: 0.8 });
+      gameAudio.cue("pickup");
       setMessage(state.perks.healMult > 1 ? `Grant Funding: +${healed} health.` : `+${healed} health.`);
     }
   });
@@ -2617,6 +2634,7 @@ function collectNode(item, node) {
   const color = item.castle.color;
   spawnBurst(node.position.x, 1.05, node.position.z, color, 10, { speed: 3, lift: 3.2, life: 0.7 });
   spawnRingPulse(node.position.x, node.position.z, color, 2.6);
+  gameAudio.cue("pickup");
   const remaining = remainingNodes(item.index);
   const mobsLeft = activeMobsForCastle(item.index).length;
   const noun = item.castle.objective.noun;
@@ -2657,6 +2675,7 @@ function updateCastles(dt) {
       if (item.gateProgress === 0) {
         spawnBurst(item.x, 1.5, item.z + 3.9, item.castle.color, 16, { speed: 3.4, lift: 3.6, life: 0.8 });
         spawnRingPulse(item.x, item.z + 4.4, item.castle.color, 4.5, 0.7);
+        if (isCurrent) gameAudio.cue("gate");
         if (isCurrent && !item.discovered) setMessage("The gate is opening. Walk inside to choose your upgrade.");
       }
       item.gateProgress = Math.min(1, item.gateProgress + dt / gateAnimDuration);
@@ -2748,6 +2767,7 @@ function damageMob(mob, base, knockback = 0.55, options = {}) {
     life: 0.45,
     scale: crit ? 0.9 : 0.7,
   });
+  gameAudio.cue("hit");
   if (data.hp <= 0.001) defeatMob(mob);
   return amount;
 }
@@ -2759,6 +2779,7 @@ function defeatMob(mob) {
   const color = data.color || "#fff6a3";
   spawnBurst(mob.position.x, 0.9, mob.position.z, color, data.elite ? 22 : 14, { speed: 4.2, lift: 4.2, life: 0.8 });
   spawnRingPulse(mob.position.x, mob.position.z, color, data.elite ? 4.5 : 3.2, 0.55);
+  if (!data.isBoss) gameAudio.cue("kill");
   state.kills += 1;
   if (state.perks.healOnKill > 0) {
     const healed = heal(data.elite && !data.isFragment ? state.perks.healOnKill * 2 : state.perks.healOnKill);
@@ -2779,6 +2800,7 @@ function hurtPlayer(amount, options = {}) {
   if (state.invulnTimer > 0 || state.dash.timer > 0) return false;
   const dealt = amount * state.perks.damageTakenMult;
   state.playerHealth = Math.max(0, state.playerHealth - dealt);
+  gameAudio.cue("hurt");
   state.lastHurtAt = clock.elapsedTime;
   if (options.push && options.fromX !== undefined) {
     const dx = state.player.x - options.fromX;
@@ -2863,6 +2885,7 @@ function attack() {
   }
   const base = state.weapon === "bow" ? 0.48 : state.weapon === "arc" ? 1.0 : 0.38;
   state.attackCooldown = base * state.perks.cooldownMult;
+  gameAudio.cue(state.weapon === "sword" ? "sword" : state.weapon === "bow" ? "bow" : "arc");
   state.attackTimer = attackDuration;
   canvas.classList.remove("is-attacking");
   window.requestAnimationFrame(() => canvas.classList.add("is-attacking"));
@@ -3446,6 +3469,7 @@ function grantCoreUnlock(castleIndex) {
 
 function startGame() {
   if (state.phase !== "intro") return;
+  gameAudio.activate().then((ready) => { if (ready) gameAudio.cue("start"); });
   hidePanel(introNode);
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   setPhase("play");
@@ -3538,6 +3562,7 @@ function chooseArtifact(index) {
   discoveryRevealNode.scrollIntoView?.({ block: "nearest" });
   if (!alreadyChosen) {
     spawnBurst(item.x, 2.6, item.z, item.castle.color, 12, { speed: 2.8, lift: 3.4, life: 0.8 });
+    gameAudio.cue("upgrade");
     vibrate(25);
   }
 }
@@ -3884,6 +3909,12 @@ window.addEventListener("blur", clearHeldInput);
 window.addEventListener("pagehide", clearHeldInput);
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) clearHeldInput();
+  gameAudio.setPlaying(state.phase === "play" && !document.hidden);
+});
+
+soundButtonNode?.addEventListener("click", () => {
+  gameAudio.setMuted(!gameAudio.muted);
+  syncSoundButton();
 });
 
 function setJoystickFromEvent(event) {
@@ -4165,6 +4196,7 @@ buildWorld();
 resize();
 updateWeaponUi();
 updateAbilityUi();
+syncSoundButton();
 syncCompanions();
 updateHud(true);
 hidePanel(discoveryNode);

@@ -80,6 +80,42 @@
   animation: attackPulse 220ms ease;
 }
 
+.game-sound-toggle {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
+  z-index: 7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 98px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(5, 7, 12, 0.78);
+  color: #ffffff;
+  cursor: pointer;
+  font: 850 0.78rem/1 Inter, ui-sans-serif, system-ui, sans-serif;
+  padding: 0.6rem 0.8rem;
+  backdrop-filter: blur(18px);
+}
+
+.game-sound-toggle:hover,
+.game-sound-toggle:focus-visible {
+  border-color: #f4bf45;
+  background: rgba(34, 39, 53, 0.9);
+}
+
+.game-sound-toggle:focus-visible {
+  outline: 2px solid #f4bf45;
+  outline-offset: 3px;
+}
+
+.game-sound-toggle[aria-pressed="true"] {
+  color: rgba(255, 255, 255, 0.64);
+}
+
 @keyframes attackPulse {
   0%,
   100% {

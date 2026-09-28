@@ -71,11 +71,11 @@ Opening story, virtual joystick, artifact discovery, castle-specific forecourt o
 - Dev Mode is labelled ALL instead of a lane on purpose.
 - No analytics or network calls from the game.
 
-## Still open / ideas
+## Round 3 — Audio ✅
 
-- Sound effects and a short music loop with a mute toggle.
-- Persist the run in `localStorage` so a refresh does not lose upgrades.
-- A shareable ending (copy the summary line).
+- Generated sound effects mark attacks, hits, damage, pickups, gates, upgrades, and the boss.
+- A quiet eight-second music loop plays during the quest. Audio begins only after a player action and pauses outside active play.
+- The sound button mutes both music and effects and remembers the choice across visits.
 
 ## Testing notes
 
