@@ -458,17 +458,17 @@ async function loadGithubActivity() {
   }
 }
 
-function readCachedCommitCount(repo) {
+function readCachedProjectCommitInfo(repo) {
   try {
-    const cached = JSON.parse(localStorage.getItem(`vicorico-commit-count:${repo}`) || "null");
+    const cached = JSON.parse(localStorage.getItem(`vicorico-project-commits:${repo}`) || "null");
     if (Number.isInteger(cached?.count) && Date.now() - cached.savedAt < 6 * 60 * 60 * 1000) {
-      return cached.count;
+      return cached;
     }
   } catch { /* Storage may be disabled. */ }
   return null;
 }
 
-async function getGithubCommitCount(repo) {
+async function getGithubProjectCommitInfo(repo) {
   const response = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`, {
     headers: { Accept: "application/vnd.github+json" },
   });
@@ -480,26 +480,59 @@ async function getGithubCommitCount(repo) {
   const commits = response.status === 409 ? [] : await response.json(); // 409 means an empty repository.
   const count = lastPage ? Number(lastPage[1]) : commits.length;
   if (!Number.isInteger(count)) throw new Error("Invalid commit count");
+  const commit = commits[0];
+  const info = {
+    count,
+    latestDate: commit?.commit?.committer?.date || commit?.commit?.author?.date || null,
+    savedAt: Date.now(),
+  };
   try {
-    localStorage.setItem(`vicorico-commit-count:${repo}`, JSON.stringify({ count, savedAt: Date.now() }));
+    localStorage.setItem(`vicorico-project-commits:${repo}`, JSON.stringify(info));
   } catch { /* Storage may be disabled. */ }
-  return count;
+  return info;
 }
 
 function initProjectCommitCounts() {
   if (!projectArchiveNode) return;
   const pending = [];
   let active = 0;
+  let completed = 0;
+  let total = 0;
+  const entries = [];
 
   function runPending() {
     while (active < 3 && pending.length) {
-      const { repo, badge } = pending.shift();
+      const task = pending.shift();
       active += 1;
-      getGithubCommitCount(repo)
-        .then((count) => { badge.textContent = `${count.toLocaleString()} ${count === 1 ? "commit" : "commits"}`; })
-        .catch(() => { badge.textContent = "Commit count unavailable"; })
-        .finally(() => { active -= 1; runPending(); });
+      getGithubProjectCommitInfo(task.repo)
+        .then((info) => { task.entry.info = info; })
+        .catch(() => {
+          task.badge.textContent = "Commit count unavailable";
+          task.entry.latest.textContent = "Latest commit unavailable";
+        })
+        .finally(() => {
+          completed += 1;
+          active -= 1;
+          if (completed === total) sortArchive();
+          runPending();
+        });
     }
+  }
+
+  function sortArchive() {
+    entries.sort((a, b) => {
+      const aDate = a.info?.latestDate ? Date.parse(a.info.latestDate) : -Infinity;
+      const bDate = b.info?.latestDate ? Date.parse(b.info.latestDate) : -Infinity;
+      return bDate - aDate || a.index - b.index;
+    });
+    entries.forEach(({ card, info, badge, latest }) => {
+      if (info) {
+        badge.textContent = `${info.count.toLocaleString()} ${info.count === 1 ? "commit" : "commits"}`;
+        latest.textContent = info.latestDate ? `Latest commit · ${formatGithubDateTime(info.latestDate)}` : "No commits yet";
+        if (info.latestDate) latest.dateTime = info.latestDate;
+      }
+      projectArchiveNode.append(card);
+    });
   }
 
   const observer = "IntersectionObserver" in window
@@ -507,22 +540,31 @@ function initProjectCommitCounts() {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         observer.unobserve(entry.target);
-        pending.push(entry.target.commitCountTask);
+        pending.push(...[...projectArchiveNode.querySelectorAll("article")]
+          .map((card) => card.commitCountTask)
+          .filter(Boolean));
       });
       runPending();
-    }, { rootMargin: "250px 0px" })
+    }, { rootMargin: "400px 0px" })
     : null;
 
-  projectArchiveNode.querySelectorAll("article").forEach((card) => {
+  projectArchiveNode.querySelectorAll("article").forEach((card, index) => {
     const status = card.querySelector(":scope > span");
     if (!status) return;
     const github = [...card.querySelectorAll(".proof-actions a")]
       .find((link) => /^https:\/\/github\.com\/[^/]+\/[^/]+\/?$/.test(link.href));
+    const meta = document.createElement("div");
+    meta.className = "proof-meta";
     const badge = document.createElement(github ? "a" : "span");
     badge.className = "proof-commit-count";
+    const latest = document.createElement("time");
+    latest.className = "proof-last-commit";
+    latest.textContent = github ? "Loading latest commit…" : "Independent project";
+    meta.append(badge, latest);
     if (!github) {
       badge.textContent = "Commits not public";
-      status.after(badge);
+      status.after(meta);
+      entries.push({ card, index, info: null, badge, latest });
       return;
     }
 
@@ -530,18 +572,47 @@ function initProjectCommitCounts() {
     badge.href = `${github.href.replace(/\/$/, "")}/commits`;
     badge.target = "_blank";
     badge.rel = "noopener noreferrer";
-    const cached = readCachedCommitCount(repo);
-    badge.textContent = cached === null ? "Loading commits…" : `${cached.toLocaleString()} ${cached === 1 ? "commit" : "commits"}`;
-    status.after(badge);
-    if (cached !== null) return;
-    card.commitCountTask = { repo, badge };
-    if (observer) observer.observe(card);
-    else pending.push(card.commitCountTask);
+    const cached = readCachedProjectCommitInfo(repo);
+    badge.textContent = cached ? `${cached.count.toLocaleString()} ${cached.count === 1 ? "commit" : "commits"}` : "Loading commits…";
+    if (cached) {
+      latest.textContent = cached.latestDate ? `Latest commit · ${formatGithubDateTime(cached.latestDate)}` : "No commits yet";
+      if (cached.latestDate) latest.dateTime = cached.latestDate;
+    }
+    status.after(meta);
+    const entry = { card, index, repo, info: cached, badge, latest };
+    entries.push(entry);
+    if (!cached) {
+      entry.task = { repo, badge, entry };
+      card.commitCountTask = entry.task;
+      if (!observer) pending.push(entry.task);
+    }
   });
-  if (!observer) runPending();
+  total = entries.filter((entry) => entry.task).length;
+  if (!total) sortArchive();
+  if (observer && total) observer.observe(projectArchiveNode);
+  else runPending();
+}
+
+function initThemePicker() {
+  const picker = document.querySelector("[data-theme-picker]");
+  if (!picker) return;
+  const themes = new Set(["signal", "paper", "grove"]);
+  let saved = "signal";
+  try {
+    const preference = localStorage.getItem("vicorico-site-theme");
+    if (themes.has(preference)) saved = preference;
+  } catch { /* Storage may be disabled. */ }
+  document.body.dataset.theme = saved;
+  picker.value = saved;
+  picker.addEventListener("change", () => {
+    const theme = themes.has(picker.value) ? picker.value : "signal";
+    document.body.dataset.theme = theme;
+    try { localStorage.setItem("vicorico-site-theme", theme); } catch { /* Storage may be disabled. */ }
+  });
 }
 
 initIntroGate();
+initThemePicker();
 initPortalArt();
 initFlowArt();
 initGithubCarousel();
