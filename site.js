@@ -3,6 +3,7 @@ const latestReposNode = document.querySelector("[data-github-latest]");
 const githubCarouselNode = document.querySelector("[data-github-carousel]");
 const portalArtNode = document.querySelector("[data-portal-art]");
 const projectArchiveNode = document.querySelector("#projects .proof-grid");
+const projectPushDates = new Map();
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -445,7 +446,9 @@ async function loadGithubActivity() {
       { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" },
     );
     if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
-    const repos = (await response.json()).filter((repo) => !repo.fork && !repo.archived);
+    const allRepos = await response.json();
+    sortProjectArchiveByPushDate(allRepos);
+    const repos = allRepos.filter((repo) => !repo.fork && !repo.archived);
     const recent = latestGithubRepos(repos);
     if (recent.length === 0) return;
     const cards = recent.map(makeGithubCommitCard);
@@ -456,6 +459,29 @@ async function loadGithubActivity() {
   } catch {
     // Keep the linked fallback cards when GitHub is unavailable.
   }
+}
+
+function sortProjectArchiveByPushDate(repos) {
+  if (!projectArchiveNode) return;
+  repos.forEach((repo) => {
+    if (repo.pushed_at) projectPushDates.set(repo.full_name.toLowerCase(), repo.pushed_at);
+  });
+  const cards = [...projectArchiveNode.querySelectorAll("article")];
+  cards.sort((a, b) => {
+    const aDate = Date.parse(projectPushDates.get(a.dataset.githubRepo) || a.dataset.latestCommit || "") || 0;
+    const bDate = Date.parse(projectPushDates.get(b.dataset.githubRepo) || b.dataset.latestCommit || "") || 0;
+    return bDate - aDate || Number(a.dataset.archiveOrder) - Number(b.dataset.archiveOrder);
+  });
+  cards.forEach((card) => {
+    const repo = card.dataset.githubRepo;
+    const pushedAt = projectPushDates.get(repo);
+    const latest = card.querySelector(".proof-last-commit");
+    if (pushedAt && latest) {
+      latest.dateTime = pushedAt;
+      latest.textContent = `Latest update · ${formatGithubDateTime(pushedAt)}`;
+    }
+    projectArchiveNode.append(card);
+  });
 }
 
 function readCachedProjectCommitInfo(repo) {
@@ -521,8 +547,8 @@ function initProjectCommitCounts() {
 
   function sortArchive() {
     entries.sort((a, b) => {
-      const aDate = a.info?.latestDate ? Date.parse(a.info.latestDate) : -Infinity;
-      const bDate = b.info?.latestDate ? Date.parse(b.info.latestDate) : -Infinity;
+      const aDate = Date.parse(projectPushDates.get(a.repo?.toLowerCase()) || a.info?.latestDate || "") || 0;
+      const bDate = Date.parse(projectPushDates.get(b.repo?.toLowerCase()) || b.info?.latestDate || "") || 0;
       return bDate - aDate || a.index - b.index;
     });
     entries.forEach(({ card, info, badge, latest }) => {
@@ -530,6 +556,11 @@ function initProjectCommitCounts() {
         badge.textContent = `${info.count.toLocaleString()} ${info.count === 1 ? "commit" : "commits"}`;
         latest.textContent = info.latestDate ? `Latest commit · ${formatGithubDateTime(info.latestDate)}` : "No commits yet";
         if (info.latestDate) latest.dateTime = info.latestDate;
+      }
+      const pushedAt = projectPushDates.get(card.dataset.githubRepo);
+      if (pushedAt) {
+        latest.textContent = `Latest update · ${formatGithubDateTime(pushedAt)}`;
+        latest.dateTime = pushedAt;
       }
       projectArchiveNode.append(card);
     });
@@ -549,6 +580,7 @@ function initProjectCommitCounts() {
     : null;
 
   projectArchiveNode.querySelectorAll("article").forEach((card, index) => {
+    card.dataset.archiveOrder = String(index);
     const status = card.querySelector(":scope > span");
     if (!status) return;
     const github = [...card.querySelectorAll(".proof-actions a")]
@@ -569,6 +601,12 @@ function initProjectCommitCounts() {
     }
 
     const repo = new URL(github.href).pathname.slice(1).replace(/\/$/, "");
+    card.dataset.githubRepo = repo.toLowerCase();
+    const pushedAt = projectPushDates.get(card.dataset.githubRepo);
+    if (pushedAt) {
+      latest.textContent = `Latest update · ${formatGithubDateTime(pushedAt)}`;
+      latest.dateTime = pushedAt;
+    }
     badge.href = `${github.href.replace(/\/$/, "")}/commits`;
     badge.target = "_blank";
     badge.rel = "noopener noreferrer";

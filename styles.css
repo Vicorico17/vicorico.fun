@@ -1460,31 +1460,28 @@ button {
   backdrop-filter: blur(18px);
 }
 
-.theme-picker {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0 0.35rem 0 0.5rem;
-  color: rgba(255, 255, 255, 0.64);
-  font-size: 0.68rem;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.theme-picker select {
+.portal-nav .theme-picker {
   max-width: 7rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  font: inherit;
-  letter-spacing: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.2;
   padding: 0.42rem 1.6rem 0.42rem 0.65rem;
-  text-transform: none;
+  transition: background 180ms ease, border-color 180ms ease;
 }
 
-.theme-picker select option {
+.portal-nav .theme-picker:hover,
+.portal-nav .theme-picker:focus-visible {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.portal-nav .theme-picker option {
   background: #15131a;
   color: #fff;
 }
@@ -2542,8 +2539,9 @@ dd {
 
 .proof-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 16px;
 }
 
 .github-live {
@@ -2686,7 +2684,8 @@ dd {
 
 .proof-grid article {
   display: flex;
-  min-height: 430px;
+  min-width: 0;
+  min-height: 390px;
   flex-direction: column;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
@@ -2694,7 +2693,7 @@ dd {
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 36%),
     rgba(255, 255, 255, 0.055);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: 22px;
   backdrop-filter: blur(12px);
   transition:
     border-color 240ms ease,
@@ -2712,6 +2711,19 @@ dd {
     0 22px 44px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transform: translateY(-4px);
+}
+
+.proof-grid article > * {
+  max-width: 100%;
+}
+
+.proof-grid article > span:first-of-type {
+  margin-top: 0.1rem;
+  line-height: 1.35;
+}
+
+.proof-grid h3 {
+  overflow-wrap: anywhere;
 }
 
 .proof-artifact {
@@ -2802,7 +2814,7 @@ dd {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: auto 0 18px;
+  margin: auto 0 1.1rem;
   padding: 0;
   list-style: none;
 }
@@ -2817,6 +2829,7 @@ dd {
 
 .proof-actions {
   display: flex;
+  margin-top: 0.6rem;
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -4347,19 +4360,23 @@ dd {
 }
 
 .home-page[data-theme="paper"] .portal-nav a,
-.home-page[data-theme="paper"] .theme-picker,
-.home-page[data-theme="paper"] .theme-picker select {
+.home-page[data-theme="paper"] .theme-picker {
   color: #39332c;
 }
 
-.home-page[data-theme="paper"] .theme-picker select {
+.home-page[data-theme="paper"] .theme-picker {
   border-color: rgba(63, 53, 41, 0.2);
   background: rgba(63, 53, 41, 0.06);
 }
 
-.home-page[data-theme="paper"] .theme-picker select option {
+.home-page[data-theme="paper"] .theme-picker option {
   background: #faf7ef;
   color: #29251f;
+}
+
+.home-page[data-theme="paper"] .theme-picker:hover,
+.home-page[data-theme="paper"] .theme-picker:focus-visible {
+  background: rgba(63, 53, 41, 0.1);
 }
 
 .home-page[data-theme="paper"] .portal-start,
@@ -4461,15 +4478,15 @@ dd {
 }
 
 @media (max-width: 760px) {
-  .theme-picker {
-    gap: 0.25rem;
-    padding-right: 0.15rem;
-    padding-left: 0.25rem;
-  }
-
-  .theme-picker select {
+  .portal-nav .theme-picker {
     max-width: 6.2rem;
     padding-right: 1.35rem;
     padding-left: 0.5rem;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 960px) {
+  .proof-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
