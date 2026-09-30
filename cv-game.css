@@ -63,7 +63,7 @@
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  touch-action: pan-y;
+  touch-action: manipulation;
 }
 
 #game {
@@ -407,11 +407,14 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-top: 4px solid var(--castle-color, #ffffff);
   border-radius: 12px;
-  background: rgba(5, 7, 12, 0.88);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  background:
+    radial-gradient(ellipse at 100% 0, rgba(255, 255, 255, 0.07), transparent 44%),
+    rgba(5, 7, 12, 0.94);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 34px rgba(255, 255, 255, 0.035);
   color: #ffffff;
   padding: clamp(18px, 3vw, 28px);
   pointer-events: auto;
+  touch-action: pan-y;
   backdrop-filter: blur(22px);
   transition: opacity 240ms ease, transform 240ms ease, visibility 240ms;
   -webkit-user-select: text;
@@ -543,15 +546,19 @@
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-areas:
+    "key lane"
     "key title"
-    "key teaser";
+    "key project"
+    "key teaser"
+    "key cv";
   column-gap: 12px;
-  row-gap: 2px;
-  align-items: center;
+  row-gap: 5px;
+  align-items: start;
   min-height: 0;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.07);
+  border-left: 3px solid var(--castle-color, #ffffff);
+  border-radius: 13px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.09), transparent 64%), rgba(255, 255, 255, 0.045);
   color: #ffffff;
   cursor: pointer;
   font: inherit;
@@ -563,7 +570,13 @@
 
 .artifact-choice kbd {
   grid-area: key;
-  align-self: center;
+  align-self: start;
+  min-width: 30px;
+  min-height: 30px;
+  justify-content: center;
+  border-radius: 50%;
+  border-color: var(--castle-color, rgba(255, 255, 255, 0.3));
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .artifact-choice b {
@@ -581,6 +594,23 @@
   line-height: 1.3;
 }
 
+.artifact-choice .artifact-project {
+  grid-area: project;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.artifact-choice .artifact-effect {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.artifact-choice .artifact-cv {
+  color: rgba(255, 255, 255, 0.62);
+}
+
 .artifact-choice:hover,
 .artifact-choice:focus-visible {
   border-color: var(--castle-color, #ffffff);
@@ -590,7 +620,8 @@
 
 .artifact-choice.is-selected {
   border-color: var(--castle-color, #ffffff);
-  background: rgba(255, 255, 255, 0.16);
+  border-left-width: 5px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.18), transparent 75%), rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 0 1px var(--castle-color, #ffffff);
 }
 
@@ -1302,6 +1333,7 @@
   grid-template-areas:
     "key lane"
     "key title"
+    "key project"
     "key teaser"
     "key cv";
 }

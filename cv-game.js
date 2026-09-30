@@ -3,6 +3,15 @@ import { createGameAudio } from "./game-audio.js";
 
 const canvas = document.getElementById("game");
 const stageNode = document.querySelector("[data-game-stage]");
+if (stageNode) {
+  const preventPinchZoom = (event) => {
+    if (event.touches?.length > 1 || event.type.startsWith("gesture")) event.preventDefault();
+  };
+  stageNode.addEventListener("touchmove", preventPinchZoom, { passive: false });
+  for (const type of ["gesturestart", "gesturechange", "gestureend"]) {
+    stageNode.addEventListener(type, preventPinchZoom, { passive: false });
+  }
+}
 const soundButtonNode = document.querySelector("[data-game-sound]");
 const soundLabelNode = document.querySelector("[data-game-sound-label]");
 const gameAudio = createGameAudio();
@@ -83,7 +92,7 @@ function createPowerIcon(name) {
 }
 
 const roleLine = "Forward Deployed Engineer & Graph Engineer";
-const pitchLine = "He turns messy workflows into working AI systems, agents, and payment rails.";
+const pitchLine = "I turn messy workflows into useful AI systems, agents, and payment tools.";
 
 // Every castle is one chapter of the portfolio. The forecourt objective is the
 // subject-flavoured task; the three artifacts inside are real projects, and each
@@ -98,9 +107,9 @@ const castles = [
     shortTitle: "AI Systems",
     color: "#f4bf45",
     position: [0, -24],
-    intro: "The first gate hums with ideas. Here AI becomes useful work: deployed models, private data, and agents with real jobs.",
-    prompt: "Three ways AI became useful work. Each one is a real project.",
-    objective: { label: "Reconnect the model nodes", noun: "node", done: "Model nodes reconnected." },
+    intro: "Build AI that works in practice: deploy models, connect private data, and give agents useful tasks.",
+    prompt: "Choose one project: model hosting, private AI, or agent workflows.",
+    objective: { label: "Collect the AI model nodes", noun: "node", done: "AI model nodes collected." },
     nodeShape: "octahedron",
     nodeLayout: "spread",
     trait: "antenna",
@@ -147,9 +156,9 @@ const castles = [
     shortTitle: "Automation",
     color: "#7cc77d",
     position: [0, -62],
-    intro: "Behind this gate, repetitive work comes alive. Every workflow gets a smarter next move.",
-    prompt: "Three workflows that got a smarter next move. Each one is a real project.",
-    objective: { label: "Repair the broken workflow", noun: "step", done: "Workflow repaired." },
+    intro: "Replace repetitive work with reliable workflows, from lead research to content distribution.",
+    prompt: "Choose one project: lead research, content distribution, or agent testing.",
+    objective: { label: "Collect the workflow steps", noun: "step", done: "Workflow steps collected." },
     nodeShape: "gear",
     nodeLayout: "spread",
     trait: "gear",
@@ -196,9 +205,9 @@ const castles = [
     shortTitle: "Crypto Rails",
     color: "#4f70ff",
     position: [0, -100],
-    intro: "Blue rails run beneath the world. Ownership, payments, and communities become playable systems.",
-    prompt: "Three rails built through the cycles. Each one is a real project.",
-    objective: { label: "Unlock the transaction path", noun: "key", done: "Transaction path unlocked." },
+    intro: "Build crypto tools for digital ownership, payments, and online communities.",
+    prompt: "Choose one project: community tokens, prediction markets, or agent payments.",
+    objective: { label: "Collect the transaction keys", noun: "key", done: "Transaction keys collected." },
     nodeShape: "diamond",
     nodeLayout: "spread",
     trait: "diamond",
@@ -245,9 +254,9 @@ const castles = [
     shortTitle: "Places & Projects",
     color: "#f97316",
     position: [0, -138],
-    intro: "This gate is a map of ecosystems worked with. Each one left a tool behind for the journey.",
-    prompt: "Three ecosystems that left a tool behind. Each one is real experience.",
-    objective: { label: "Recover tools from past ecosystems", noun: "tool", done: "Tools recovered." },
+    intro: "Experience across crypto communities, grant-funded ecosystem work, and product teams.",
+    prompt: "Choose an experience: crypto communities, grant work, or product tooling.",
+    objective: { label: "Collect the ecosystem tools", noun: "tool", done: "Ecosystem tools collected." },
     nodeShape: "crate",
     nodeLayout: "spread",
     trait: "banner",
@@ -294,9 +303,9 @@ const castles = [
     shortTitle: "Creative Factory",
     color: "#d95f9d",
     position: [0, -176],
-    intro: "Pink lights flicker inside the factory. One idea becomes a clip, a catalog, and a reason to come back.",
-    prompt: "Three pieces of the content factory. Each one is a real project.",
-    objective: { label: "Collect the media fragments", noun: "fragment", done: "Fragments collected." },
+    intro: "Turn ideas into short videos, AI music releases, and interactive live experiences.",
+    prompt: "Choose one project: video clips, AI music, or live streaming.",
+    objective: { label: "Collect the media pieces", noun: "fragment", done: "Media pieces collected." },
     nodeShape: "frame",
     nodeLayout: "spread",
     trait: "frame",
@@ -343,9 +352,9 @@ const castles = [
     shortTitle: "Projects",
     color: "#6fd18c",
     position: [0, -214],
-    intro: "A workshop full of shipped experiments. Pick one build and see the idea made real.",
-    prompt: "Three shipped builds from the workshop. Each one is live.",
-    objective: { label: "Gather the build blueprints", noun: "blueprint", done: "Blueprints gathered." },
+    intro: "Shipped tools for marketplace search, workplace attendance, and market research.",
+    prompt: "Choose one shipped tool: marketplace search, NFC attendance, or stock research.",
+    objective: { label: "Collect the project blueprints", noun: "blueprint", done: "Project blueprints collected." },
     nodeShape: "scroll",
     nodeLayout: "spread",
     trait: "wrench",
@@ -392,9 +401,9 @@ const castles = [
     shortTitle: "Game Worlds",
     color: "#fb7185",
     position: [0, -252],
-    intro: "At the final castle the portfolio becomes a world. Design the loop, invite the players, keep it moving.",
-    prompt: "Three ways to keep a world alive. Pick what you take into the last fight.",
-    objective: { label: "Complete the player loop", noun: "token", done: "Player loop complete." },
+    intro: "Build games and communities that give players reasons to return.",
+    prompt: "Choose a project: a crypto community, an esports tool, or this game.",
+    objective: { label: "Collect the player-loop tokens", noun: "token", done: "Player-loop tokens collected." },
     nodeShape: "loop",
     nodeLayout: "orbit",
     trait: "crown",
@@ -615,7 +624,7 @@ const state = {
   deaths: 0,
   falls: {},
   assisted: new Set(),
-  message: "Follow the road. Clear the forecourt of the first castle.",
+  message: "Move to the first castle. Clear its courtyard, collect three AI model nodes, and open the gate.",
   messageAt: 0,
   collected: [],
   discovery: { index: -1, chosen: null },
@@ -726,6 +735,19 @@ function makeCone(radius, height, color, x, y, z, options = {}) {
   mesh.castShadow = true;
   return mesh;
 }
+
+const castleBannerShape = new THREE.Shape();
+castleBannerShape.moveTo(0, 0);
+castleBannerShape.lineTo(0.9, 0);
+castleBannerShape.lineTo(0.9, 0.84);
+castleBannerShape.lineTo(0.46, 0.64);
+castleBannerShape.lineTo(0, 0.84);
+castleBannerShape.closePath();
+const castleBannerGeometry = new THREE.ShapeGeometry(castleBannerShape);
+const castleBannerPoleGeometry = new THREE.CylinderGeometry(0.035, 0.045, 1.42, 6);
+const castleBannerPoleMaterial = material("#aab4c5", { metalness: 0.7, roughness: 0.32 });
+const castleGateTrimGeometry = new THREE.BoxGeometry(0.12, 2.65, 0.07);
+const castleGateLintelGeometry = new THREE.BoxGeometry(3.84, 0.12, 0.07);
 
 function makeTextTexture(text, options = {}) {
   const fontSize = options.fontSize || 72;
@@ -946,6 +968,7 @@ function buildWorld() {
 
   const path = makeBox(10, 0.04, 324, "#3b3127", 0, 0.025, -138, { roughness: 0.8 });
   scene.add(path);
+  buildRoadGraphics();
 
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 0.12, 48), material("#2f3c34", { roughness: 0.8 }));
   plaza.position.y = 0.06;
@@ -964,6 +987,29 @@ function buildWorld() {
   buildTrees();
   buildPickups();
   buildSky();
+}
+
+function buildRoadGraphics() {
+  const markerGeometry = new THREE.BoxGeometry(0.14, 0.025, 2.1);
+  const markerMaterial = new THREE.MeshBasicMaterial({
+    color: "#d8bd7b",
+    transparent: true,
+    opacity: 0.42,
+    depthWrite: false,
+  });
+  const count = Math.ceil((worldStartZ - worldEndZ) / 10);
+  const markers = new THREE.InstancedMesh(markerGeometry, markerMaterial, count);
+  const marker = new THREE.Object3D();
+  let index = 0;
+  for (let z = worldStartZ - 3; z > worldEndZ && index < count; z -= 10) {
+    marker.position.set(0, 0.06, z);
+    marker.updateMatrix();
+    markers.setMatrixAt(index, marker.matrix);
+    index += 1;
+  }
+  markers.count = index;
+  markers.instanceMatrix.needsUpdate = true;
+  scene.add(markers);
 }
 
 function buildCastle(castle, index) {
@@ -1011,6 +1057,37 @@ function buildCastle(castle, index) {
     makeBox(0.44, 1.8, 7.2, wall, 3.72, 1.02, 0),
   ];
   walls.forEach((wallMesh) => group.add(wallMesh));
+
+  // Bright trim makes each castle entrance easier to spot from the road.
+  const gateTrimMaterial = new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.82, depthWrite: false });
+  const gateTrim = new THREE.Group();
+  const leftTrim = new THREE.Mesh(castleGateTrimGeometry, gateTrimMaterial);
+  const rightTrim = new THREE.Mesh(castleGateTrimGeometry, gateTrimMaterial);
+  const lintel = new THREE.Mesh(castleGateLintelGeometry, gateTrimMaterial);
+  leftTrim.position.set(-1.82, 1.3, 4.08);
+  rightTrim.position.set(1.82, 1.3, 4.08);
+  lintel.position.set(0, 2.62, 4.08);
+  gateTrim.add(leftTrim, rightTrim, lintel);
+  group.add(gateTrim);
+
+  // Matching pennants carry the chapter colour on both sides of the gate.
+  const bannerMaterial = new THREE.MeshStandardMaterial({
+    color: accent,
+    emissive: accent,
+    emissiveIntensity: 0.3,
+    roughness: 0.48,
+    side: THREE.DoubleSide,
+  });
+  for (const side of [-1, 1]) {
+    const pole = new THREE.Mesh(castleBannerPoleGeometry, castleBannerPoleMaterial);
+    pole.position.set(side * 2.52, 3.35, 4.13);
+    pole.castShadow = false;
+    const banner = new THREE.Mesh(castleBannerGeometry, bannerMaterial);
+    banner.position.set(side * 2.52, 3.2, 4.16);
+    banner.scale.x = side;
+    banner.castShadow = false;
+    group.add(pole, banner);
+  }
 
   const ring = new THREE.Mesh(
     new THREE.TorusGeometry(triggerRadius, 0.035, 8, 96),
@@ -1951,7 +2028,7 @@ function resetGame() {
   hidePanel(endingNode);
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   setPhase("play");
-  setMessage("Quest reset. Follow the road to the first castle.");
+  setMessage("Quest reset. Move to the first castle and collect its AI model nodes.");
   updateWeaponUi();
   updateAbilityUi();
   updateHud(true);
@@ -2162,7 +2239,7 @@ function updateMovement(dt) {
     const nodesLeft = remainingNodes(item.index);
     const text =
       mobsLeft > 0
-        ? "Clear the mobs before the gate opens."
+        ? "Defeat the enemies before the gate opens."
         : `${nodesLeft} ${pluralize(item.castle.objective.noun, nodesLeft)} left to open the gate.`;
     if (state.message !== text && clock.elapsedTime - state.messageAt > 1.2) setMessage(text);
   }
@@ -2643,7 +2720,7 @@ function collectNode(item, node) {
     return;
   }
   item.nodes.forEach((piece) => spawnBeam(piece.position.x, piece.position.z, item.x, item.z + 4.2, color));
-  setMessage(mobsLeft > 0 ? `${item.castle.objective.done} ${mobsLeft} ${pluralize("mob", mobsLeft)} left.` : item.castle.objective.done);
+  setMessage(mobsLeft > 0 ? `${item.castle.objective.done} ${mobsLeft} ${pluralize("foe", mobsLeft)} left.` : item.castle.objective.done);
 }
 
 function remainingNodes(castleIndex) {
@@ -2676,7 +2753,7 @@ function updateCastles(dt) {
         spawnBurst(item.x, 1.5, item.z + 3.9, item.castle.color, 16, { speed: 3.4, lift: 3.6, life: 0.8 });
         spawnRingPulse(item.x, item.z + 4.4, item.castle.color, 4.5, 0.7);
         if (isCurrent) gameAudio.cue("gate");
-        if (isCurrent && !item.discovered) setMessage("The gate is opening. Walk inside to choose your upgrade.");
+        if (isCurrent && !item.discovered) setMessage("Gate open. Walk through to choose a project and its in-game ability.");
       }
       item.gateProgress = Math.min(1, item.gateProgress + dt / gateAnimDuration);
     }
@@ -2928,7 +3005,7 @@ function attack() {
     spawnBeam(state.player.x, state.player.z, state.player.x + facingX * state.perks.coneRange, state.player.z + facingZ * state.perks.coneRange, "#fff6a3", 0.25, 1.0);
   }
   if (hitSet.size) reportCombat();
-  else if (state.perks.coneRange <= 0) setMessage("Move closer to a mob before attacking.");
+  else if (state.perks.coneRange <= 0) setMessage("Move closer to a foe before attacking.");
 }
 
 function reportCombat() {
@@ -2940,11 +3017,11 @@ function reportCombat() {
   const nodesLeft = remainingNodes(castleIndex);
   const noun = item.castle.objective.noun;
   if (mobsLeft > 0) {
-    setMessage(`${mobsLeft} ${pluralize("mob", mobsLeft)} left.`);
+    setMessage(`${mobsLeft} ${pluralize("foe", mobsLeft)} left.`);
   } else if (nodesLeft > 0) {
-    setMessage(`Mobs cleared. ${nodesLeft} ${pluralize(noun, nodesLeft)} left. ${item.castle.objective.label}.`);
+    setMessage(`Foes cleared. ${nodesLeft} ${pluralize(noun, nodesLeft)} left. ${item.castle.objective.label}.`);
   } else {
-    setMessage("Mobs cleared.");
+    setMessage("Enemies cleared.");
   }
 }
 
@@ -3287,7 +3364,7 @@ function updateHud(force = false) {
 
   let zone = "Vic's Quest";
   if (state.phase === "ending" || state.completed) zone = "World reconnected";
-  else if (state.phase === "discovery") zone = "Choose your upgrade";
+  else if (state.phase === "discovery") zone = "Choose a project";
   else if (state.phase === "cv") zone = "Your CV";
   else if (state.phase === "play") {
     if (state.boss.stage === "approach") zone = "Road to the Fragmenter";
@@ -3376,7 +3453,7 @@ function updateHud(force = false) {
   cardTitleNode.textContent = done ? "The gate is open" : castle.objective.label;
   cardCopyNode.textContent = castle.intro;
   setCardList([
-    { text: mobsLeft > 0 ? `${mobsLeft} ${pluralize("mob", mobsLeft)} left` : "Mobs cleared", done: mobsLeft === 0 },
+    { text: mobsLeft > 0 ? `${mobsLeft} ${pluralize("foe", mobsLeft)} left` : "Foes cleared", done: mobsLeft === 0 },
     {
       text: nodesLeft > 0 ? `${nodesLeft} ${pluralize(noun, nodesLeft)} left` : `${capitalize(pluralize(noun, 2))} collected`,
       done: nodesLeft === 0,
@@ -3475,7 +3552,7 @@ function startGame() {
   setPhase("play");
   state.run.startedAt = clock.elapsedTime;
   state.run.lastInputAt = clock.elapsedTime;
-  setMessage("Follow the road. Clear the forecourt of the first castle.");
+  setMessage("Move to the first castle. Clear its courtyard, collect three AI model nodes, and open the gate.");
   updateHud(true);
 }
 
@@ -3497,8 +3574,8 @@ function openDiscovery(item) {
   const castle = item.castle;
   discoveryNode.style.setProperty("--castle-color", castle.color);
   discoveryKickerNode.textContent = `Chapter ${castle.chapter} · ${castle.shortTitle}`;
-  discoveryTitleNode.textContent = "Choose your upgrade";
-  discoveryIntroNode.textContent = castle.prompt;
+  discoveryTitleNode.textContent = "Choose a project";
+  discoveryIntroNode.textContent = `${castle.prompt} Your choice adds to the CV and gives you an in-game ability.`;
   discoveryChoicesNode.replaceChildren(
     ...castle.artifacts.map((artifact, index) => {
       const button = document.createElement("button");
@@ -3509,14 +3586,19 @@ function openDiscovery(item) {
       key.textContent = String(index + 1);
       const lane = document.createElement("em");
       lane.className = "artifact-lane";
-      lane.append(createPowerIcon(artifact.upgrade.lane), document.createTextNode(artifact.upgrade.lane));
+      lane.append(createPowerIcon(artifact.upgrade.lane), document.createTextNode(`${artifact.upgrade.lane} · IN-GAME ABILITY`));
       const title = document.createElement("b");
-      title.textContent = artifact.upgrade.name;
+      title.textContent = artifact.title;
+      const project = document.createElement("small");
+      project.className = "artifact-project";
+      project.textContent = `Project · ${artifact.project}`;
       const teaser = document.createElement("span");
-      teaser.textContent = artifact.upgrade.effect;
+      teaser.className = "artifact-effect";
+      teaser.textContent = `${artifact.upgrade.name}: ${artifact.upgrade.effect}`;
       const cv = document.createElement("small");
-      cv.textContent = `Real life: ${artifact.fact}`;
-      button.append(key, lane, title, teaser, cv);
+      cv.className = "artifact-cv";
+      cv.textContent = `CV experience · ${artifact.fact}`;
+      button.append(key, lane, title, project, teaser, cv);
       button.addEventListener("click", () => chooseArtifact(index));
       return button;
     }),
@@ -3543,9 +3625,9 @@ function chooseArtifact(index) {
     button.classList.toggle("is-selected", buttonIndex === index);
   });
   if (revealLaneNode) revealLaneNode.replaceChildren(createPowerIcon(artifact.upgrade.lane), document.createTextNode(artifact.upgrade.lane));
-  revealTitleNode.textContent = artifact.upgrade.name;
-  revealGameNode.textContent = artifact.upgrade.effect;
-  revealRealNode.textContent = `${artifact.title}. ${artifact.example}`;
+  revealTitleNode.textContent = artifact.title;
+  revealGameNode.textContent = `${artifact.upgrade.name}: ${artifact.upgrade.effect}`;
+  revealRealNode.textContent = `${artifact.project} · ${artifact.example}`;
   revealLinkNode.textContent = artifact.link.label;
   revealLinkNode.href = artifact.link.href;
   const unlock = coreUnlocks[item.index];
