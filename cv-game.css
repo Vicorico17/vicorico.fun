@@ -195,6 +195,32 @@
   gap: 10px;
 }
 
+.hud-vitals {
+  min-height: 30px;
+}
+
+.hud-hearts {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: #ff657d;
+  font-size: 1.12rem;
+  line-height: 1;
+  text-shadow: 0 0 12px rgba(255, 101, 125, 0.48);
+}
+
+.hud-hearts b {
+  font-weight: 900;
+  font-style: normal;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.hud-hearts b.is-empty {
+  opacity: 0.2;
+  transform: scale(0.88);
+  text-shadow: none;
+}
+
 .hud-stat {
   display: inline-flex;
   align-items: center;
@@ -426,6 +452,50 @@
   visibility: hidden;
   transform: translateY(14px) scale(0.985);
   pointer-events: none;
+}
+
+.game-intro {
+  border-color: rgba(244, 191, 69, 0.28);
+  border-top-color: #f4bf45;
+  background:
+    radial-gradient(ellipse at 100% 0, rgba(244, 191, 69, 0.12), transparent 48%),
+    linear-gradient(145deg, rgba(14, 18, 29, 0.97), rgba(5, 7, 12, 0.96));
+}
+
+.game-intro .panel-kicker {
+  color: #f4bf45;
+  letter-spacing: 0.1em;
+}
+
+.game-intro h1 {
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.game-intro .panel-role {
+  color: #ffffff;
+}
+
+.game-intro .intro-rule {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.76rem;
+}
+
+.game-intro .intro-rule strong {
+  color: #ff8b9b;
+}
+
+.game-intro .panel-actions {
+  margin-top: 22px;
+}
+
+.game-intro .panel-button.primary {
+  border-color: rgba(244, 191, 69, 0.8);
+  background: #f4bf45;
+  color: #17120a;
 }
 
 .game-panel h1,
@@ -727,13 +797,16 @@
 }
 
 .game-stage[data-phase="discovery"] .touch-controls,
-.game-stage[data-phase="ending"] .touch-controls {
+.game-stage[data-phase="ending"] .touch-controls,
+.game-stage[data-phase="intro"] .touch-controls,
+.game-stage[data-phase="gameover"] .touch-controls {
   opacity: 0;
   pointer-events: none;
 }
 
 .game-stage[data-phase="discovery"] .hud-card,
 .game-stage[data-phase="ending"] .hud-card,
+.game-stage[data-phase="gameover"] .hud-card,
 .game-stage[data-phase="intro"] .hud-card {
   opacity: 0;
 }
@@ -993,6 +1066,8 @@
   }
 
   .game-intro .panel-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
     margin-top: 12px;
   }
@@ -1024,20 +1099,49 @@
   .hud-progress {
     flex: 0 0 auto;
     min-width: 112px;
+    gap: 5px;
+    padding: 8px 10px;
   }
 
   .hud-stats {
     gap: 8px;
   }
 
+  .hud-cv-button {
+    min-height: 38px;
+    padding: 5px 8px;
+  }
+
+  .hud-cv-button small {
+    display: none;
+  }
+
   .hud-card {
     width: min(100%, 390px);
+    padding: 12px 14px;
     margin-right: auto;
     margin-bottom: 150px;
   }
 
   .hud-card h1 {
-    font-size: clamp(1.5rem, 7vw, 2.4rem);
+    margin-bottom: 6px;
+    font-size: clamp(1.15rem, 5vw, 1.45rem);
+    line-height: 1.05;
+  }
+
+  .hud-card [data-game-card-copy],
+  .hud-toast {
+    display: none !important;
+  }
+
+  .hud-card ul {
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .hud-card li {
+    font-size: 0.68rem;
+    padding: 0.32rem 0.48rem;
   }
 
   .touch-controls {

@@ -25,11 +25,8 @@ function syncSoundButton() {
 const zoneNode = document.querySelector("[data-game-zone]");
 const progressNode = document.querySelector("[data-game-progress]");
 const progressBarNode = document.querySelector("[data-game-progress-bar]");
-const mobsNode = document.querySelector("[data-game-mobs]");
-const nodesNode = document.querySelector("[data-game-nodes]");
-const healthNode = document.querySelector("[data-game-health]");
-const healthBarNode = document.querySelector("[data-game-health-bar]");
-const healthTrackNode = document.querySelector(".hud-health-track");
+const heartsNode = document.querySelector("[data-game-hearts]");
+const heartNodes = heartsNode?.querySelectorAll("b") || [];
 const weaponNodes = document.querySelectorAll("[data-game-weapon]");
 const ammoChipNode = document.querySelector("[data-game-ammo-chip]");
 const ammoCountNode = document.querySelector("[data-game-ammo]");
@@ -48,6 +45,7 @@ const bossNode = document.querySelector("[data-game-boss]");
 const bossFillNode = document.querySelector("[data-game-boss-fill]");
 const bossTextNode = document.querySelector("[data-game-boss-text]");
 const introNode = document.querySelector("[data-game-intro]");
+const gameOverNode = document.querySelector("[data-game-over]");
 const discoveryNode = document.querySelector("[data-game-discovery]");
 const discoveryKickerNode = document.querySelector("[data-discovery-kicker]");
 const discoveryTitleNode = document.querySelector("[data-discovery-title]");
@@ -134,7 +132,7 @@ const castles = [
         example:
           "Neo Labs is a local company operating system for running a venture studio: a portfolio dashboard, agent workflows, and portable, versioned company state that stays on your own machine.",
         link: { label: "Open Neo Labs on GitHub", href: "https://github.com/Vicorico17/neo-labs" },
-        upgrade: { lane: "GUARD", name: "Private Vault", effect: "+40 max health and a full heal now.", perks: { maxHealth: 40 }, healFull: true },
+        upgrade: { lane: "FLOW", name: "Private Vault", effect: "Move 8% faster through the castle.", perks: { moveMult: 1.08 } },
       },
       {
         id: "agent-workflows",
@@ -172,7 +170,7 @@ const castles = [
         example:
           "AClienti is an evidence-backed research desk that turns recent public customer signals into ranked opportunities and practical content direction, the research step that runs before any outreach.",
         link: { label: "Open AClienti on GitHub", href: "https://github.com/Vicorico17/ACLIENTI" },
-        upgrade: { lane: "GUARD", name: "Enriched Kills", effect: "Every kill heals 6 health, 12 for elites.", perks: { healOnKill: 6 } },
+        upgrade: { lane: "STRIKE", name: "Enriched Kills", effect: "Deal +1 damage to every foe.", perks: { flatDamage: 1 } },
       },
       {
         id: "distribution-pipeline",
@@ -270,7 +268,7 @@ const castles = [
         example:
           "Went all in on crypto during the Luna era, shipping products and communities through the NFT boom and the crash that followed, with Arkadia Park still running today.",
         link: { label: "See the career timeline", href: "index.html#career" },
-        upgrade: { lane: "GUARD", name: "Cycle Survivor", effect: "Once per castle, a lethal hit leaves you at 40% health, shielded, and knocks enemies back.", perks: { survivor: true }, sprite: "Survived the crash" },
+        upgrade: { lane: "FLOW", name: "Cycle Survivor", effect: "Move 12% faster after navigating a full market cycle.", perks: { moveMult: 1.12 } },
       },
       {
         id: "polygon-grant",
@@ -557,7 +555,7 @@ function basePerks() {
   return {
     cooldownMult: 1,
     flatDamage: 0,
-    maxHealth: 100,
+    maxHealth: 5,
     moveMult: 1,
     critChance: 0,
     healOnKill: 0,
@@ -611,7 +609,7 @@ const state = {
   ammo: { bow: bowMagazine, bowReload: 0, arc: arcCapacity, arcRecharge: 0, lastEmptyMessage: null },
   abilities: { dash: false, arc: false },
   perks: basePerks(),
-  playerHealth: 100,
+  playerHealth: 5,
   kills: 0,
   critBank: 0,
   invulnTimer: 0,
@@ -622,8 +620,7 @@ const state = {
   rallyAccum: 0,
   survivorUsed: -1,
   deaths: 0,
-  falls: {},
-  assisted: new Set(),
+  cvReturnPhase: "play",
   message: "Move to the first castle. Clear its courtyard, collect three AI model nodes, and open the gate.",
   messageAt: 0,
   collected: [],
@@ -1115,6 +1112,7 @@ function buildCastle(castle, index) {
     fontSize: 58,
   });
   label.position.set(0, 7.55, 3.2);
+  label.visible = false;
   group.add(label);
 
   const icon = new THREE.Mesh(new THREE.IcosahedronGeometry(0.48, 1), accentMat);
@@ -1157,6 +1155,7 @@ function buildCastle(castle, index) {
     iconMaterial: accentMat,
     gate,
     gateGlow,
+    label,
     accentMeshes,
     beacon,
     nodes: [],
@@ -1986,8 +1985,6 @@ function resetGame() {
   state.rallyAccum = 0;
   state.survivorUsed = -1;
   state.deaths = 0;
-  state.falls = {};
-  state.assisted = new Set();
   state.collected = [];
   state.discovery = { index: -1, chosen: null };
   state.dash = { cooldown: 0, timer: 0, dirX: 0, dirZ: -1, hitIds: new Set() };
@@ -2022,69 +2019,16 @@ function resetGame() {
   syncCompanions();
   keys.clear();
   releaseJoystick();
-  hidePanel(introNode);
+  showPanel(introNode);
   hidePanel(discoveryNode);
   hidePanel(cvNode);
   hidePanel(endingNode);
+  hidePanel(gameOverNode);
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-  setPhase("play");
-  setMessage("Quest reset. Move to the first castle and collect its AI model nodes.");
+  setPhase("intro");
+  setMessage("Press Begin the quest when you are ready.");
   updateWeaponUi();
   updateAbilityUi();
-  updateHud(true);
-}
-
-// Falling costs only position. Progress and upgrades are kept; the pack returns to
-// its spawn points but keeps the damage it took. Two falls in the same forecourt
-// quietly soften the pack once.
-function respawn() {
-  gameAudio.cue("fall");
-  const item = castleObjects[state.unlockedIndex];
-  const combat = combatIndex();
-  state.deaths += 1;
-  state.falls[combat] = (state.falls[combat] || 0) + 1;
-  state.playerHealth = state.perks.maxHealth;
-  state.player.x = 0;
-  state.player.vx = 0;
-  state.player.vz = 0;
-  state.player.hitCooldown = 1.2;
-  state.player.rotation = Math.PI;
-  state.invulnTimer = Math.max(state.invulnTimer, 2, state.perks.checkpointShield);
-  state.dash.timer = 0;
-  state.attackHeld = false;
-  state.ammo = { bow: bowMagazine, bowReload: 0, arc: arcCapacity, arcRecharge: 0, lastEmptyMessage: null };
-  projectiles.splice(0).forEach((projectile) => scene.remove(projectile));
-  enemyProjectiles.splice(0).forEach((projectile) => scene.remove(projectile));
-  if (state.boss.stage === "fight") {
-    state.player.z = bossArena.entryZ - 2;
-    if (state.boss.mesh) {
-      const data = state.boss.mesh.userData;
-      const half = Math.ceil(data.maxHp / 2);
-      if (data.hp > half) data.hp = data.maxHp;
-      else data.hp = Math.max(data.hp, half);
-      state.boss.mesh.position.set(bossArena.x, 0, bossArena.z - 5);
-      state.boss.slamming = false;
-      state.boss.volleyCooldown = 2.5;
-      state.boss.slamCooldown = 6;
-    }
-    setMessage(state.boss.mesh && state.boss.mesh.userData.hp < state.boss.maxHp ? "Back in. The Fragmenter kept its wounds." : "Back in with full health. Break the fragments first.");
-  } else {
-    state.player.z = item ? Math.min(worldStartZ, item.z + gateOffset + 9) : 0;
-    if (item) {
-      const pack = activeMobsForCastle(item.index);
-      pack.forEach((mob) => {
-        mob.position.set(mob.userData.baseX, 0, mob.userData.baseZ);
-        mob.userData.shootCooldown = mob.userData.shootInterval ? 1.2 : Infinity;
-      });
-      if (state.falls[combat] >= 2 && !state.assisted.has(combat)) {
-        state.assisted.add(combat);
-        pack.forEach((mob) => {
-          mob.userData.hp = Math.max(1, mob.userData.hp - Math.ceil(mob.userData.maxHp * 0.25));
-        });
-      }
-    }
-    setMessage(state.perks.checkpointShield > 0 ? "Checked in. Shield up, back at the last gate." : "Back at the last gate with full health.");
-  }
   updateHud(true);
 }
 
@@ -2745,6 +2689,7 @@ function updateCastles(dt) {
   castleObjects.forEach((item) => {
     const distance = Math.hypot(state.player.x - item.x, state.player.z - item.z);
     const isCurrent = item.index === state.unlockedIndex;
+    item.label.visible = state.phase === "play" && isCurrent && distance < 34;
     const isDone = item.index < state.unlockedIndex;
     const open = isDone || (isCurrent && objectiveComplete(item.index));
 
@@ -2873,10 +2818,9 @@ function defeatMob(mob) {
 }
 
 function hurtPlayer(amount, options = {}) {
-  if (amount <= 0) return false;
+  if (state.phase !== "play" || amount <= 0) return false;
   if (state.invulnTimer > 0 || state.dash.timer > 0) return false;
-  const dealt = amount * state.perks.damageTakenMult;
-  state.playerHealth = Math.max(0, state.playerHealth - dealt);
+  state.playerHealth = 0;
   gameAudio.cue("hurt");
   state.lastHurtAt = clock.elapsedTime;
   if (options.push && options.fromX !== undefined) {
@@ -2893,34 +2837,21 @@ function hurtPlayer(amount, options = {}) {
     stageNode.classList.add("is-hurt");
     window.setTimeout(() => stageNode.classList.remove("is-hurt"), 320);
   }
-  if (state.perks.shockwave) {
-    state.rallyAccum += dealt;
-    if (state.rallyAccum >= 1 && state.rallyCooldown <= 0) triggerRally();
-  }
-  if (state.playerHealth <= 0) {
-    if (state.perks.survivor && state.survivorUsed !== combatIndex()) {
-      state.survivorUsed = combatIndex();
-      state.playerHealth = Math.round(state.perks.maxHealth * 0.4);
-      state.invulnTimer = 1.5;
-      targetMobs().forEach((mob) => {
-        if (mob.userData.isBoss || mob.userData.isFragment) return;
-        const dx = mob.position.x - state.player.x;
-        const dz = mob.position.z - state.player.z;
-        const distance = Math.hypot(dx, dz);
-        if (distance > 6 || distance < 0.01) return;
-        mob.position.x += (dx / distance) * 3;
-        mob.position.z += (dz / distance) * 3;
-        mob.userData.hitTimer = 0.18;
-      });
-      spawnRingPulse(state.player.x, state.player.z, "#f97316", 6, 0.7);
-      spawnBurst(state.player.x, 1.2, state.player.z, "#f97316", 16, { speed: 4, lift: 4, life: 0.8 });
-      showProjectSprite("survivor", "Survived the crash", state.player.x, state.player.z, "#f97316");
-      setMessage("Cycle Survivor: you rode out the crash at 40% health.");
-      return true;
-    }
-    respawn();
-  }
+  if (state.playerHealth <= 0) endRunAfterHit();
   return true;
+}
+
+function endRunAfterHit() {
+  if (state.phase !== "play") return;
+  state.deaths += 1;
+  keys.clear();
+  releaseJoystick();
+  state.attackHeld = false;
+  state.attackTimer = 0;
+  hidePanel(cvNode);
+  setPhase("gameover");
+  showPanel(gameOverNode);
+  updateHud(true);
 }
 
 function triggerRally() {
@@ -3328,7 +3259,7 @@ function setCardList(items) {
 const bossCardLine = "The Fragmenter is every disconnected system a team lives with. This is what Victor gets hired to reconnect.";
 
 function updateHud(force = false) {
-  if (!zoneNode || !progressNode || !progressBarNode || !mobsNode || !nodesNode || !healthNode || !healthBarNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
+  if (!zoneNode || !progressNode || !progressBarNode || !heartsNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const item = castleObjects[state.unlockedIndex] || null;
   const fight = state.boss.stage === "fight";
   const mobsLeft = fight ? targetMobs().filter((mob) => !mob.userData.isBoss).length : item ? activeMobsForCastle(item.index).length : 0;
@@ -3376,11 +3307,9 @@ function updateHud(force = false) {
     else zone = `Road to ${item.castle.shortTitle}`;
   }
   zoneNode.textContent = zone;
-  mobsNode.textContent = String(mobsLeft);
-  nodesNode.textContent = String(nodesLeft);
-  healthNode.textContent = String(Math.round(state.playerHealth));
-  healthBarNode.style.width = `${(state.playerHealth / state.perks.maxHealth) * 100}%`;
-  healthTrackNode?.classList.toggle("is-low", state.playerHealth / state.perks.maxHealth < 0.4);
+  const alive = state.playerHealth > 0;
+  heartNodes.forEach((heart) => heart.classList.toggle("is-empty", !alive));
+  heartsNode.setAttribute("aria-label", alive ? "Health: five of five hearts" : "Health: no hearts");
   progressNode.textContent = `CV ${state.collected.length}/${castles.length}`;
   progressBarNode.style.width = `${(visited.size / castles.length) * 100}%`;
   if (toastNode) {
@@ -3778,7 +3707,10 @@ function renderUpgradeList(node, withLink) {
 }
 
 function openCv() {
-  if (state.phase !== "play" || !cvNode) return;
+  if (!(state.phase === "play" || state.phase === "intro" || state.phase === "gameover") || !cvNode) return;
+  state.cvReturnPhase = state.phase;
+  if (state.phase === "intro") hidePanel(introNode);
+  if (state.phase === "gameover") hidePanel(gameOverNode);
   keys.clear();
   releaseJoystick();
   state.attackHeld = false;
@@ -3806,7 +3738,9 @@ function closeCv() {
   hidePanel(cvNode);
   document.querySelectorAll("[data-game-open-cv]").forEach((button) => button.setAttribute("aria-expanded", "false"));
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-  setPhase("play");
+  setPhase(state.cvReturnPhase);
+  if (state.cvReturnPhase === "intro") showPanel(introNode);
+  if (state.cvReturnPhase === "gameover") showPanel(gameOverNode);
   state.run.lastInputAt = clock.elapsedTime;
   updateHud(true);
 }
@@ -3900,12 +3834,7 @@ window.addEventListener("keydown", (event) => {
   }
 
   if (state.phase === "intro") {
-    if (movementKeys.has(key) || key === " " || key === "Enter" || key === "e" || key === "E") {
-      if ((key === " " || key === "Enter") && introNode?.contains(document.activeElement)) return;
-      if (key === " " || movementKeys.has(key)) event.preventDefault();
-      startGame();
-      if (movementKeys.has(key)) keys.add(key);
-    }
+    if (movementKeys.has(key) || (key === " " && !introNode?.contains(document.activeElement))) event.preventDefault();
     return;
   }
 
@@ -3941,7 +3870,7 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (state.phase === "ending") {
+  if (state.phase === "ending" || state.phase === "gameover") {
     if (key === "r" || key === "R") resetGame();
     return;
   }
@@ -4043,7 +3972,6 @@ if (joystickNode && joystickKnobNode) {
     if (state.joystick.active) return;
     event.preventDefault();
     markInput();
-    if (state.phase === "intro") startGame();
     if (state.phase !== "play") return;
     const joystick = state.joystick;
     joystick.active = true;
@@ -4086,14 +4014,14 @@ if (joystickNode && joystickKnobNode) {
 
 function handleTap(action) {
   markInput();
+  if (state.phase !== "play") return;
   if (action === "Attack") {
-    if (state.phase === "intro") startGame();
-    else attack();
+    attack();
   } else if (action === "Weapon") {
     switchWeapon();
   } else if (action === "Dash") {
-    if (state.phase === "intro") startGame();
-    else if (!state.abilities.dash) setMessage("Dash unlocks after the first castle.");
+    if (state.phase !== "play") return;
+    if (!state.abilities.dash) setMessage("Dash unlocks after the first castle.");
     else startDash();
   }
 }
@@ -4153,10 +4081,7 @@ document.querySelectorAll("[data-game-open-cv]").forEach((button) => {
     event.preventDefault();
     markInput();
     if (state.phase === "cv") closeCv();
-    else if (state.phase === "intro") {
-      startGame();
-      openCv();
-    } else openCv();
+    else openCv();
   });
 });
 
@@ -4284,6 +4209,7 @@ updateHud(true);
 hidePanel(discoveryNode);
 hidePanel(cvNode);
 hidePanel(endingNode);
+hidePanel(gameOverNode);
 window.addEventListener("resize", resize);
 render();
 requestAnimationFrame(tick);

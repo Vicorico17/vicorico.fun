@@ -52,13 +52,10 @@
               </div>
             </div>
             <div class="hud-progress" aria-label="Game CV progress">
-              <div class="hud-stats" aria-label="Objective status">
-                <span class="hud-stat" title="Enemies remaining"><b aria-hidden="true">◆</b><i data-game-mobs>0</i></span>
-                <span class="hud-stat hud-stat-nodes" title="Project items left to collect"><b aria-hidden="true">⬢</b><i data-game-nodes>0</i></span>
-                <span class="hud-stat hud-stat-health" title="Health"><b aria-hidden="true">♥</b><i data-game-health>100</i></span>
-              </div>
-              <div class="hud-health-track" aria-label="Health bar">
-                <i data-game-health-bar></i>
+              <div class="hud-stats hud-vitals" aria-label="Health: five hearts">
+                <span class="hud-hearts" data-game-hearts>
+                  <b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b>
+                </span>
               </div>
               <button class="hud-cv-button" type="button" data-game-open-cv aria-expanded="false" aria-label="Open the CV summary">
                 <span data-game-progress>CV 0/7</span>
@@ -122,11 +119,22 @@
             <h1 id="intro-title">Reconnect the system.</h1>
             <p class="panel-role"><strong>Victor Cazacu</strong> · Forward Deployed Engineer &amp; Graph Engineer.</p>
             <p>Explore seven chapters, choose projects from my CV, and take on the final challenge.</p>
+            <p class="intro-rule"><strong>5 hearts</strong> · any hit ends the run</p>
             <div class="panel-actions">
               <button class="panel-button primary" type="button" data-game-start>Begin the quest</button>
               <button class="panel-button" type="button" data-game-open-cv>View the CV summary</button>
             </div>
             <p class="panel-hint">Move with the joystick or WASD. Attack with ATTACK or Space. Switch weapons with WEAPON or Q.</p>
+          </section>
+
+          <section class="game-panel game-over is-hidden" data-game-over role="dialog" aria-modal="true" aria-labelledby="game-over-title">
+            <p class="panel-kicker">Quest over</p>
+            <h2 id="game-over-title">You were hit.</h2>
+            <p>This run is over. Start a new quest when you are ready.</p>
+            <div class="panel-actions">
+              <button class="panel-button primary" type="button" data-game-restart>Try again</button>
+              <button class="panel-button" type="button" data-game-open-cv>View the CV summary</button>
+            </div>
           </section>
 
           <section class="game-panel game-discovery is-hidden" data-game-discovery role="dialog" aria-modal="true" aria-labelledby="discovery-title">
