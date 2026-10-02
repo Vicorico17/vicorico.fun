@@ -31,7 +31,7 @@
     </header>
 
     <main class="game-shell">
-      <div class="game-stage" data-game-stage data-phase="intro" data-dash="false">
+      <div class="game-stage" data-game-stage data-phase="intro" data-dash="false" data-near-castle="false">
         <canvas id="game" aria-label="Vic's Quest 3D CV game"></canvas>
         <button class="game-sound-toggle" type="button" data-game-sound aria-label="Mute game audio" aria-pressed="false">
           <span aria-hidden="true">♪</span><span data-game-sound-label>Sound on</span>
@@ -110,7 +110,6 @@
               <button class="panel-button primary" type="button" data-game-start>Begin the quest</button>
               <button class="panel-button" type="button" data-game-open-cv>View the CV summary</button>
             </div>
-            <p class="panel-hint">Move with the joystick or WASD. Attack with ATTACK or Space. Switch weapons with WEAPON or Q.</p>
           </section>
 
           <section class="game-panel game-over is-hidden" data-game-over role="dialog" aria-modal="true" aria-labelledby="game-over-title">
@@ -124,9 +123,9 @@
           </section>
 
           <section class="game-panel game-discovery is-hidden" data-game-discovery role="dialog" aria-modal="true" aria-labelledby="discovery-title">
-            <p class="panel-kicker" data-discovery-kicker>Chapter 1</p>
-            <h2 id="discovery-title" data-discovery-title>Choose a project</h2>
-            <p data-discovery-intro>Each choice is real work from Victor's CV and adds an ability to your build.</p>
+            <p class="panel-kicker" data-discovery-kicker>AI &amp; agents</p>
+            <h2 id="discovery-title" data-discovery-title>Choose a power</h2>
+            <p data-discovery-intro>Pick a project to power your build.</p>
             <div class="artifact-choices" data-discovery-choices></div>
             <div class="artifact-reveal is-hidden" data-discovery-reveal>
               <p class="panel-kicker">Upgrade acquired · <em class="artifact-lane" data-reveal-lane>STRIKE</em></p>

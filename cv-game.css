@@ -360,6 +360,7 @@
 /* PC controls */
 
 .pc-controls-panel {
+  display: none;
   position: absolute;
   right: 24px;
   bottom: 24px;
@@ -372,6 +373,12 @@
   padding: 14px;
   pointer-events: none;
   backdrop-filter: blur(18px);
+}
+
+@media (min-width: 761px) and (pointer: fine) {
+  .game-stage[data-phase="play"][data-near-castle="true"] .pc-controls-panel {
+    display: block;
+  }
 }
 
 .pc-controls-panel p {
@@ -675,10 +682,6 @@
 
 .artifact-choice .artifact-effect {
   color: rgba(255, 255, 255, 0.9);
-}
-
-.artifact-choice .artifact-cv {
-  color: rgba(255, 255, 255, 0.62);
 }
 
 .artifact-choice:hover,
@@ -1789,4 +1792,77 @@
   .hud-card p:last-of-type {
     display: none;
   }
+}
+
+/* Compact icon-led power choices for the castle selection screen. */
+.game-discovery .panel-kicker {
+  color: var(--castle-color, #8bd3ff);
+}
+
+.game-discovery h2 {
+  margin-bottom: 6px;
+}
+
+.game-discovery [data-discovery-intro] {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.84rem;
+}
+
+.game-discovery .artifact-choices {
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.game-discovery .artifact-choice {
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "lane title key"
+    "lane project key"
+    "lane teaser key";
+  column-gap: 10px;
+  row-gap: 2px;
+  align-items: center;
+  min-height: 74px;
+  padding: 9px 11px;
+}
+
+.game-discovery .artifact-choice kbd {
+  align-self: center;
+  min-width: 26px;
+  min-height: 26px;
+  font-size: 0.76rem;
+}
+
+.game-discovery .artifact-lane {
+  width: 38px;
+  height: 38px;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--castle-color, #8bd3ff) 55%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--castle-color, #8bd3ff) 17%, transparent);
+}
+
+.game-discovery .artifact-lane .power-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.game-discovery .artifact-choice b {
+  align-self: end;
+  font-size: 0.94rem;
+}
+
+.game-discovery .artifact-choice .artifact-project {
+  align-self: center;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.game-discovery .artifact-choice .artifact-effect {
+  align-self: start;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.72rem;
+  line-height: 1.2;
 }

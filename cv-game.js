@@ -615,7 +615,7 @@ const state = {
   survivorUsed: -1,
   deaths: 0,
   cvReturnPhase: "play",
-  message: "Move to the first castle. Clear its courtyard, collect three AI model nodes, and open the gate.",
+  message: "",
   messageAt: 0,
   collected: [],
   discovery: { index: -1, chosen: null },
@@ -2676,7 +2676,6 @@ function objectiveComplete(castleIndex) {
 
 function updateCastles(dt) {
   const time = clock.elapsedTime;
-  const current = castleObjects[state.unlockedIndex] || null;
   let nearest = null;
   let bestDistance = Infinity;
 
@@ -2726,18 +2725,9 @@ function updateCastles(dt) {
     }
   });
 
-  let focus = null;
-  if (
-    current &&
-    state.player.z < current.z + gateOffset + 16 &&
-    state.player.z > current.z - 6 &&
-    Math.abs(state.player.x - current.x) < 14
-  ) {
-    focus = current;
-  }
-  if (!focus) focus = nearest;
-  state.focusItem = focus;
-  state.activeCastle = focus ? focus.castle : null;
+  state.focusItem = nearest;
+  state.activeCastle = nearest ? nearest.castle : null;
+  if (stageNode) stageNode.dataset.nearCastle = nearest ? "true" : "false";
 }
 
 function updateDiscoveryTrigger() {
@@ -3259,7 +3249,8 @@ function updateHud(force = false) {
   const mobsLeft = fight ? targetMobs().filter((mob) => !mob.userData.isBoss).length : item ? activeMobsForCastle(item.index).length : 0;
   const nodesLeft = item ? remainingNodes(item.index) : 0;
   const focus = state.focusItem;
-  const toastVisible = state.phase !== "intro" && Boolean(state.message) && clock.elapsedTime - state.messageAt < toastDuration;
+  const messageContext = Boolean(focus) || state.boss.stage === "approach" || state.boss.stage === "fight";
+  const toastVisible = state.phase === "play" && messageContext && Boolean(state.message) && clock.elapsedTime - state.messageAt < toastDuration;
   const dashTotal = dashCooldownTotal();
   const dashFraction = state.abilities.dash ? 1 - Math.min(1, state.dash.cooldown / Math.max(0.01, dashTotal)) : 0;
   const dashBucket = state.abilities.dash ? Math.round(dashFraction * 10) : -1;
@@ -3445,7 +3436,7 @@ function startGame() {
   setPhase("play");
   state.run.startedAt = clock.elapsedTime;
   state.run.lastInputAt = clock.elapsedTime;
-  setMessage("Move to the first castle. Clear its courtyard, collect three AI model nodes, and open the gate.");
+  setMessage("");
   updateHud(true);
 }
 
@@ -3466,9 +3457,9 @@ function openDiscovery(item) {
   setPhase("discovery");
   const castle = item.castle;
   discoveryNode.style.setProperty("--castle-color", castle.color);
-  discoveryKickerNode.textContent = `Chapter ${castle.chapter} · ${castle.shortTitle}`;
-  discoveryTitleNode.textContent = "Choose a project";
-  discoveryIntroNode.textContent = `${castle.prompt} Your choice adds to the CV and gives you an in-game ability.`;
+  discoveryKickerNode.textContent = castle.shortTitle;
+  discoveryTitleNode.textContent = "Choose a power";
+  discoveryIntroNode.textContent = "Pick a project to power your build.";
   discoveryChoicesNode.replaceChildren(
     ...castle.artifacts.map((artifact, index) => {
       const button = document.createElement("button");
@@ -3479,19 +3470,18 @@ function openDiscovery(item) {
       key.textContent = String(index + 1);
       const lane = document.createElement("em");
       lane.className = "artifact-lane";
-      lane.append(createPowerIcon(artifact.upgrade.lane), document.createTextNode(`${artifact.upgrade.lane} · IN-GAME ABILITY`));
+      lane.title = artifact.upgrade.lane;
+      lane.setAttribute("aria-label", `${artifact.upgrade.lane} power`);
+      lane.append(createPowerIcon(artifact.upgrade.lane));
       const title = document.createElement("b");
-      title.textContent = artifact.title;
+      title.textContent = artifact.upgrade.name;
       const project = document.createElement("small");
       project.className = "artifact-project";
-      project.textContent = `Project · ${artifact.project}`;
+      project.textContent = artifact.project;
       const teaser = document.createElement("span");
       teaser.className = "artifact-effect";
-      teaser.textContent = `${artifact.upgrade.name}: ${artifact.upgrade.effect}`;
-      const cv = document.createElement("small");
-      cv.className = "artifact-cv";
-      cv.textContent = `CV experience · ${artifact.fact}`;
-      button.append(key, lane, title, project, teaser, cv);
+      teaser.textContent = artifact.upgrade.effect;
+      button.append(key, lane, title, project, teaser);
       button.addEventListener("click", () => chooseArtifact(index));
       return button;
     }),
