@@ -944,6 +944,10 @@
     display: flex;
   }
 
+  .game-sound-toggle {
+    display: none;
+  }
+
   .game-stage,
   .game-shell {
     width: 100vw;
@@ -964,13 +968,39 @@
   }
 
   .game-intro {
-    max-height: min(62dvh, 520px);
-    padding: 16px 18px;
+    max-height: min(58dvh, 460px);
+    padding: 14px 16px;
+  }
+
+  .game-intro .panel-kicker {
+    margin-bottom: 3px;
+    font-size: 0.62rem;
   }
 
   .game-intro h1 {
-    font-size: clamp(1.45rem, 6vw, 2rem);
+    margin-bottom: 7px;
+    font-size: clamp(1.2rem, 5vw, 1.55rem);
     line-height: 1.05;
+  }
+
+  .game-intro p:not(.panel-kicker, .panel-hint) {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .game-intro .panel-role {
+    margin-bottom: 6px;
+  }
+
+  .game-intro .panel-actions {
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .game-intro .panel-button {
+    min-height: 40px;
+    font-size: 0.76rem;
+    padding: 0.58rem 0.75rem;
   }
 
   .game-intro .panel-hint {
@@ -979,6 +1009,11 @@
 
   .hud-topline {
     align-items: stretch;
+  }
+
+  .hud-zone > strong,
+  .hud-chip-dash {
+    display: none;
   }
 
   .hud-topline > div:first-child {
@@ -1439,7 +1474,8 @@
 
 @media (max-height: 460px) and (pointer: coarse) {
   .hud-chips {
-    display: none;
+    gap: 3px;
+    margin-top: 3px;
   }
 
   .dash-button,
