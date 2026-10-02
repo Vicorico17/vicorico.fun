@@ -37,33 +37,17 @@
           <span aria-hidden="true">♪</span><span data-game-sound-label>Sound on</span>
         </button>
         <div class="game-hud" aria-live="polite">
-          <div class="hud-topline">
+          <div class="hud-topline hud-statusline" aria-label="Game status">
             <div class="hud-zone">
-              <p class="hud-kicker">Vic's Quest 3D</p>
-              <strong data-game-zone>Vic's Quest</strong>
               <div class="hud-chips">
                 <span class="hud-chip hud-chip-weapon" title="Current weapon"><svg class="power-icon" data-game-weapon-icon aria-hidden="true"><use href="#power-sword"></use></svg><b data-game-weapon>Sword</b></span>
                 <span class="hud-chip hud-chip-ammo is-hidden" data-game-ammo-chip title="Weapon ammunition"><svg class="power-icon" data-game-ammo-icon aria-hidden="true"><use href="#power-bow"></use></svg><b data-game-ammo>12/12</b></span>
-                <span class="hud-chip hud-chip-dash is-hidden" data-game-dash title="Dash cooldown">
-                  <i class="hud-chip-fill" data-game-dash-fill></i>
-                  <svg class="power-icon" aria-hidden="true"><use href="#power-dash"></use></svg>
-                  <b>Dash</b>
-                </span>
               </div>
             </div>
-            <div class="hud-progress" aria-label="Game CV progress">
-              <div class="hud-stats hud-vitals" aria-label="Health: five hearts">
-                <span class="hud-hearts" data-game-hearts>
-                  <b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b>
-                </span>
-              </div>
-              <button class="hud-cv-button" type="button" data-game-open-cv aria-expanded="false" aria-label="Open the CV summary">
-                <span data-game-progress>CV 0/7</span>
-                <small>Tap for the 30-second CV</small>
-              </button>
-              <div class="hud-progress-track">
-                <i data-game-progress-bar></i>
-              </div>
+            <div class="hud-vitals" aria-label="Health: five hearts">
+              <span class="hud-hearts" data-game-hearts>
+                <b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b><b aria-hidden="true">♥</b>
+              </span>
             </div>
           </div>
           <div class="hud-boss is-hidden" data-game-boss aria-label="Boss health">
@@ -107,7 +91,9 @@
             <div class="joystick-knob" data-game-joystick-knob aria-hidden="true"></div>
           </div>
           <div class="action-controls">
-            <button class="touch-button weapon-button" type="button" data-game-tap="Weapon" aria-label="Switch weapon"><svg class="power-icon" data-game-weapon-icon aria-hidden="true"><use href="#power-sword"></use></svg><span data-game-weapon-label>SWORD</span><small data-game-touch-ammo hidden></small></button>
+            <button class="touch-button weapon-button" type="button" data-game-tap="Weapon" aria-label="Switch weapon" title="Switch weapon">
+              <svg class="weapon-switch-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h15l-3-3m3 3-3 3M20 17H5l3 3m-3-3 3-3"/></svg>
+            </button>
             <button class="touch-button dash-button" type="button" data-game-tap="Dash" aria-label="Dash"><svg class="power-icon" aria-hidden="true"><use href="#power-dash"></use></svg><span>DASH</span></button>
             <button class="touch-button attack-button" type="button" data-game-tap="Attack" aria-label="Attack. Hold to keep attacking."><svg class="power-icon" aria-hidden="true"><use href="#power-strike"></use></svg><span>ATTACK</span></button>
           </div>

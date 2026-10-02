@@ -22,24 +22,18 @@ function syncSoundButton() {
   soundButtonNode.setAttribute("aria-label", gameAudio.muted ? "Unmute game audio" : "Mute game audio");
   if (soundLabelNode) soundLabelNode.textContent = gameAudio.muted ? "Sound off" : "Sound on";
 }
-const zoneNode = document.querySelector("[data-game-zone]");
-const progressNode = document.querySelector("[data-game-progress]");
-const progressBarNode = document.querySelector("[data-game-progress-bar]");
 const heartsNode = document.querySelector("[data-game-hearts]");
 const heartNodes = heartsNode?.querySelectorAll("b") || [];
 const weaponNodes = document.querySelectorAll("[data-game-weapon]");
 const ammoChipNode = document.querySelector("[data-game-ammo-chip]");
 const ammoCountNode = document.querySelector("[data-game-ammo]");
 const ammoIconNode = document.querySelector("[data-game-ammo-icon] use");
-const touchAmmoNode = document.querySelector("[data-game-touch-ammo]");
 const toastNode = document.querySelector("[data-game-toast]");
 const cardNode = document.querySelector("[data-game-card]");
 const cardKickerNode = document.querySelector("[data-game-card-kicker]");
 const cardTitleNode = document.querySelector("[data-game-card-title]");
 const cardCopyNode = document.querySelector("[data-game-card-copy]");
 const cardListNode = document.querySelector("[data-game-card-list]");
-const dashChipNode = document.querySelector("[data-game-dash]");
-const dashFillNode = document.querySelector("[data-game-dash-fill]");
 const dashHintNode = document.querySelector("[data-game-dash-hint]");
 const bossNode = document.querySelector("[data-game-boss]");
 const bossFillNode = document.querySelector("[data-game-boss-fill]");
@@ -1111,7 +1105,7 @@ function buildCastle(castle, index) {
     height: 1.0,
     fontSize: 58,
   });
-  label.position.set(0, 7.55, 3.2);
+  label.position.set(0, 3.66, 4.22);
   label.visible = false;
   group.add(label);
 
@@ -3259,13 +3253,12 @@ function setCardList(items) {
 const bossCardLine = "The Fragmenter is every disconnected system a team lives with. This is what Victor gets hired to reconnect.";
 
 function updateHud(force = false) {
-  if (!zoneNode || !progressNode || !progressBarNode || !heartsNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
+  if (!heartsNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const item = castleObjects[state.unlockedIndex] || null;
   const fight = state.boss.stage === "fight";
   const mobsLeft = fight ? targetMobs().filter((mob) => !mob.userData.isBoss).length : item ? activeMobsForCastle(item.index).length : 0;
   const nodesLeft = item ? remainingNodes(item.index) : 0;
   const focus = state.focusItem;
-  const inForecourt = Boolean(item && focus === item);
   const toastVisible = state.phase !== "intro" && Boolean(state.message) && clock.elapsedTime - state.messageAt < toastDuration;
   const dashTotal = dashCooldownTotal();
   const dashFraction = state.abilities.dash ? 1 - Math.min(1, state.dash.cooldown / Math.max(0.01, dashTotal)) : 0;
@@ -3280,7 +3273,6 @@ function updateHud(force = false) {
     visited.size,
     focus ? focus.index : -1,
     focus?.discovered ? 1 : 0,
-    inForecourt ? 1 : 0,
     toastVisible ? state.message : "",
     state.completed ? 1 : 0,
     state.collected.length,
@@ -3293,35 +3285,14 @@ function updateHud(force = false) {
   if (!force && signature === state.lastHudId) return;
   state.lastHudId = signature;
 
-  let zone = "Vic's Quest";
-  if (state.phase === "ending" || state.completed) zone = "World reconnected";
-  else if (state.phase === "discovery") zone = "Choose a project";
-  else if (state.phase === "cv") zone = "Your CV";
-  else if (state.phase === "play") {
-    if (state.boss.stage === "approach") zone = "Road to the Fragmenter";
-    else if (state.boss.stage === "fight") zone = fragmentsAlive() > 0 ? "Break the fragments" : "Strike the core";
-    else if (state.boss.stage === "defeated") zone = "World reconnected";
-    else if (!item) zone = "All castles unlocked";
-    else if (objectiveComplete(item.index)) zone = "Gate open. Walk inside.";
-    else if (inForecourt) zone = item.castle.objective.label;
-    else zone = `Road to ${item.castle.shortTitle}`;
-  }
-  zoneNode.textContent = zone;
   const alive = state.playerHealth > 0;
   heartNodes.forEach((heart) => heart.classList.toggle("is-empty", !alive));
   heartsNode.setAttribute("aria-label", alive ? "Health: five of five hearts" : "Health: no hearts");
-  progressNode.textContent = `CV ${state.collected.length}/${castles.length}`;
-  progressBarNode.style.width = `${(visited.size / castles.length) * 100}%`;
   if (toastNode) {
     toastNode.textContent = state.message;
     toastNode.classList.toggle("is-hidden", !toastVisible);
   }
   if (stageNode) stageNode.dataset.dash = state.abilities.dash ? "true" : "false";
-  if (dashChipNode) {
-    dashChipNode.classList.toggle("is-hidden", !state.abilities.dash);
-    dashChipNode.classList.toggle("is-ready", state.abilities.dash && state.dash.cooldown <= 0);
-    if (dashFillNode) dashFillNode.style.transform = `scaleX(${dashFraction.toFixed(2)})`;
-  }
   document.querySelectorAll('[data-game-tap="Dash"]').forEach((button) => {
     button.classList.toggle("is-cooling", state.abilities.dash && state.dash.cooldown > 0);
     button.style.setProperty("--cd", (dashBucket / 10).toFixed(1));
@@ -3347,7 +3318,7 @@ function updateHud(force = false) {
 
   if (bossStage) {
     cardNode.style.setProperty("--castle-color", "#c084fc");
-    cardKickerNode.textContent = state.boss.stage === "approach" ? "Final chapter" : "Boss";
+    cardKickerNode.textContent = state.boss.stage === "approach" ? "Approaching" : "Boss";
     cardTitleNode.textContent = "The Fragmenter";
     cardCopyNode.textContent = bossCardLine;
     setCardList(
@@ -3366,7 +3337,7 @@ function updateHud(force = false) {
   if (focus.discovered) {
     const entry = state.collected.find((collected) => collected.castleId === castle.id);
     const artifact = entry ? castle.artifacts.find((candidate) => candidate.id === entry.artifactId) : null;
-    cardKickerNode.textContent = `Chapter ${castle.chapter} · Reconnected`;
+    cardKickerNode.textContent = "Reconnected";
     cardTitleNode.textContent = artifact ? `Upgrade: ${artifact.upgrade.name}` : castle.shortTitle;
     cardCopyNode.textContent = artifact ? `${artifact.title}. ${artifact.fact}` : castle.intro;
     setCardList([
@@ -3378,7 +3349,7 @@ function updateHud(force = false) {
 
   const done = objectiveComplete(focus.index);
   const noun = castle.objective.noun;
-  cardKickerNode.textContent = `Chapter ${castle.chapter}`;
+  cardKickerNode.textContent = "";
   cardTitleNode.textContent = done ? "The gate is open" : castle.objective.label;
   cardCopyNode.textContent = castle.intro;
   setCardList([
@@ -3407,10 +3378,6 @@ function updateAmmoUi(force = false) {
   if (ammoChipNode && hasAmmo) ammoChipNode.setAttribute("aria-label", remaining === 0 ? `${weaponLabels[weapon]} ${weapon === "bow" ? "reloading" : "recharging"}` : `${weaponLabels[weapon]} ammunition: ${remaining} of ${capacity}`);
   if (ammoCountNode) ammoCountNode.textContent = label;
   if (ammoIconNode && hasAmmo) ammoIconNode.setAttribute("href", `#power-${weapon}`);
-  if (touchAmmoNode) {
-    touchAmmoNode.hidden = !hasAmmo;
-    touchAmmoNode.textContent = hasAmmo ? `${remaining}/${capacity}` : "";
-  }
   document.querySelectorAll('[data-game-tap="Weapon"]').forEach((button) => {
     button.setAttribute("aria-label", hasAmmo ? `Switch weapon. ${weaponLabels[weapon]} has ${remaining} of ${capacity} shots.` : "Switch weapon. Sword selected.");
   });
@@ -3423,9 +3390,6 @@ function updateWeaponUi() {
   });
   document.querySelectorAll("[data-game-weapon-icon] use").forEach((icon) => {
     icon.setAttribute("href", `#power-${state.weapon}`);
-  });
-  document.querySelectorAll("[data-game-weapon-label]").forEach((node) => {
-    node.textContent = state.weapon === "arc" ? "ARC" : label.toUpperCase();
   });
   updateAmmoUi(true);
 }
