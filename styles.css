@@ -1527,52 +1527,153 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: max-content;
-  max-width: calc(100vw - 32px);
+  width: min(820px, calc(100vw - 32px));
   margin: 0;
   color: #ffffff;
   font-size: clamp(2.65rem, 9vw, 7rem);
   font-weight: 800;
-  letter-spacing: 0;
+  letter-spacing: -0.04em;
   line-height: 1;
-  overflow: hidden;
-  padding: 0;
-  text-shadow: 0 18px 52px rgba(0, 0, 0, 0.55);
+  isolation: isolate;
+  padding: 0.12em 0.18em 0.2em;
   transform-origin: center;
-  cursor: pointer;
-  transition: color 300ms ease, rotate 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: textContainerIn 700ms cubic-bezier(0.34, 1.4, 0.5, 1) both;
 }
 
-.text-flip:focus-visible {
+.text-flip::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(ellipse, var(--title-glow, transparent), transparent 70%);
+  filter: blur(20px);
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 350ms ease, transform 550ms ease;
+}
+
+.text-flip::after {
+  position: absolute;
+  right: 16%;
+  bottom: 0.05em;
+  left: 16%;
+  height: 0.035em;
+  pointer-events: none;
+  content: "";
+  border-radius: 999px;
+  background: var(--title-face, #fff);
+  box-shadow: 0 0 20px var(--title-glow, transparent);
+  opacity: 0;
+  transform: scaleX(0.2);
+  transition: opacity 300ms ease, transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.text-flip[data-title-theme]::before,
+.text-flip[data-title-theme]::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.home-page .text-flip .text-flip-trigger,
+.home-page .text-flip .text-flip-trigger:hover,
+.home-page .text-flip .text-flip-trigger:active {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--title-face, #fff);
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  padding: 0;
+  text-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  touch-action: manipulation;
+  transform: perspective(900px) rotateX(var(--title-x, 0deg)) rotateY(var(--title-y, 0deg)) rotateZ(var(--title-z, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1), color 300ms ease, text-shadow 300ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-page .text-flip .text-flip-trigger::before,
+.home-page .text-flip .text-flip-trigger::after {
+  display: none;
+}
+
+.home-page .text-flip .text-flip-trigger:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 10px;
 }
 
+.home-page .text-flip[data-title-theme] .text-flip-trigger {
+  text-shadow:
+    1px 1px var(--title-edge),
+    2px 2px var(--title-edge),
+    3px 3px var(--title-edge),
+    4px 4px var(--title-edge),
+    5px 5px var(--title-edge),
+    7px 9px 2px rgba(0, 0, 0, 0.28),
+    12px 18px 30px var(--title-glow);
+}
+
+.home-page .text-flip[data-title-theme] .text-flip-trigger span {
+  color: inherit;
+}
+
 .home-page .text-flip[data-title-theme="signal"] {
-  color: #ff784f;
-  font-family: Impact, "Arial Black", sans-serif;
-  rotate: -4deg;
+  --title-face: #ffd082;
+  --title-edge: #9e351e;
+  --title-glow: rgba(255, 99, 55, 0.48);
+  --title-x: 8deg;
+  --title-y: -8deg;
+  --title-z: -3deg;
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
 }
 
 .home-page .text-flip[data-title-theme="paper"] {
-  color: #e8b86c;
-  font-family: Georgia, "Times New Roman", serif;
+  --title-face: #ffe6c3;
+  --title-edge: #80526b;
+  --title-glow: rgba(219, 149, 187, 0.42);
+  --title-x: -6deg;
+  --title-y: 7deg;
+  --title-z: 2deg;
+  font-family: "DM Serif Display", Georgia, serif;
   font-style: italic;
-  font-weight: 700;
-  rotate: 3deg;
+  font-weight: 400;
+  letter-spacing: -0.06em;
 }
 
 .home-page .text-flip[data-title-theme="grove"] {
-  color: #79e3ba;
-  font-family: "Courier New", Courier, monospace;
-  font-size: clamp(2.1rem, 7.5vw, 5.8rem);
+  --title-face: #bcffe0;
+  --title-edge: #176e72;
+  --title-glow: rgba(53, 222, 169, 0.45);
+  --title-x: 7deg;
+  --title-y: 7deg;
+  --title-z: -2deg;
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: clamp(2rem, 7vw, 5.5rem);
   font-weight: 700;
-  rotate: -2deg;
+  letter-spacing: -0.08em;
 }
 
-.home-page .text-flip[data-title-theme] span {
-  color: inherit;
+.home-page .text-flip[data-title-theme="arcade"] {
+  --title-face: #f7bcff;
+  --title-edge: #6135a2;
+  --title-glow: rgba(180, 91, 255, 0.48);
+  --title-x: -8deg;
+  --title-y: -7deg;
+  --title-z: 3deg;
+  font-family: Bungee, Impact, sans-serif;
+  font-size: clamp(1.85rem, 6.8vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: -0.075em;
 }
 
 .text-flip span {
@@ -1582,6 +1683,7 @@ button {
   transform: translateY(12px) rotateX(80deg) scale(0.96);
   animation: textCharIn 520ms ease-out forwards;
   animation-delay: calc(160ms + (var(--i) * 34ms));
+  user-select: none;
 }
 
 .portal-start .engage-button {
@@ -1892,11 +1994,9 @@ button {
     transform: none;
   }
 
-  .home-page .text-flip[data-title-theme] {
-    rotate: none;
-  }
-
-  .text-flip {
+  .text-flip::before,
+  .text-flip::after,
+  .home-page .text-flip .text-flip-trigger {
     transition: none;
   }
 

@@ -652,46 +652,40 @@ function initThemePicker() {
 function initTitleThemes() {
   const title = document.querySelector("[data-title-themes]");
   if (!title) return;
+  const trigger = title.querySelector(".text-flip-trigger");
 
-  const themes = ["signal", "paper", "grove"];
+  const themes = ["signal", "paper", "grove", "arcade"];
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let index = -1;
   let timer;
-  let active = false;
 
   function nextTheme() {
     index = (index + 1) % themes.length;
     title.dataset.titleTheme = themes[index];
   }
 
-  function start() {
-    if (active) return;
-    active = true;
+  function start(event) {
+    if (event.pointerType !== "mouse") return;
     nextTheme();
-    if (!reducedMotion.matches) timer = window.setInterval(nextTheme, 1100);
+    if (!reducedMotion.matches) timer = window.setInterval(nextTheme, 1400);
   }
 
-  function stop() {
-    if (title.matches(":hover, :focus")) return;
-    active = false;
+  function stop(event) {
+    if (event.pointerType !== "mouse") return;
     window.clearInterval(timer);
     timer = undefined;
     delete title.dataset.titleTheme;
     index = -1;
   }
 
-  title.addEventListener("pointerenter", start);
-  title.addEventListener("pointerleave", stop);
-  title.addEventListener("focus", start);
-  title.addEventListener("blur", stop);
-  title.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    nextTheme();
-  });
+  trigger.addEventListener("pointerenter", start);
+  trigger.addEventListener("pointerleave", stop);
+  trigger.addEventListener("click", nextTheme);
   reducedMotion.addEventListener("change", () => {
     window.clearInterval(timer);
-    timer = active && !reducedMotion.matches ? window.setInterval(nextTheme, 1100) : undefined;
+    timer = trigger.matches(":hover") && !reducedMotion.matches
+      ? window.setInterval(nextTheme, 1400)
+      : undefined;
   });
 }
 
