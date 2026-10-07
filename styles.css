@@ -1688,26 +1688,23 @@ button {
 
 .portal-start .engage-button {
   z-index: 2;
-  width: min(360px, calc(100vw - 32px));
-  height: 86px;
-  border: 4px solid rgba(108, 108, 108, 0.82);
-  border-radius: 30px;
-  background: #222222;
+  width: min(300px, calc(100vw - 48px));
+  height: 76px;
+  border: 1px solid rgba(255, 207, 148, 0.48);
+  border-radius: 23px;
+  background: linear-gradient(145deg, #373039, #111015 68%);
   box-shadow:
-    0 0 #0000004d,
-    0 9px 20px #0000004a,
-    0 37px 37px #00000042,
-    0 84px 50px #00000026,
-    0 149px 60px #0000000a,
-    0 233px 65px #00000003;
-  padding: 8px;
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 8px 0 #09080c,
+    0 22px 36px rgba(0, 0, 0, 0.42);
+  padding: 5px;
   text-shadow: none;
-  transform: perspective(1000px) rotateX(20deg) scale(1.05);
+  transform: perspective(900px) rotateX(8deg);
   transform-origin: center top;
   transition:
-    border-color 300ms ease,
+    border-color 240ms ease,
     box-shadow 300ms ease,
-    transform 300ms cubic-bezier(0.34, 1.4, 0.5, 1);
+    transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .portal-start .engage-button::before,
@@ -1716,39 +1713,68 @@ button {
 }
 
 .portal-start .engage-button:hover {
-  border-color: rgba(180, 180, 180, 0.96);
-  background: #222222;
+  border-color: #ffd599;
+  background: linear-gradient(145deg, #453340, #171219 68%);
   box-shadow:
-    0 0 #0000004d,
-    0 12px 24px #0000004a,
-    0 44px 44px #00000042,
-    0 92px 54px #00000026,
-    0 149px 60px #0000000a,
-    0 233px 65px #00000003;
-  transform: perspective(1000px) rotateX(0) scale(1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 10px 0 #09080c,
+    0 26px 40px rgba(0, 0, 0, 0.48),
+    0 0 32px rgba(255, 140, 86, 0.28);
+  transform: perspective(900px) translateY(-4px) rotateX(0) scale(1.03);
 }
 
 .portal-start .engage-button:active {
-  transform: perspective(1000px) rotateX(0) scale(0.985);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 3px 0 #09080c,
+    0 10px 20px rgba(0, 0, 0, 0.35);
+  transform: perspective(900px) translateY(4px) rotateX(0) scale(0.99);
 }
 
 .portal-start .engage-button-surface {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 17px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 30%),
-    #111111;
+    radial-gradient(circle at 12% 0, rgba(255, 192, 140, 0.16), transparent 60%),
+    linear-gradient(125deg, #211b22, #100f14);
   color: #ffffff;
-  padding: 0 24px;
-  gap: 16px;
-  font-size: 1rem;
-  font-weight: 650;
+  padding: 0 8px 0 25px;
+  gap: 12px;
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.13rem;
+  font-weight: 700;
   line-height: 1.2;
+}
+
+.home-page .portal-start .portal-enter-label {
+  color: #fff5e9;
+  letter-spacing: 0.025em;
+}
+
+.home-page .portal-start .portal-enter-arrow {
+  display: grid;
+  place-items: center;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #ffe0a2, #ff845f);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 5px 13px rgba(229, 105, 64, 0.28);
+  color: #301810;
+  font-size: 1.45rem;
+  line-height: 1;
+  transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 250ms ease;
+}
+
+.portal-start .engage-button:hover .portal-enter-arrow,
+.portal-start .engage-button:focus-visible .portal-enter-arrow {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 7px 20px rgba(255, 140, 86, 0.45);
+  transform: translate(2px, -2px);
 }
 
 .about-intro {
@@ -1951,13 +1977,15 @@ button {
   from {
     opacity: 0;
     filter: blur(8px);
-    transform: translateY(12px) scale(0.96);
+    translate: 0 12px;
+    scale: 0.96;
   }
 
   to {
     opacity: 1;
     filter: blur(0);
-    transform: translateY(0) scale(1);
+    translate: 0 0;
+    scale: 1;
   }
 }
 
@@ -1996,7 +2024,9 @@ button {
 
   .text-flip::before,
   .text-flip::after,
-  .home-page .text-flip .text-flip-trigger {
+  .home-page .text-flip .text-flip-trigger,
+  .portal-start .engage-button,
+  .portal-enter-arrow {
     transition: none;
   }
 

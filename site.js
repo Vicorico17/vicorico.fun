@@ -655,9 +655,7 @@ function initTitleThemes() {
   const trigger = title.querySelector(".text-flip-trigger");
 
   const themes = ["signal", "paper", "grove", "arcade"];
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let index = -1;
-  let timer;
 
   function nextTheme() {
     index = (index + 1) % themes.length;
@@ -667,26 +665,16 @@ function initTitleThemes() {
   function start(event) {
     if (event.pointerType !== "mouse") return;
     nextTheme();
-    if (!reducedMotion.matches) timer = window.setInterval(nextTheme, 1400);
   }
 
   function stop(event) {
     if (event.pointerType !== "mouse") return;
-    window.clearInterval(timer);
-    timer = undefined;
     delete title.dataset.titleTheme;
-    index = -1;
   }
 
   trigger.addEventListener("pointerenter", start);
   trigger.addEventListener("pointerleave", stop);
   trigger.addEventListener("click", nextTheme);
-  reducedMotion.addEventListener("change", () => {
-    window.clearInterval(timer);
-    timer = trigger.matches(":hover") && !reducedMotion.matches
-      ? window.setInterval(nextTheme, 1400)
-      : undefined;
-  });
 }
 
 initIntroGate();
