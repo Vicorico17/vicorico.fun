@@ -1535,7 +1535,7 @@ button {
   letter-spacing: -0.04em;
   line-height: 1;
   isolation: isolate;
-  padding: 0.12em 0.18em 0.2em;
+  padding: 0.12em 0.18em;
   transform-origin: center;
   animation: textContainerIn 700ms cubic-bezier(0.34, 1.4, 0.5, 1) both;
 }
@@ -1554,24 +1554,7 @@ button {
   transition: opacity 350ms ease, transform 550ms ease;
 }
 
-.text-flip::after {
-  position: absolute;
-  right: 16%;
-  bottom: 0.05em;
-  left: 16%;
-  height: 0.035em;
-  pointer-events: none;
-  content: "";
-  border-radius: 999px;
-  background: var(--title-face, #fff);
-  box-shadow: 0 0 20px var(--title-glow, transparent);
-  opacity: 0;
-  transform: scaleX(0.2);
-  transition: opacity 300ms ease, transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.text-flip[data-title-theme]::before,
-.text-flip[data-title-theme]::after {
+.text-flip[data-title-theme]::before {
   opacity: 1;
   transform: scale(1);
 }
@@ -2023,7 +2006,6 @@ button {
   }
 
   .text-flip::before,
-  .text-flip::after,
   .home-page .text-flip .text-flip-trigger,
   .portal-start .engage-button,
   .portal-enter-arrow {
