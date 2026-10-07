@@ -1659,6 +1659,159 @@ button {
   letter-spacing: -0.075em;
 }
 
+.home-page .text-flip[data-title-theme="lava"] {
+  --title-face: #ff9839;
+  --title-edge: #721c0a;
+  --title-glow: rgba(255, 70, 10, 0.68);
+  --title-x: 10deg;
+  --title-y: -6deg;
+  --title-z: -2deg;
+  font-family: Bungee, Impact, sans-serif;
+  font-size: clamp(1.85rem, 6.8vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: -0.075em;
+}
+
+.home-page .text-flip[data-title-theme="ice"] {
+  --title-face: #d6faff;
+  --title-edge: #246888;
+  --title-glow: rgba(74, 203, 255, 0.64);
+  --title-x: -8deg;
+  --title-y: 8deg;
+  --title-z: 2deg;
+  font-family: Orbitron, ui-sans-serif, sans-serif;
+  font-size: clamp(1.7rem, 6.1vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.085em;
+}
+
+.home-page .text-flip[data-title-theme="chrome"] {
+  --title-face: #e6f0f8;
+  --title-edge: #3b465b;
+  --title-glow: rgba(142, 186, 226, 0.5);
+  --title-x: 9deg;
+  --title-y: 5deg;
+  --title-z: -3deg;
+  font-family: Orbitron, ui-sans-serif, sans-serif;
+  font-size: clamp(1.7rem, 6.1vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.085em;
+}
+
+.home-page .text-flip[data-title-theme="neon"] {
+  --title-face: #a9fff4;
+  --title-edge: #11687b;
+  --title-glow: rgba(46, 241, 218, 0.7);
+  --title-x: -5deg;
+  --title-y: -10deg;
+  --title-z: 2deg;
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: clamp(2rem, 7vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+}
+
+.home-page .text-flip[data-title-theme="gold"] {
+  --title-face: #ffe0a1;
+  --title-edge: #76501c;
+  --title-glow: rgba(255, 194, 80, 0.55);
+  --title-x: 6deg;
+  --title-y: -8deg;
+  --title-z: -2deg;
+  font-family: Cinzel, Georgia, serif;
+  font-size: clamp(1.75rem, 6.4vw, 5.2rem);
+  font-weight: 900;
+  letter-spacing: -0.07em;
+}
+
+.home-page .text-flip[data-title-theme="hologram"] {
+  --title-face: #d5c4ff;
+  --title-edge: #6a46a6;
+  --title-glow: rgba(179, 125, 255, 0.55);
+  --title-x: -9deg;
+  --title-y: 7deg;
+  --title-z: 3deg;
+  font-family: Orbitron, ui-sans-serif, sans-serif;
+  font-size: clamp(1.7rem, 6.1vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.085em;
+}
+
+.home-page .text-flip[data-title-theme="candy"] {
+  --title-face: #ffd5eb;
+  --title-edge: #a32869;
+  --title-glow: rgba(255, 92, 173, 0.56);
+  --title-x: 7deg;
+  --title-y: 8deg;
+  --title-z: -3deg;
+  font-family: Righteous, ui-sans-serif, sans-serif;
+  font-size: clamp(2.1rem, 8vw, 6.2rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+}
+
+.home-page .text-flip[data-title-theme="noir"] {
+  --title-face: #fff9f0;
+  --title-edge: #4b4854;
+  --title-glow: rgba(245, 230, 214, 0.38);
+  --title-x: -6deg;
+  --title-y: -7deg;
+  --title-z: 2deg;
+  font-family: "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+
+.home-page .text-flip[data-title-theme="lava"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="ice"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="chrome"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="gold"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="hologram"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="candy"] .text-flip-trigger span {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.home-page .text-flip[data-title-theme="lava"] .text-flip-trigger span {
+  background-image: linear-gradient(135deg, rgba(255, 212, 73, 0.2), rgba(255, 56, 5, 0.1)), url("assets/title-lava.webp");
+  background-size: auto, 360px 360px;
+  background-position: center, calc(var(--i) * -45px) 50%;
+  -webkit-text-stroke: 1px #ff9a3a;
+}
+
+.home-page .text-flip[data-title-theme="ice"] .text-flip-trigger span {
+  background-image: url("assets/title-ice.webp");
+  background-size: 380px 380px;
+  background-position: calc(var(--i) * -42px) 50%;
+  -webkit-text-stroke: 1px #d9faff;
+}
+
+.home-page .text-flip[data-title-theme="chrome"] .text-flip-trigger span {
+  background-image: linear-gradient(180deg, #fff 4%, #a6b5c4 22%, #33475d 46%, #f4fbff 53%, #9caebd 74%, #e5f0f6 100%);
+  -webkit-text-stroke: 0.7px #b9d1e0;
+}
+
+.home-page .text-flip[data-title-theme="gold"] .text-flip-trigger span {
+  background-image: linear-gradient(170deg, #fff7d2 8%, #eebc58 30%, #7d4f16 48%, #ffe8a6 56%, #c78e31 82%, #fff0bd);
+  -webkit-text-stroke: 0.7px #f7d78a;
+}
+
+.home-page .text-flip[data-title-theme="hologram"] .text-flip-trigger span {
+  background-image: linear-gradient(135deg, #9afaff, #f9a6e8 34%, #a1a1ff 59%, #b5ffda 82%, #ffdcaa);
+  -webkit-text-stroke: 0.7px #e9dbff;
+}
+
+.home-page .text-flip[data-title-theme="candy"] .text-flip-trigger span {
+  background-image: linear-gradient(160deg, #fff0f8 8%, #ff8dc9 44%, #ffba70 78%, #fff0b1);
+  -webkit-text-stroke: 0.7px #ffd7ed;
+}
+
+.home-page .text-flip[data-title-theme="neon"] .text-flip-trigger {
+  text-shadow: 0 0 4px #d2fff9, 0 0 14px #40eddf, 0 0 34px #00bca9, 4px 5px #0b4558;
+}
+
 .text-flip span {
   display: inline-block;
   opacity: 0;
@@ -2726,9 +2879,31 @@ dd {
   position: relative;
   display: flex;
   gap: 8px;
-  overflow-x: hidden;
+  overflow-x: auto;
+  cursor: grab;
+  overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
-  touch-action: pan-y;
+  scrollbar-width: none;
+  touch-action: auto;
+}
+
+.github-live-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.github-live-grid.is-dragging,
+.github-live-grid.is-dragging * {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.github-live-grid.is-dragging {
+  scroll-snap-type: none;
+}
+
+.github-carousel:focus-visible {
+  outline: 2px solid #f7d58a;
+  outline-offset: 5px;
 }
 
 .github-live-card {
@@ -2771,6 +2946,7 @@ dd {
   .github-live-grid {
     flex-wrap: wrap;
     overflow: visible;
+    cursor: default;
     scroll-snap-type: none;
   }
 

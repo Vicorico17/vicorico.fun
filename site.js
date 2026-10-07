@@ -339,6 +339,19 @@ function updateGithubCarouselState() {
   githubCarouselCards.forEach((card, index) => card.classList.toggle("is-current", index === githubCarouselIndex));
 }
 
+function closestGithubCarouselIndex() {
+  if (!latestReposNode || githubCarouselCards.length === 0) return 0;
+  const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
+  const firstLeft = githubCarouselCards[0].offsetLeft;
+  let closest = 0;
+  for (let index = 1; index <= maxIndex; index += 1) {
+    const currentDistance = Math.abs(githubCarouselCards[index].offsetLeft - firstLeft - latestReposNode.scrollLeft);
+    const closestDistance = Math.abs(githubCarouselCards[closest].offsetLeft - firstLeft - latestReposNode.scrollLeft);
+    if (currentDistance < closestDistance) closest = index;
+  }
+  return closest;
+}
+
 function showGithubCarouselCard(index, behavior = "smooth") {
   if (!latestReposNode || githubCarouselCards.length === 0) return;
   const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
@@ -362,6 +375,67 @@ function setGithubCarouselCards(cards) {
 function initGithubCarousel() {
   if (!latestReposNode || !githubCarouselNode) return;
   githubCarouselCards = [...latestReposNode.querySelectorAll(".github-live-card")];
+  let drag = null;
+  let suppressClick = false;
+  let lastInteraction = 0;
+  let scrollFrame = 0;
+
+  latestReposNode.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse") lastInteraction = Date.now();
+    if (event.pointerType !== "mouse" || event.button !== 0 || githubReducedMotion.matches) return;
+    if (githubCarouselCards.length <= githubVisibleCards()) return;
+    drag = { pointerId: event.pointerId, startX: event.clientX, startScroll: latestReposNode.scrollLeft, moved: false };
+  });
+
+  window.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const distance = event.clientX - drag.startX;
+    if (!drag.moved && Math.abs(distance) < 6) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      latestReposNode.classList.add("is-dragging");
+    }
+    event.preventDefault();
+    latestReposNode.scrollLeft = drag.startScroll - distance;
+  });
+
+  function finishDrag(event) {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const moved = drag.moved;
+    const targetIndex = moved ? closestGithubCarouselIndex() : githubCarouselIndex;
+    drag = null;
+    latestReposNode.classList.remove("is-dragging");
+    if (!moved) return;
+    lastInteraction = Date.now();
+    showGithubCarouselCard(targetIndex);
+    suppressClick = true;
+    window.setTimeout(() => { suppressClick = false; }, 0);
+  }
+
+  window.addEventListener("pointerup", finishDrag);
+  window.addEventListener("pointercancel", finishDrag);
+  latestReposNode.addEventListener("click", (event) => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+    suppressClick = false;
+  }, true);
+  latestReposNode.addEventListener("dragstart", (event) => event.preventDefault());
+  latestReposNode.addEventListener("wheel", () => { lastInteraction = Date.now(); }, { passive: true });
+  latestReposNode.addEventListener("scroll", () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = 0;
+      githubCarouselIndex = closestGithubCarouselIndex();
+      updateGithubCarouselState();
+    });
+  });
+  githubCarouselNode.addEventListener("keydown", (event) => {
+    if (event.target !== githubCarouselNode || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    event.preventDefault();
+    lastInteraction = Date.now();
+    showGithubCarouselCard(githubCarouselIndex + (event.key === "ArrowRight" ? 1 : -1));
+  });
   window.requestAnimationFrame(updateGithubCarouselState);
   window.addEventListener("resize", () => showGithubCarouselCard(githubCarouselIndex, "auto"));
   if ("IntersectionObserver" in window) {
@@ -371,7 +445,8 @@ function initGithubCarousel() {
   }
   window.setInterval(() => {
     if (githubReducedMotion.matches || document.hidden || !githubCarouselInView) return;
-    if (latestReposNode.contains(document.activeElement)) return;
+    if (drag || Date.now() - lastInteraction < 8000) return;
+    if (githubCarouselNode.contains(document.activeElement) || githubCarouselNode.matches(":hover")) return;
     const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
     if (maxIndex === 0) return;
     if (githubCarouselIndex >= maxIndex) githubCarouselDirection = -1;
@@ -654,7 +729,10 @@ function initTitleThemes() {
   if (!title) return;
   const trigger = title.querySelector(".text-flip-trigger");
 
-  const themes = ["signal", "paper", "grove", "arcade"];
+  const themes = [
+    "signal", "paper", "grove", "arcade", "lava", "ice",
+    "chrome", "neon", "gold", "hologram", "candy", "noir",
+  ];
   let index = -1;
 
   function nextTheme() {
