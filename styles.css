@@ -1539,7 +1539,40 @@ button {
   padding: 0;
   text-shadow: 0 18px 52px rgba(0, 0, 0, 0.55);
   transform-origin: center;
+  cursor: pointer;
+  transition: color 300ms ease, rotate 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: textContainerIn 700ms cubic-bezier(0.34, 1.4, 0.5, 1) both;
+}
+
+.text-flip:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 10px;
+}
+
+.home-page .text-flip[data-title-theme="signal"] {
+  color: #ff784f;
+  font-family: Impact, "Arial Black", sans-serif;
+  rotate: -4deg;
+}
+
+.home-page .text-flip[data-title-theme="paper"] {
+  color: #e8b86c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 700;
+  rotate: 3deg;
+}
+
+.home-page .text-flip[data-title-theme="grove"] {
+  color: #79e3ba;
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(2.1rem, 7.5vw, 5.8rem);
+  font-weight: 700;
+  rotate: -2deg;
+}
+
+.home-page .text-flip[data-title-theme] span {
+  color: inherit;
 }
 
 .text-flip span {
@@ -1549,19 +1582,6 @@ button {
   transform: translateY(12px) rotateX(80deg) scale(0.96);
   animation: textCharIn 520ms ease-out forwards;
   animation-delay: calc(160ms + (var(--i) * 34ms));
-}
-
-.portal-value {
-  position: relative;
-  z-index: 2;
-  width: min(720px, calc(100vw - 40px));
-  margin: -10px 0 0;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
-  font-weight: 600;
-  line-height: 1.45;
-  text-align: center;
-  text-wrap: balance;
 }
 
 .portal-start .engage-button {
@@ -1870,6 +1890,14 @@ button {
     filter: none;
     opacity: 1;
     transform: none;
+  }
+
+  .home-page .text-flip[data-title-theme] {
+    rotate: none;
+  }
+
+  .text-flip {
+    transition: none;
   }
 
   .home-page .chapter-card,
@@ -4048,12 +4076,6 @@ dd {
 
   .portal-start {
     gap: 24px;
-  }
-
-  .portal-value {
-    width: min(340px, calc(100vw - 40px));
-    margin-top: -4px;
-    font-size: 0.96rem;
   }
 
   .hero,

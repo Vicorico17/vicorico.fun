@@ -649,8 +649,55 @@ function initThemePicker() {
   });
 }
 
+function initTitleThemes() {
+  const title = document.querySelector("[data-title-themes]");
+  if (!title) return;
+
+  const themes = ["signal", "paper", "grove"];
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let index = -1;
+  let timer;
+  let active = false;
+
+  function nextTheme() {
+    index = (index + 1) % themes.length;
+    title.dataset.titleTheme = themes[index];
+  }
+
+  function start() {
+    if (active) return;
+    active = true;
+    nextTheme();
+    if (!reducedMotion.matches) timer = window.setInterval(nextTheme, 1100);
+  }
+
+  function stop() {
+    if (title.matches(":hover, :focus")) return;
+    active = false;
+    window.clearInterval(timer);
+    timer = undefined;
+    delete title.dataset.titleTheme;
+    index = -1;
+  }
+
+  title.addEventListener("pointerenter", start);
+  title.addEventListener("pointerleave", stop);
+  title.addEventListener("focus", start);
+  title.addEventListener("blur", stop);
+  title.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    nextTheme();
+  });
+  reducedMotion.addEventListener("change", () => {
+    window.clearInterval(timer);
+    timer = active && !reducedMotion.matches ? window.setInterval(nextTheme, 1100) : undefined;
+  });
+}
+
 initIntroGate();
 initThemePicker();
+initTitleThemes();
 initPortalArt();
 initFlowArt();
 initGithubCarousel();
