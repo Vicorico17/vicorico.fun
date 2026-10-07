@@ -1763,12 +1763,150 @@ button {
   letter-spacing: -0.06em;
 }
 
+.home-page .text-flip[data-title-theme="sunset"] {
+  --title-face: #ffc09d;
+  --title-edge: #8f315e;
+  --title-glow: rgba(255, 105, 139, 0.58);
+  --title-x: 8deg;
+  --title-y: -7deg;
+  --title-z: -2deg;
+  font-family: Righteous, ui-sans-serif, sans-serif;
+  font-size: clamp(2.1rem, 8vw, 6.2rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+}
+
+.home-page .text-flip[data-title-theme="ocean"] {
+  --title-face: #abf6ff;
+  --title-edge: #176a9e;
+  --title-glow: rgba(46, 186, 246, 0.55);
+  --title-x: -7deg;
+  --title-y: 9deg;
+  --title-z: 2deg;
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.home-page .text-flip[data-title-theme="matrix"] {
+  --title-face: #c7ff86;
+  --title-edge: #245b18;
+  --title-glow: rgba(113, 239, 77, 0.58);
+  --title-x: 5deg;
+  --title-y: 8deg;
+  --title-z: -1deg;
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: clamp(2rem, 7vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+}
+
+.home-page .text-flip[data-title-theme="rose"] {
+  --title-face: #ffe1ee;
+  --title-edge: #954367;
+  --title-glow: rgba(255, 126, 181, 0.5);
+  --title-x: -6deg;
+  --title-y: -8deg;
+  --title-z: 2deg;
+  font-family: "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+
+.home-page .text-flip[data-title-theme="electric"] {
+  --title-face: #fff998;
+  --title-edge: #8b6917;
+  --title-glow: rgba(255, 231, 67, 0.62);
+  --title-x: 10deg;
+  --title-y: -5deg;
+  --title-z: -3deg;
+  font-family: Orbitron, ui-sans-serif, sans-serif;
+  font-size: clamp(1.7rem, 6.1vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.085em;
+}
+
+.home-page .text-flip[data-title-theme="emerald"] {
+  --title-face: #c8ffd8;
+  --title-edge: #206948;
+  --title-glow: rgba(73, 215, 139, 0.52);
+  --title-x: -8deg;
+  --title-y: 6deg;
+  --title-z: 2deg;
+  font-family: Cinzel, Georgia, serif;
+  font-size: clamp(1.75rem, 6.4vw, 5.2rem);
+  font-weight: 900;
+  letter-spacing: -0.07em;
+}
+
+.home-page .text-flip[data-title-theme="orbit"] {
+  --title-face: #d2dcff;
+  --title-edge: #4b5aa2;
+  --title-glow: rgba(137, 152, 255, 0.6);
+  --title-x: 6deg;
+  --title-y: -7deg;
+  --title-z: 0deg;
+  font-family: Orbitron, ui-sans-serif, sans-serif;
+  font-size: clamp(1.7rem, 6.1vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.085em;
+}
+
+.home-page .text-flip[data-title-theme="prism"] {
+  --title-face: #fff0fe;
+  --title-edge: #67429c;
+  --title-glow: rgba(193, 116, 255, 0.62);
+  --title-x: 5deg;
+  --title-y: 0deg;
+  --title-z: 0deg;
+  font-family: Bungee, Impact, sans-serif;
+  font-size: clamp(1.85rem, 6.8vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: -0.075em;
+}
+
+.home-page .text-flip[data-title-theme="vinyl"] {
+  --title-face: #fff4dc;
+  --title-edge: #69563e;
+  --title-glow: rgba(255, 220, 145, 0.5);
+  --title-x: 0deg;
+  --title-y: 0deg;
+  --title-z: 0deg;
+  font-family: Bungee, Impact, sans-serif;
+  font-size: clamp(1.85rem, 6.8vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: -0.075em;
+}
+
+.home-page .text-flip[data-title-theme="sakura"] {
+  --title-face: #ffe4ed;
+  --title-edge: #9c5b79;
+  --title-glow: rgba(255, 165, 199, 0.53);
+  --title-x: 7deg;
+  --title-y: 7deg;
+  --title-z: -2deg;
+  font-family: "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+
 .home-page .text-flip[data-title-theme="lava"] .text-flip-trigger span,
 .home-page .text-flip[data-title-theme="ice"] .text-flip-trigger span,
 .home-page .text-flip[data-title-theme="chrome"] .text-flip-trigger span,
 .home-page .text-flip[data-title-theme="gold"] .text-flip-trigger span,
 .home-page .text-flip[data-title-theme="hologram"] .text-flip-trigger span,
-.home-page .text-flip[data-title-theme="candy"] .text-flip-trigger span {
+.home-page .text-flip[data-title-theme="candy"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="sunset"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="ocean"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="matrix"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="rose"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="electric"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="emerald"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="orbit"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="prism"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="vinyl"] .text-flip-trigger span,
+.home-page .text-flip[data-title-theme="sakura"] .text-flip-trigger span {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1808,8 +1946,87 @@ button {
   -webkit-text-stroke: 0.7px #ffd7ed;
 }
 
+.home-page .text-flip[data-title-theme="sunset"] .text-flip-trigger span {
+  background-image: linear-gradient(150deg, #fff0a7, #ff9e71 42%, #e24b8c 85%);
+  -webkit-text-stroke: 0.7px #ffd0ad;
+}
+
+.home-page .text-flip[data-title-theme="ocean"] .text-flip-trigger span {
+  background-image: linear-gradient(165deg, #e9ffff, #77def2 40%, #2689c4 75%, #a9f5e8);
+  -webkit-text-stroke: 0.7px #b9faff;
+}
+
+.home-page .text-flip[data-title-theme="matrix"] .text-flip-trigger span {
+  background-image: repeating-linear-gradient(180deg, #d6ffac 0 5px, #4bca50 6px 8px, #164c20 9px 10px);
+  -webkit-text-stroke: 0.7px #b4ff83;
+}
+
+.home-page .text-flip[data-title-theme="rose"] .text-flip-trigger span {
+  background-image: linear-gradient(160deg, #fff8f2, #e4a5bb 42%, #a95078 60%, #ffd9d8);
+  -webkit-text-stroke: 0.7px #ffe4ed;
+}
+
+.home-page .text-flip[data-title-theme="electric"] .text-flip-trigger span {
+  background-image: linear-gradient(160deg, #fffed4, #f7e637 44%, #59d7eb 48%, #d0fff8 62%, #fff16a);
+  -webkit-text-stroke: 0.7px #fffdb7;
+}
+
+.home-page .text-flip[data-title-theme="emerald"] .text-flip-trigger span {
+  background-image: linear-gradient(165deg, #eaffd3, #78dfa4 34%, #176f61 54%, #a3f7c2 75%, #f7e4a0);
+  -webkit-text-stroke: 0.7px #d8ffd9;
+}
+
+.home-page .text-flip[data-title-theme="orbit"] .text-flip-trigger span {
+  background-image: linear-gradient(155deg, #f8f8ff, #9ebdff 38%, #7867d5 65%, #d2f7ff);
+  -webkit-text-stroke: 0.7px #e0eaff;
+}
+
+.home-page .text-flip[data-title-theme="prism"] .text-flip-trigger span {
+  background-image: linear-gradient(135deg, #ff8da8, #ffdf86 25%, #a2ffcb 50%, #8bd5ff 72%, #d2a6ff);
+  -webkit-text-stroke: 0.7px #fff0fe;
+}
+
+.home-page .text-flip[data-title-theme="vinyl"] .text-flip-trigger span {
+  background-image: repeating-linear-gradient(155deg, #fff5d7 0 8px, #d7b474 9px 12px, #78664d 13px 14px);
+  -webkit-text-stroke: 0.7px #fff4dc;
+}
+
+.home-page .text-flip[data-title-theme="sakura"] .text-flip-trigger span {
+  background-image: linear-gradient(160deg, #fff9f5, #ffd2e0 34%, #ed8eb0 62%, #fff0e6);
+  -webkit-text-stroke: 0.7px #fff0f3;
+}
+
 .home-page .text-flip[data-title-theme="neon"] .text-flip-trigger {
   text-shadow: 0 0 4px #d2fff9, 0 0 14px #40eddf, 0 0 34px #00bca9, 4px 5px #0b4558;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-page .text-flip[data-title-theme="orbit"]:hover .text-flip-trigger {
+    animation: titleOrbitSpin 4.8s linear 650ms infinite;
+  }
+
+  .home-page .text-flip[data-title-theme="prism"]:hover .text-flip-trigger {
+    animation: titlePrismFlip 4.2s ease-in-out 650ms infinite;
+  }
+
+  .home-page .text-flip[data-title-theme="vinyl"]:hover .text-flip-trigger {
+    animation: titleVinylSpin 6s linear 650ms infinite;
+  }
+}
+
+@keyframes titleOrbitSpin {
+  from { transform: perspective(900px) rotateX(6deg) rotateY(-7deg) rotateZ(0deg); }
+  to { transform: perspective(900px) rotateX(6deg) rotateY(-7deg) rotateZ(360deg); }
+}
+
+@keyframes titlePrismFlip {
+  0%, 100% { transform: perspective(900px) rotateX(5deg) rotateY(0deg); }
+  50% { transform: perspective(900px) rotateX(5deg) rotateY(180deg); }
+}
+
+@keyframes titleVinylSpin {
+  from { transform: perspective(900px) rotateZ(0deg); }
+  to { transform: perspective(900px) rotateZ(-360deg); }
 }
 
 .text-flip span {

@@ -732,6 +732,8 @@ function initTitleThemes() {
   const themes = [
     "signal", "paper", "grove", "arcade", "lava", "ice",
     "chrome", "neon", "gold", "hologram", "candy", "noir",
+    "sunset", "ocean", "matrix", "rose", "electric", "emerald",
+    "orbit", "prism", "vinyl", "sakura",
   ];
   let index = -1;
 
@@ -745,13 +747,7 @@ function initTitleThemes() {
     nextTheme();
   }
 
-  function stop(event) {
-    if (event.pointerType !== "mouse") return;
-    delete title.dataset.titleTheme;
-  }
-
-  trigger.addEventListener("pointerenter", start);
-  trigger.addEventListener("pointerleave", stop);
+  title.addEventListener("pointerenter", start);
   trigger.addEventListener("click", nextTheme);
 }
 
