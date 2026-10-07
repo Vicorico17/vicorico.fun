@@ -125,32 +125,41 @@
         <div class="github-live" aria-labelledby="github-live-title">
           <div class="github-live-heading">
             <div>
-              <p class="eyebrow">Live from GitHub</p>
               <h3 id="github-live-title">Latest Builds</h3>
-              <p>Latest commits from recently updated public projects.</p>
+              <p>Recent work across my public projects.</p>
             </div>
-            <a href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">View all GitHub projects</a>
+            <a class="github-profile-link" href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer" aria-label="Victor Cazacu's GitHub profile">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.04c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.57 2.53 2.97 1.77.1-.72.39-1.2.7-1.48-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.1-1.43 3.04-1.14 3.04-1.14.61 1.54.23 2.68.11 2.96.72.78 1.15 1.77 1.15 2.99 0 4.29-2.61 5.23-5.1 5.51.4.34.75 1.02.75 2.06V22c0 .29.2.63.76.52A11.1 11.1 0 0 0 12 .9Z" />
+              </svg>
+              <span>GitHub profile</span>
+            </a>
           </div>
           <div class="github-carousel" data-github-carousel role="region" aria-label="Latest builds. Drag, swipe, or use arrow keys to browse." aria-roledescription="carousel" tabindex="0">
             <div class="github-live-grid" data-github-latest>
               <article class="github-live-card">
-                <span>Latest commit</span>
                 <h4><a href="https://github.com/Vicorico17/studio-chat" target="_blank" rel="noopener noreferrer">Studio Chat</a></h4>
-                <p>Open GitHub to see the latest commit.</p>
+                <p>Open GitHub to see project updates.</p>
                 <footer><a href="https://github.com/Vicorico17/studio-chat/commits" target="_blank" rel="noopener noreferrer">View commits</a></footer>
               </article>
               <article class="github-live-card">
-                <span>Latest commit</span>
                 <h4><a href="https://github.com/Vicorico17/tap-time" target="_blank" rel="noopener noreferrer">TapTime</a></h4>
-                <p>Open GitHub to see the latest commit.</p>
+                <p>Open GitHub to see project updates.</p>
                 <footer><a href="https://github.com/Vicorico17/tap-time/commits" target="_blank" rel="noopener noreferrer">View commits</a></footer>
               </article>
               <article class="github-live-card">
-                <span>Latest commit</span>
                 <h4><a href="https://github.com/Vicorico17/bvb.lol" target="_blank" rel="noopener noreferrer">bvb.lol</a></h4>
-                <p>Open GitHub to see the latest commit.</p>
+                <p>Open GitHub to see project updates.</p>
                 <footer><a href="https://github.com/Vicorico17/bvb.lol/commits" target="_blank" rel="noopener noreferrer">View commits</a></footer>
               </article>
+            </div>
+            <div class="github-history-panel" id="github-history-panel" data-github-history hidden>
+              <div class="github-history-heading">
+                <h4 data-github-history-title>Recent commits</h4>
+                <button type="button" data-github-history-close aria-label="Close recent commits">×</button>
+              </div>
+              <ol data-github-history-list></ol>
+              <p data-github-history-empty hidden></p>
             </div>
           </div>
         </div>
