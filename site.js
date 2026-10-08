@@ -303,6 +303,7 @@ function initFlowArt() {
     const inner = panel.querySelector("[data-flow-inner]");
     if (!toggle || !inner) return;
 
+    if (expanded) panel.parentElement.prepend(panel);
     panel.classList.toggle("is-expanded", expanded);
     toggle.setAttribute("aria-expanded", String(expanded));
     inner.setAttribute("aria-hidden", String(!expanded));

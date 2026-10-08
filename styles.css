@@ -964,33 +964,33 @@ nav a:hover {
   background: rgba(255, 255, 255, 0.16);
 }
 
-.flow-panel:nth-child(1) .flow-summary {
+.flow-paper .flow-summary {
   background:
     radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.34), transparent 14rem),
     linear-gradient(135deg, rgba(245, 240, 232, 0.92), rgba(139, 131, 120, 0.78));
   color: #080808;
 }
 
-.flow-panel:nth-child(1) .flow-summary strong,
-.flow-panel:nth-child(1) .flow-summary small,
-.flow-panel:nth-child(1) .flow-summary em {
+.flow-paper .flow-summary strong,
+.flow-paper .flow-summary small,
+.flow-paper .flow-summary em {
   color: #080808;
 }
 
-.flow-panel:nth-child(2) .flow-summary,
-.flow-panel:nth-child(4) .flow-summary {
+#story-crypto .flow-summary,
+#story-games .flow-summary {
   background:
     radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.28), transparent 16rem),
     linear-gradient(135deg, rgba(26, 61, 232, 0.82), rgba(3, 6, 20, 0.96));
 }
 
-.flow-panel:nth-child(3) .flow-summary {
+#story-content .flow-summary {
   background:
     radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.12), transparent 14rem),
     linear-gradient(135deg, rgba(37, 37, 37, 0.98), rgba(2, 2, 2, 0.96));
 }
 
-.flow-panel:nth-child(1) .flow-inner {
+.flow-paper .flow-inner {
   border-color: rgba(245, 240, 232, 0.68);
   background:
     radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.72), transparent 24rem),
@@ -998,7 +998,7 @@ nav a:hover {
   color: #080808;
 }
 
-.flow-panel:nth-child(2) .flow-inner {
+#story-crypto .flow-inner {
   border-color: rgba(92, 124, 255, 0.78);
   background:
     radial-gradient(circle at 82% 12%, rgba(95, 129, 255, 0.55), transparent 26rem),
@@ -1006,7 +1006,7 @@ nav a:hover {
   color: #ffffff;
 }
 
-.flow-panel:nth-child(3) .flow-inner {
+#story-content .flow-inner {
   border-color: rgba(236, 72, 153, 0.54);
   background:
     radial-gradient(circle at 20% 80%, rgba(236, 72, 153, 0.32), transparent 28rem),
@@ -1014,11 +1014,31 @@ nav a:hover {
   color: #ffffff;
 }
 
-.flow-panel:nth-child(4) .flow-inner {
+#story-games .flow-inner {
   border-color: rgba(251, 113, 133, 0.5);
   background:
     radial-gradient(circle at 82% 72%, rgba(251, 113, 133, 0.32), transparent 24rem),
     linear-gradient(135deg, #5c1824 0%, #280912 58%, #080205 100%);
+  color: #ffffff;
+}
+
+.flow-agentic .flow-summary {
+  background: radial-gradient(circle at 80% 15%, rgba(94, 236, 169, 0.35), transparent 15rem), linear-gradient(135deg, #124c3b, #061712 88%);
+}
+
+.flow-agentic .flow-inner {
+  border-color: rgba(116, 218, 164, 0.66);
+  background: radial-gradient(circle at 80% 10%, rgba(116, 218, 164, 0.32), transparent 25rem), linear-gradient(135deg, #13553d, #092a24 60%, #04110e);
+  color: #ffffff;
+}
+
+.flow-security .flow-summary {
+  background: radial-gradient(circle at 78% 15%, rgba(236, 164, 204, 0.32), transparent 15rem), linear-gradient(135deg, #4a1f43, #150c1e 88%);
+}
+
+.flow-security .flow-inner {
+  border-color: rgba(236, 164, 204, 0.66);
+  background: radial-gradient(circle at 78% 15%, rgba(236, 164, 204, 0.3), transparent 25rem), linear-gradient(135deg, #4e234a, #22162d 60%, #0e0a16);
   color: #ffffff;
 }
 
@@ -2943,98 +2963,129 @@ dd {
 }
 
 .chapters-grid {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.12fr) minmax(0, 0.92fr);
+  grid-template-areas:
+    "crypto agentic security"
+    "ai agentic security"
+    "content agentic security";
+  gap: 12px 22px;
+  align-items: stretch;
 }
 
 .chapters-grid .chapter-card {
   --chapter-accent: #f7d58a;
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 16px;
-  background: linear-gradient(110deg, color-mix(in srgb, var(--chapter-accent) 10%, #111018), #111018 52%);
-  box-shadow: inset 3px 0 0 var(--chapter-accent);
-  transition: border-color 220ms ease, background 220ms ease;
-}
-
-.chapters-grid .crypto-lane { --chapter-accent: #f2b84b; }
-.chapters-grid .ai-lane { --chapter-accent: #8fa9ff; }
-.chapters-grid .content-lane { --chapter-accent: #ff9a6b; }
-.chapters-grid .agentic-commerce-lane { --chapter-accent: #74daa4; }
-.chapters-grid .security-lane { --chapter-accent: #eca4cc; }
-
-.chapters-grid .chapter-card[open],
-.chapters-grid .chapter-card:hover {
-  border-color: color-mix(in srgb, var(--chapter-accent) 55%, transparent);
-}
-
-.chapters-grid .chapter-card summary {
+  position: relative;
+  z-index: 1;
   display: flex;
-  min-height: 94px;
-  align-items: center;
+  min-width: 0;
+  min-height: 150px;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 20px;
-  padding: 20px clamp(22px, 4vw, 38px);
-  cursor: pointer;
-  list-style: none;
+  gap: 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--chapter-accent) 36%, transparent);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--chapter-accent) 25%, transparent), transparent 67%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 38%),
+    #111018;
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--chapter-accent) 58%, transparent), 0 15px 34px rgba(0, 0, 0, 0.2);
+  padding: clamp(20px, 2.5vw, 28px);
+  text-decoration: none;
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 
-.chapters-grid .chapter-card summary::-webkit-details-marker { display: none; }
+.chapters-grid .chapter-card::before {
+  position: absolute;
+  inset: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 11px;
+  pointer-events: none;
+  content: "";
+}
 
-.chapters-grid .chapter-card summary:focus-visible {
+.chapters-grid .chapter-card:hover,
+.chapters-grid .chapter-card:focus-visible {
+  border-color: var(--chapter-accent);
+  box-shadow: inset 0 2px 0 var(--chapter-accent), 0 18px 40px rgba(0, 0, 0, 0.32), 0 0 30px color-mix(in srgb, var(--chapter-accent) 18%, transparent);
+  transform: translateY(-3px);
+}
+
+.chapters-grid .chapter-card:focus-visible {
   outline: 2px solid var(--chapter-accent);
-  outline-offset: -4px;
+  outline-offset: 4px;
 }
 
 .chapters-grid .chapter-card h3 {
+  position: relative;
+  z-index: 1;
   margin: 0;
   color: #fff;
-  font-size: clamp(1.3rem, 3.3vw, 2.15rem);
+  font-size: clamp(1.45rem, 2.55vw, 2.35rem);
   font-weight: 850;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
   text-transform: uppercase;
 }
 
-.chapters-grid .chapter-card summary span {
+.chapters-grid .chapter-card span {
+  position: relative;
+  z-index: 1;
   display: grid;
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--chapter-accent) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--chapter-accent) 55%, transparent);
   border-radius: 50%;
   color: var(--chapter-accent);
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-size: 1rem;
   line-height: 1;
-  transition: transform 220ms ease, background 220ms ease;
+  transition: background 200ms ease, transform 200ms ease;
 }
 
-.chapters-grid .chapter-card[open] summary span {
-  background: color-mix(in srgb, var(--chapter-accent) 12%, transparent);
-  transform: rotate(45deg);
+.chapters-grid .chapter-card:hover span,
+.chapters-grid .chapter-card:focus-visible span {
+  background: color-mix(in srgb, var(--chapter-accent) 17%, transparent);
+  transform: translate(2px, -2px);
 }
 
-.chapters-grid .chapter-detail {
-  border-top: 1px solid rgba(255, 255, 255, 0.09);
-  padding: 22px clamp(22px, 4vw, 38px) 26px;
+.chapters-grid .crypto-lane { --chapter-accent: #f2b84b; grid-area: crypto; }
+.chapters-grid .ai-lane { --chapter-accent: #8fa9ff; grid-area: ai; }
+.chapters-grid .content-lane { --chapter-accent: #ff9a6b; grid-area: content; }
+.chapters-grid .agentic-commerce-lane { --chapter-accent: #74daa4; grid-area: agentic; }
+.chapters-grid .security-lane { --chapter-accent: #eca4cc; grid-area: security; }
+
+.chapters-grid .agentic-commerce-lane,
+.chapters-grid .security-lane { align-items: flex-end; }
+
+.chapters-grid .crypto-lane::after,
+.chapters-grid .ai-lane::after {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 22px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--chapter-accent), rgba(255, 255, 255, 0.2));
+  pointer-events: none;
+  content: "";
 }
 
-.chapters-grid .chapter-detail p {
-  max-width: 65ch;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: clamp(0.98rem, 1.6vw, 1.12rem);
-  line-height: 1.6;
+.system-map > .flow-art {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  padding-bottom: 0;
 }
 
-.home-page .chapters-grid .chapter-card:hover {
-  box-shadow: inset 3px 0 0 var(--chapter-accent);
-  transform: none;
-}
+.system-map .flow-summary { min-height: 165px; }
+.system-map .flow-summary small { display: none; }
+.system-map .flow-panel { scroll-margin-top: 88px; }
 
 .proof-grid span {
   color: #d43d17;
@@ -4710,6 +4761,19 @@ dd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .chapters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "crypto ai"
+      "content content"
+      "agentic security";
+  }
+
+  .chapters-grid .crypto-lane::after,
+  .chapters-grid .ai-lane::after { display: none; }
+
+  .system-map > .flow-art { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
   .flow-panel,
   .flow-panel.is-expanded {
     min-height: auto;
@@ -4943,6 +5007,15 @@ dd {
   .flow-art {
     grid-template-columns: 1fr;
   }
+
+  .chapters-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "crypto" "ai" "content" "agentic" "security";
+    gap: 10px;
+  }
+
+  .chapters-grid .chapter-card { min-height: 130px; }
+  .system-map > .flow-art { grid-template-columns: minmax(0, 1fr); }
 
   .flow-panel,
   .flow-panel.is-expanded,
