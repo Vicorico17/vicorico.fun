@@ -217,31 +217,6 @@ function initIntroGate() {
   let pointerId = null;
   let pointerOffset = 0;
   let entered = false;
-  const slideThemes = ["ember", "frost", "electric", "mint", "violet", "gold", "rose", "ocean", "chrome", "candy"];
-  let currentSlideTheme = "ember";
-  let themeInterval = null;
-
-  function nextSlideTheme() {
-    const choices = slideThemes.filter((theme) => theme !== currentSlideTheme);
-    currentSlideTheme = choices[Math.floor(Math.random() * choices.length)];
-    slider.dataset.slideTheme = currentSlideTheme;
-  }
-
-  slider.addEventListener("pointerenter", (event) => {
-    if (event.pointerType !== "mouse" || entered) return;
-    nextSlideTheme();
-    window.clearInterval(themeInterval);
-    themeInterval = window.setInterval(() => {
-      if (!entered && pointerId === null) nextSlideTheme();
-    }, 2400);
-  });
-  slider.addEventListener("pointerleave", () => {
-    window.clearInterval(themeInterval);
-    themeInterval = null;
-  });
-  slider.addEventListener("pointerdown", (event) => {
-    if (event.pointerType !== "mouse" && !entered) nextSlideTheme();
-  });
 
   function maxTravel() {
     return Math.max(0, track.clientWidth - thumb.offsetWidth - 12);
@@ -259,7 +234,6 @@ function initIntroGate() {
   function enterSite() {
     if (entered) return;
     entered = true;
-    window.clearInterval(themeInterval);
     setPosition(maxTravel());
     slider.classList.add("is-complete");
     document.documentElement.classList.remove("scroll-locked");
