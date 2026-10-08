@@ -496,8 +496,8 @@ function initGithubCarousel() {
     activeHistoryCard = card;
     historyPanel.hidden = false;
     githubCarouselNode.classList.add("is-history-open");
-    latestReposNode.querySelectorAll("[data-github-history-toggle]").forEach((button) => {
-      button.setAttribute("aria-expanded", String(button.closest(".github-live-card") === card));
+    latestReposNode.querySelectorAll(".github-commit-preview").forEach((preview) => {
+      preview.setAttribute("aria-expanded", String(preview.closest(".github-live-card") === card));
     });
     renderHistory(card);
   }
@@ -506,8 +506,8 @@ function initGithubCarousel() {
     if (!historyPanel) return;
     historyPanel.hidden = true;
     githubCarouselNode.classList.remove("is-history-open");
-    latestReposNode.querySelectorAll("[data-github-history-toggle]").forEach((button) => {
-      button.setAttribute("aria-expanded", "false");
+    latestReposNode.querySelectorAll(".github-commit-preview").forEach((preview) => {
+      preview.setAttribute("aria-expanded", "false");
     });
     activeHistoryCard = null;
     historyPinned = false;
@@ -515,18 +515,25 @@ function initGithubCarousel() {
 
   latestReposNode.addEventListener("pointerover", (event) => {
     if (event.pointerType !== "mouse" || drag) return;
-    const commit = event.target.closest(".github-live-card > p, .github-live-card footer a");
+    const commit = event.target.closest(".github-commit-preview, .github-live-card footer a");
     const card = commit?.closest(".github-live-card");
-    if (card?.querySelector("[data-github-history-toggle]") && card !== activeHistoryCard) showHistory(card);
+    if (card?.querySelector(".github-commit-preview") && card !== activeHistoryCard) {
+      lastInteraction = Date.now();
+      showHistory(card);
+    }
   });
   latestReposNode.addEventListener("focusin", (event) => {
-    const card = event.target.closest(".github-live-card");
-    if (card?.querySelector("[data-github-history-toggle]")) showHistory(card);
+    const commit = event.target.closest(".github-commit-preview, .github-live-card footer a");
+    const card = commit?.closest(".github-live-card");
+    if (card?.querySelector(".github-commit-preview")) {
+      lastInteraction = Date.now();
+      showHistory(card);
+    }
   });
   latestReposNode.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-github-history-toggle]");
-    if (!button) return;
-    const card = button.closest(".github-live-card");
+    const preview = event.target.closest(".github-commit-preview");
+    if (!preview) return;
+    const card = preview.closest(".github-live-card");
     if (activeHistoryCard === card && historyPinned) {
       closeHistory();
     } else {
@@ -613,13 +620,13 @@ function initGithubCarousel() {
   }
   window.setInterval(() => {
     if (githubReducedMotion.matches || document.hidden || !githubCarouselInView) return;
-    if (historyPanel && !historyPanel.hidden) return;
-    if (drag || Date.now() - lastInteraction < 8000) return;
-    if (githubCarouselNode.contains(document.activeElement)) return;
+    if (drag || Date.now() - lastInteraction < 6500) return;
+    if (historyPanel && !historyPanel.hidden && (historyPanel.matches(":hover") || historyPanel.contains(document.activeElement))) return;
     const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
     if (maxIndex === 0) return;
+    if (historyPanel && !historyPanel.hidden) closeHistory();
     showGithubCarouselCard(githubCarouselIndex >= maxIndex ? 0 : githubCarouselIndex + 1);
-  }, 5000);
+  }, 4000);
 }
 
 function latestGithubRepos(repos) {
@@ -635,18 +642,15 @@ function makeGithubCommitCard(repo) {
   article.dataset.historyStatus = "loading";
   const title = document.createElement("h4");
   title.append(githubLink(repo.html_url, repo.name));
-  const message = document.createElement("p");
+  const message = document.createElement("button");
+  message.type = "button";
+  message.className = "github-commit-preview";
   message.textContent = "Loading project updates…";
+  message.setAttribute("aria-label", `Show recent commits from ${repo.name}`);
+  message.setAttribute("aria-controls", "github-history-panel");
+  message.setAttribute("aria-expanded", "false");
   const footer = document.createElement("footer");
-  const more = document.createElement("button");
-  more.type = "button";
-  more.className = "github-history-toggle";
-  more.dataset.githubHistoryToggle = "";
-  more.textContent = "More commits";
-  more.setAttribute("aria-label", `Show recent commits from ${repo.name}`);
-  more.setAttribute("aria-controls", "github-history-panel");
-  more.setAttribute("aria-expanded", "false");
-  footer.append(githubLink(`${repo.html_url}/commits`, "View commits"), more);
+  footer.append(githubLink(`${repo.html_url}/commits`, "View commits"));
   article.append(title, message, footer);
   return article;
 }
@@ -670,7 +674,7 @@ async function getLatestGithubCommits(repo) {
 }
 
 async function fillGithubCommitCard(repo, card) {
-  const message = card.querySelector("p");
+  const message = card.querySelector(".github-commit-preview");
   const footer = card.querySelector("footer");
   try {
     const commits = await getLatestGithubCommits(repo);
@@ -685,8 +689,7 @@ async function fillGithubCommitCard(repo, card) {
       time.dateTime = date;
       time.textContent = formatGithubDateTime(date);
     }
-    const more = footer.querySelector("[data-github-history-toggle]");
-    footer.replaceChildren(link, ...(date ? [time] : []), more);
+    footer.replaceChildren(link, ...(date ? [time] : []));
   } catch {
     card.dataset.historyStatus = "unavailable";
     message.textContent = "Project updates unavailable right now.";
