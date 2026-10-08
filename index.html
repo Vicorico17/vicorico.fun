@@ -104,12 +104,15 @@
             <span aria-hidden="true" style="--i: 11">n</span>
           </button>
         </h1>
-        <a class="engage-button portal-enter" href="#proof" aria-label="Explore" data-enter-site>
-          <span class="engage-button-surface">
-            <span class="portal-enter-label">Explore</span>
-            <span class="portal-enter-arrow" aria-hidden="true">↗</span>
-          </span>
-        </a>
+        <div class="portal-enter portal-slide" data-enter-site data-target="#proof">
+          <div class="portal-slide-track" data-enter-track>
+            <span class="portal-slide-fill" aria-hidden="true"></span>
+            <span class="portal-slide-label" aria-hidden="true">EXPLORE</span>
+            <div class="portal-slide-thumb" role="slider" tabindex="0" aria-label="Slide to explore" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Drag right to explore" data-enter-thumb>
+              <span aria-hidden="true">»</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="proof" class="proof-section section" aria-labelledby="proof-title">

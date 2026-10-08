@@ -196,10 +196,14 @@ function initPortalArt() {
 }
 
 function initIntroGate() {
-  const enterButton = document.querySelector("[data-enter-site]");
-  if (!enterButton) return;
+  const slider = document.querySelector("[data-enter-site]");
+  if (!slider) return;
 
-  const targetSelector = enterButton.getAttribute("href");
+  const track = slider.querySelector("[data-enter-track]");
+  const thumb = slider.querySelector("[data-enter-thumb]");
+  if (!track || !thumb) return;
+
+  const targetSelector = slider.getAttribute("data-target");
   const targetSection = targetSelector ? document.querySelector(targetSelector) : document.querySelector("#about");
   if (!targetSection) return;
 
@@ -209,14 +213,84 @@ function initIntroGate() {
 
   window.scrollTo(0, 0);
 
-  enterButton.addEventListener("click", (event) => {
-    event.preventDefault();
+  let position = 0;
+  let pointerId = null;
+  let pointerOffset = 0;
+  let entered = false;
+
+  function maxTravel() {
+    return Math.max(0, track.clientWidth - thumb.offsetWidth - 12);
+  }
+
+  function setPosition(nextPosition) {
+    position = Math.max(0, Math.min(maxTravel(), nextPosition));
+    const progress = maxTravel() ? Math.round((position / maxTravel()) * 100) : 0;
+    slider.style.setProperty("--slide-x", `${position}px`);
+    slider.style.setProperty("--slide-label-opacity", String(1 - progress / 100));
+    thumb.setAttribute("aria-valuenow", String(progress));
+    thumb.setAttribute("aria-valuetext", progress === 100 ? "Explore" : `${progress}% toward explore`);
+  }
+
+  function enterSite() {
+    if (entered) return;
+    entered = true;
+    setPosition(maxTravel());
+    slider.classList.add("is-complete");
     document.documentElement.classList.remove("scroll-locked");
     document.body.classList.remove("scroll-locked");
 
     window.requestAnimationFrame(() => {
       targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  }
+
+  thumb.addEventListener("pointerdown", (event) => {
+    if (entered || pointerId !== null || (event.pointerType === "mouse" && event.button !== 0)) return;
+    event.preventDefault();
+    pointerId = event.pointerId;
+    pointerOffset = event.clientX - thumb.getBoundingClientRect().left;
+    thumb.setPointerCapture(pointerId);
+    slider.classList.add("is-dragging");
+  });
+
+  thumb.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== pointerId || entered) return;
+    const trackLeft = track.getBoundingClientRect().left;
+    setPosition(event.clientX - trackLeft - 6 - pointerOffset);
+  });
+
+  function finishSlide(event) {
+    if (event.pointerId !== pointerId) return;
+    if (event.type === "pointerup") {
+      const trackLeft = track.getBoundingClientRect().left;
+      setPosition(event.clientX - trackLeft - 6 - pointerOffset);
+    }
+    pointerId = null;
+    slider.classList.remove("is-dragging");
+    if (event.type === "pointerup" && maxTravel() && position / maxTravel() >= 0.9) {
+      enterSite();
+    } else {
+      setPosition(0);
+    }
+  }
+
+  thumb.addEventListener("pointerup", finishSlide);
+  thumb.addEventListener("pointercancel", finishSlide);
+  thumb.addEventListener("keydown", (event) => {
+    if (entered) return;
+    const step = maxTravel() / 10;
+    if (event.key === "ArrowRight") setPosition(position + step);
+    else if (event.key === "ArrowLeft") setPosition(position - step);
+    else if (event.key === "Home") setPosition(0);
+    else if (event.key === "End") setPosition(maxTravel());
+    else return;
+    event.preventDefault();
+    if (position >= maxTravel()) enterSite();
+  });
+
+  window.addEventListener("resize", () => {
+    if (entered) setPosition(maxTravel());
+    else setPosition(0);
   });
 }
 
