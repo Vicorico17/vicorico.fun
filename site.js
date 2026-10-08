@@ -217,6 +217,31 @@ function initIntroGate() {
   let pointerId = null;
   let pointerOffset = 0;
   let entered = false;
+  const slideThemes = ["ember", "frost", "electric", "mint", "violet", "gold", "rose", "ocean", "chrome", "candy"];
+  let currentSlideTheme = "ember";
+  let themeInterval = null;
+
+  function nextSlideTheme() {
+    const choices = slideThemes.filter((theme) => theme !== currentSlideTheme);
+    currentSlideTheme = choices[Math.floor(Math.random() * choices.length)];
+    slider.dataset.slideTheme = currentSlideTheme;
+  }
+
+  slider.addEventListener("pointerenter", (event) => {
+    if (event.pointerType !== "mouse" || entered) return;
+    nextSlideTheme();
+    window.clearInterval(themeInterval);
+    themeInterval = window.setInterval(() => {
+      if (!entered && pointerId === null) nextSlideTheme();
+    }, 2400);
+  });
+  slider.addEventListener("pointerleave", () => {
+    window.clearInterval(themeInterval);
+    themeInterval = null;
+  });
+  slider.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse" && !entered) nextSlideTheme();
+  });
 
   function maxTravel() {
     return Math.max(0, track.clientWidth - thumb.offsetWidth - 12);
@@ -234,6 +259,7 @@ function initIntroGate() {
   function enterSite() {
     if (entered) return;
     entered = true;
+    window.clearInterval(themeInterval);
     setPosition(maxTravel());
     slider.classList.add("is-complete");
     document.documentElement.classList.remove("scroll-locked");
@@ -396,7 +422,6 @@ function githubLink(href, label) {
 const githubReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let githubCarouselCards = [];
 let githubCarouselIndex = 0;
-let githubCarouselDirection = 1;
 let githubCarouselInView = true;
 
 function githubVisibleCards() {
@@ -442,7 +467,6 @@ function setGithubCarouselCards(cards) {
   latestReposNode.replaceChildren(...cards);
   githubCarouselCards = cards;
   githubCarouselIndex = 0;
-  githubCarouselDirection = 1;
   latestReposNode.scrollLeft = 0;
   window.requestAnimationFrame(updateGithubCarouselState);
 }
@@ -518,11 +542,11 @@ function initGithubCarousel() {
     if (event.pointerType !== "mouse" || drag) return;
     const commit = event.target.closest(".github-live-card > p, .github-live-card footer a");
     const card = commit?.closest(".github-live-card");
-    if (card && card !== activeHistoryCard) showHistory(card);
+    if (card?.querySelector("[data-github-history-toggle]") && card !== activeHistoryCard) showHistory(card);
   });
   latestReposNode.addEventListener("focusin", (event) => {
     const card = event.target.closest(".github-live-card");
-    if (card) showHistory(card);
+    if (card?.querySelector("[data-github-history-toggle]")) showHistory(card);
   });
   latestReposNode.addEventListener("click", (event) => {
     const button = event.target.closest("[data-github-history-toggle]");
@@ -616,12 +640,10 @@ function initGithubCarousel() {
     if (githubReducedMotion.matches || document.hidden || !githubCarouselInView) return;
     if (historyPanel && !historyPanel.hidden) return;
     if (drag || Date.now() - lastInteraction < 8000) return;
-    if (githubCarouselNode.contains(document.activeElement) || githubCarouselNode.matches(":hover")) return;
+    if (githubCarouselNode.contains(document.activeElement)) return;
     const maxIndex = Math.max(0, githubCarouselCards.length - githubVisibleCards());
     if (maxIndex === 0) return;
-    if (githubCarouselIndex >= maxIndex) githubCarouselDirection = -1;
-    if (githubCarouselIndex <= 0) githubCarouselDirection = 1;
-    showGithubCarouselCard(githubCarouselIndex + githubCarouselDirection);
+    showGithubCarouselCard(githubCarouselIndex >= maxIndex ? 0 : githubCarouselIndex + 1);
   }, 5000);
 }
 
