@@ -3248,8 +3248,23 @@ dd {
 .github-live-card h4 {
   margin: 0 0 0.75rem;
   color: #ffffff;
-  font-size: 1.15rem;
+  font-size: clamp(1.3rem, 1.8vw, 1.55rem);
+  font-weight: 800;
+  line-height: 1.15;
   overflow-wrap: anywhere;
+}
+
+.github-live-card h4 a {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+.github-live-card h4 a:hover,
+.github-live-card h4 a:focus-visible {
+  color: #f7d58a;
 }
 
 .github-live-card p {
