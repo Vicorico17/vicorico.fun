@@ -218,7 +218,9 @@ function initIntroGate() {
 
   let position = 0;
   let pointerId = null;
-  let pointerOffset = 0;
+  let dragStartX = 0;
+  let dragDistance = 0;
+  let dragAvailable = 0;
   let entered = false;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -238,6 +240,8 @@ function initIntroGate() {
   function enterSite() {
     if (entered) return;
     entered = true;
+    pointerId = null;
+    slider.classList.remove("is-dragging");
     setPosition(maxTravel());
     slider.classList.add("is-complete");
     document.documentElement.classList.remove("scroll-locked");
@@ -259,45 +263,33 @@ function initIntroGate() {
   track.addEventListener("pointerdown", (event) => {
     if (entered || pointerId !== null || (event.pointerType === "mouse" && event.button !== 0)) return;
     const trackRect = track.getBoundingClientRect();
-    const thumbRect = thumb.getBoundingClientRect();
-    const startsOnThumb = event.clientX >= thumbRect.left - 8 && event.clientX <= thumbRect.right + 8;
-    if (!startsOnThumb && event.clientX > trackRect.left + thumb.offsetWidth + 20) return;
     event.preventDefault();
     pointerId = event.pointerId;
+    dragStartX = event.clientX;
+    dragDistance = 0;
+    dragAvailable = Math.max(1, trackRect.right - event.clientX - 12);
     slider.classList.add("is-dragging");
-    if (!startsOnThumb) setPosition(0);
-    pointerOffset = startsOnThumb ? event.clientX - thumbRect.left : thumb.offsetWidth / 2;
-    track.setPointerCapture(pointerId);
+    setPosition(0);
+    try { track.setPointerCapture(pointerId); } catch { /* Window listeners still track the drag. */ }
   });
 
-  track.addEventListener("pointermove", (event) => {
+  function updateDrag(event) {
     if (event.pointerId !== pointerId || entered) return;
     event.preventDefault();
-    const trackLeft = track.getBoundingClientRect().left;
-    setPosition(event.clientX - trackLeft - 6 - pointerOffset);
-  });
+    dragDistance = Math.max(0, event.clientX - dragStartX);
+    setPosition((dragDistance / dragAvailable) * maxTravel());
+    if (dragDistance >= 36 && maxTravel() && position / maxTravel() >= 0.7) enterSite();
+  }
 
   function finishSlide(event) {
     if (event.pointerId !== pointerId) return;
-    if (event.type === "pointerup") {
-      const trackLeft = track.getBoundingClientRect().left;
-      setPosition(event.clientX - trackLeft - 6 - pointerOffset);
-    }
-    const completed = event.type === "pointerup" && maxTravel() && position / maxTravel() >= 0.82;
-    pointerId = null;
-    slider.classList.remove("is-dragging");
-    if (completed) {
-      enterSite();
-    } else {
-      setPosition(0);
-    }
+    if (event.type === "pointerup") updateDrag(event);
+    if (!entered) resetDrag();
   }
 
-  track.addEventListener("pointerup", finishSlide);
-  track.addEventListener("pointercancel", finishSlide);
-  track.addEventListener("lostpointercapture", () => {
-    if (pointerId !== null) resetDrag();
-  });
+  window.addEventListener("pointermove", updateDrag, { passive: false });
+  window.addEventListener("pointerup", finishSlide);
+  window.addEventListener("pointercancel", finishSlide);
   window.addEventListener("blur", resetDrag);
   thumb.addEventListener("keydown", (event) => {
     if (entered) return;
