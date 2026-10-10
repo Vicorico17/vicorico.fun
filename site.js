@@ -211,12 +211,16 @@ function initIntroGate() {
     window.history.scrollRestoration = "manual";
   }
 
+  const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = "auto";
   window.scrollTo(0, 0);
+  document.documentElement.style.scrollBehavior = previousScrollBehavior;
 
   let position = 0;
   let pointerId = null;
   let pointerOffset = 0;
   let entered = false;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function maxTravel() {
     return Math.max(0, track.clientWidth - thumb.offsetWidth - 12);
@@ -240,21 +244,35 @@ function initIntroGate() {
     document.body.classList.remove("scroll-locked");
 
     window.requestAnimationFrame(() => {
-      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.requestAnimationFrame(() => {
+        targetSection.scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
+      });
     });
   }
 
-  thumb.addEventListener("pointerdown", (event) => {
+  function resetDrag() {
+    pointerId = null;
+    slider.classList.remove("is-dragging");
+    if (!entered) setPosition(0);
+  }
+
+  track.addEventListener("pointerdown", (event) => {
     if (entered || pointerId !== null || (event.pointerType === "mouse" && event.button !== 0)) return;
+    const trackRect = track.getBoundingClientRect();
+    const thumbRect = thumb.getBoundingClientRect();
+    const startsOnThumb = event.clientX >= thumbRect.left - 8 && event.clientX <= thumbRect.right + 8;
+    if (!startsOnThumb && event.clientX > trackRect.left + thumb.offsetWidth + 20) return;
     event.preventDefault();
     pointerId = event.pointerId;
-    pointerOffset = event.clientX - thumb.getBoundingClientRect().left;
-    thumb.setPointerCapture(pointerId);
     slider.classList.add("is-dragging");
+    if (!startsOnThumb) setPosition(0);
+    pointerOffset = startsOnThumb ? event.clientX - thumbRect.left : thumb.offsetWidth / 2;
+    track.setPointerCapture(pointerId);
   });
 
-  thumb.addEventListener("pointermove", (event) => {
+  track.addEventListener("pointermove", (event) => {
     if (event.pointerId !== pointerId || entered) return;
+    event.preventDefault();
     const trackLeft = track.getBoundingClientRect().left;
     setPosition(event.clientX - trackLeft - 6 - pointerOffset);
   });
@@ -265,17 +283,22 @@ function initIntroGate() {
       const trackLeft = track.getBoundingClientRect().left;
       setPosition(event.clientX - trackLeft - 6 - pointerOffset);
     }
+    const completed = event.type === "pointerup" && maxTravel() && position / maxTravel() >= 0.82;
     pointerId = null;
     slider.classList.remove("is-dragging");
-    if (event.type === "pointerup" && maxTravel() && position / maxTravel() >= 0.9) {
+    if (completed) {
       enterSite();
     } else {
       setPosition(0);
     }
   }
 
-  thumb.addEventListener("pointerup", finishSlide);
-  thumb.addEventListener("pointercancel", finishSlide);
+  track.addEventListener("pointerup", finishSlide);
+  track.addEventListener("pointercancel", finishSlide);
+  track.addEventListener("lostpointercapture", () => {
+    if (pointerId !== null) resetDrag();
+  });
+  window.addEventListener("blur", resetDrag);
   thumb.addEventListener("keydown", (event) => {
     if (entered) return;
     const step = maxTravel() / 10;
@@ -289,6 +312,7 @@ function initIntroGate() {
   });
 
   window.addEventListener("resize", () => {
+    if (pointerId !== null) resetDrag();
     if (entered) setPosition(maxTravel());
     else setPosition(0);
   });
