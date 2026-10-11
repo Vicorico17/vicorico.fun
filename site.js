@@ -950,9 +950,154 @@ function initTitleThemes() {
   trigger.addEventListener("click", nextTheme);
 }
 
+async function initTravelMap() {
+  const canvas = document.querySelector("[data-travel-map]");
+  if (!canvas) return;
+
+  const image = canvas.querySelector("img");
+  const tooltip = canvas.querySelector("[data-travel-tooltip]");
+  const picker = document.querySelector("[data-travel-picker]");
+  const search = document.querySelector("[data-travel-search]");
+  const options = document.querySelector("[data-travel-options]");
+  const saveButton = document.querySelector("[data-travel-save]");
+  const count = document.querySelector("[data-travel-count]");
+  const selectedList = document.querySelector("[data-travel-selected]");
+  const status = document.querySelector("[data-travel-status]");
+  if (!image || !tooltip || !picker || !search || !options || !saveButton || !count || !selectedList || !status) return;
+
+  const storageKey = "vicorico-visited-countries-v1";
+  const names = new Map();
+  let selected = new Set();
+  let saved = new Set();
+  let svg;
+
+  function sameSelection() {
+    return selected.size === saved.size && [...selected].every((id) => saved.has(id));
+  }
+
+  function render() {
+    svg.querySelectorAll("#countries path").forEach((path) => {
+      const isVisited = selected.has(path.id);
+      path.classList.toggle("is-visited", isVisited);
+      path.setAttribute("aria-pressed", String(isVisited));
+      path.setAttribute("aria-label", `${isVisited ? "Remove" : "Add"} ${names.get(path.id)} ${isVisited ? "from" : "to"} visited countries`);
+    });
+    const ordered = [...selected].sort((a, b) => names.get(a).localeCompare(names.get(b)));
+    count.textContent = `${ordered.length} ${ordered.length === 1 ? "country" : "countries"} selected`;
+    selectedList.replaceChildren(...ordered.map((id) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.dataset.countryId = id;
+      chip.textContent = `${names.get(id)} ×`;
+      chip.setAttribute("aria-label", `Remove ${names.get(id)} from visited countries`);
+      return chip;
+    }));
+    saveButton.disabled = sameSelection();
+  }
+
+  function toggle(id) {
+    if (!names.has(id)) return;
+    if (selected.has(id)) selected.delete(id);
+    else selected.add(id);
+    render();
+    status.textContent = "Changes are ready to save.";
+  }
+
+  try {
+    const response = await fetch(image.getAttribute("src"));
+    if (!response.ok) throw new Error("Map unavailable");
+    const documentNode = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
+    if (documentNode.querySelector("parsererror")) throw new Error("Map unavailable");
+    svg = document.importNode(documentNode.documentElement, true);
+    svg.setAttribute("role", "group");
+    svg.setAttribute("aria-label", "Select visited countries on the map");
+    svg.querySelectorAll("#countries path").forEach((path) => {
+      names.set(path.id, path.dataset.country);
+      path.setAttribute("role", "button");
+      path.setAttribute("tabindex", "0");
+    });
+    const sortedNames = [...names.values()].sort((a, b) => a.localeCompare(b));
+    options.replaceChildren(...sortedNames.map((name) => {
+      const option = document.createElement("option");
+      option.value = name;
+      return option;
+    }));
+    try {
+      const stored = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      if (Array.isArray(stored)) saved = new Set(stored.filter((id) => names.has(id)));
+    } catch { /* Local storage may be unavailable. */ }
+    selected = new Set(saved);
+    image.replaceWith(svg);
+    render();
+    status.textContent = "Choose countries on the map or use the search field.";
+  } catch {
+    status.textContent = "Map selection is unavailable right now.";
+    search.disabled = true;
+    picker.querySelector("button").disabled = true;
+    return;
+  }
+
+  canvas.addEventListener("click", (event) => {
+    const path = event.target.closest("#countries path");
+    if (path) toggle(path.id);
+  });
+  canvas.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const path = event.target.closest("#countries path");
+    if (!path) return;
+    event.preventDefault();
+    toggle(path.id);
+  });
+  canvas.addEventListener("pointermove", (event) => {
+    const path = event.target.closest("#countries path");
+    if (!path || event.pointerType === "touch") {
+      tooltip.hidden = true;
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    tooltip.textContent = names.get(path.id);
+    tooltip.style.left = `${clamp(event.clientX - rect.left, 55, rect.width - 55)}px`;
+    tooltip.style.top = `${event.clientY - rect.top}px`;
+    tooltip.hidden = false;
+  });
+  canvas.addEventListener("pointerleave", () => { tooltip.hidden = true; });
+
+  picker.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const query = search.value.trim().toLocaleLowerCase();
+    const match = [...names].find(([, name]) => name.toLocaleLowerCase() === query)
+      || [...names].find(([, name]) => name.toLocaleLowerCase().startsWith(query));
+    if (!query || !match) {
+      status.textContent = "Choose a country from the suggestions.";
+      return;
+    }
+    selected.add(match[0]);
+    search.value = "";
+    render();
+    status.textContent = `${match[1]} added. Save to keep your selection.`;
+  });
+
+  selectedList.addEventListener("click", (event) => {
+    const chip = event.target.closest("[data-country-id]");
+    if (chip) toggle(chip.dataset.countryId);
+  });
+
+  saveButton.addEventListener("click", () => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify([...selected]));
+      saved = new Set(selected);
+      render();
+      status.textContent = "Saved in this browser.";
+    } catch {
+      status.textContent = "This browser could not save the map.";
+    }
+  });
+}
+
 initIntroGate();
 initThemePicker();
 initTitleThemes();
+initTravelMap();
 initPortalArt();
 initFlowArt();
 initGithubCarousel();

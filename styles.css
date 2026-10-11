@@ -2198,13 +2198,22 @@ button {
 
 .about-intro {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 72px);
+  align-items: start;
+}
+
+.about-story {
+  display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: clamp(32px, 6vw, 72px);
   align-items: start;
 }
 
 .about-profile {
-  position: static;
+  position: sticky;
+  top: 104px;
+  align-self: start;
 }
 
 .about-profile h2 {
@@ -2291,13 +2300,167 @@ button {
   box-shadow: 0 0 12px #f7d58a;
 }
 
-.travel-map img {
-  display: block;
-  width: 100%;
-  height: auto;
+.travel-map-canvas {
+  position: relative;
+  overflow: hidden;
   border: 1px solid rgba(163, 202, 216, 0.25);
   border-radius: 18px;
   background: #0b141d;
+}
+
+.travel-map-canvas img,
+.travel-map-canvas svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.travel-map-canvas svg #countries path {
+  cursor: pointer;
+  transition: fill 160ms ease, stroke 160ms ease;
+}
+
+.travel-map-canvas svg #countries path:hover,
+.travel-map-canvas svg #countries path:focus-visible {
+  fill: #9bb7bd;
+  stroke: #e9f7e9;
+  stroke-opacity: 1;
+  outline: none;
+}
+
+.travel-map-canvas svg #countries path.is-visited,
+.travel-map-canvas svg #countries path.is-visited:hover,
+.travel-map-canvas svg #countries path.is-visited:focus-visible {
+  fill: #efc773;
+  stroke: #fff3ce;
+  stroke-opacity: 1;
+}
+
+.travel-map-tooltip {
+  position: absolute;
+  z-index: 2;
+  border: 1px solid rgba(247, 213, 138, 0.45);
+  border-radius: 9px;
+  background: #151b24;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 750;
+  padding: 6px 9px;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 12px));
+  white-space: nowrap;
+}
+
+.travel-map-editor {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.travel-map-picker {
+  display: grid;
+  gap: 6px;
+  min-width: min(100%, 410px);
+}
+
+.travel-map-picker label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.travel-map-picker > div,
+.travel-map-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.travel-map-picker input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 11px;
+  background: rgba(5, 10, 17, 0.62);
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 10px 12px;
+}
+
+.travel-map-picker input:focus-visible {
+  border-color: #f7d58a;
+  outline: 2px solid rgba(247, 213, 138, 0.35);
+}
+
+.travel-map-actions {
+  flex: none;
+}
+
+.travel-map-actions > span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.home-page .travel-map button {
+  flex: none;
+  min-height: 40px;
+  border: 1px solid rgba(247, 213, 138, 0.45);
+  border-radius: 10px;
+  background: rgba(247, 213, 138, 0.1);
+  box-shadow: none;
+  color: #fff1bd;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 8px 12px;
+  text-shadow: none;
+  transform: none;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.home-page .travel-map button::before,
+.home-page .travel-map button::after { display: none; }
+
+.home-page .travel-map button:hover,
+.home-page .travel-map button:focus-visible {
+  border-color: #f7d58a;
+  background: rgba(247, 213, 138, 0.2);
+  box-shadow: none;
+  transform: none;
+}
+
+.home-page .travel-map button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.travel-map-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.travel-map-selected:empty { display: none; }
+
+.home-page .travel-map-selected button {
+  min-height: 32px;
+  border-color: rgba(247, 213, 138, 0.32);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  padding: 5px 10px;
+}
+
+.travel-map-status {
+  min-height: 1.2em;
+  margin: 10px 2px 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.75rem;
 }
 
 .travel-map-source {
@@ -4831,7 +4994,7 @@ dd {
     grid-template-columns: 1fr;
   }
 
-  .about-intro {
+  .about-story {
     grid-template-columns: 1fr;
   }
 
@@ -5041,6 +5204,15 @@ dd {
   .travel-map-heading {
     align-items: start;
     flex-direction: column;
+  }
+
+  .travel-map-editor {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .travel-map-actions {
+    justify-content: space-between;
   }
 
   .bio-facts div {

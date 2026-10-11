@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=Cinzel:wght@700;900&amp;family=DM+Serif+Display:ital@0;1&amp;family=Orbitron:wght@700;900&amp;family=Righteous&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20261011">
+    <link rel="stylesheet" href="styles.css?v=20261011c">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
@@ -492,11 +492,12 @@
       </section>
 
       <section id="about" class="about-intro section" aria-labelledby="about-title">
-        <div class="about-profile">
-          <h2 id="about-title">Forward Deployed Engineer</h2>
-        </div>
+        <div class="about-story">
+          <div class="about-profile">
+            <h2 id="about-title">Forward Deployed Engineer</h2>
+          </div>
 
-        <div class="journey-panel">
+          <div class="journey-panel">
           <h3 class="journey-heading">The path so far</h3>
           <div class="journey-list">
             <article>
@@ -535,6 +536,7 @@
               <p>Right now I focus on AI x crypto tooling, agentic commerce, zero-human-company systems, local AI infrastructure, automated content generation, smart contract architecture, payment-enabled agents, and second brains.</p>
             </article>
           </div>
+          </div>
         </div>
         <div class="about-details">
           <dl class="bio-facts" aria-label="Basic information">
@@ -565,11 +567,30 @@
             <div>
               <span>Beyond the work</span>
               <h3 id="travel-map-title">Places I've been</h3>
-              <p>Starting in Bucharest. More stops to come.</p>
+              <p>Select the countries you've visited, then save your map on this device.</p>
             </div>
-            <span class="travel-map-key"><i aria-hidden="true"></i> Home base</span>
+            <span class="travel-map-key"><i aria-hidden="true"></i> Visited</span>
           </figcaption>
-          <img src="assets/travel-world-map.svg" alt="World map with Bucharest, Romania marked as home base" loading="lazy" width="1000" height="450">
+          <div class="travel-map-canvas" data-travel-map>
+            <img src="assets/travel-world-map.svg?v=20261011c" alt="World map for selecting visited countries" loading="lazy" width="1000" height="450">
+            <div class="travel-map-tooltip" data-travel-tooltip hidden></div>
+          </div>
+          <div class="travel-map-editor">
+            <form class="travel-map-picker" data-travel-picker>
+              <label for="travel-country-search">Find a country</label>
+              <div>
+                <input id="travel-country-search" data-travel-search list="travel-country-options" placeholder="Start typing a country" autocomplete="off">
+                <datalist id="travel-country-options" data-travel-options></datalist>
+                <button type="submit">Add</button>
+              </div>
+            </form>
+            <div class="travel-map-actions">
+              <span data-travel-count>0 countries selected</span>
+              <button type="button" data-travel-save disabled>Save on this device</button>
+            </div>
+          </div>
+          <div class="travel-map-selected" data-travel-selected aria-live="polite"></div>
+          <p class="travel-map-status" data-travel-status role="status"></p>
           <p class="travel-map-source">Map geometry from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a>.</p>
         </figure>
       </section>
@@ -582,10 +603,7 @@
         </div>
         <div class="proof-grid">
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>STUDIO CHAT</b>
-              <small>Logic Pro Creative Workspace</small>
-            </div>
+            <div class="proof-artifact proof-artifact-logo"><img src="assets/project-previews/studio-chat.webp" alt="Studio Chat app icon" loading="lazy" width="600" height="600"></div>
             <span>macOS App</span>
             <h3>Studio Chat</h3>
             <p>A macOS creative workspace that connects a local Codex chat flow to Logic Pro through LogicProMCP for music production, creative direction, and release planning.</p>
@@ -599,10 +617,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>TAPTIME</b>
-              <small>Tap In. Tap Out. Done.</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/taptime.jpg" alt="Screenshot of the TapTime live build" loading="lazy" width="900" height="390"></div>
             <span>Active / NFC Attendance</span>
             <h3>TapTime</h3>
             <p>A passive-NFC workplace attendance checkpoint that turns a simple tap into a secure, location-specific check-in or check-out flow.</p>
@@ -617,10 +632,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>bvb.lol</b>
-              <small>Romanian Market Terminal</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/bvb-lol.jpg" alt="Screenshot of the bvb.lol live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Market Intelligence</span>
             <h3>bvb.lol</h3>
             <p>An open-source, read-only terminal that makes the Bucharest Stock Exchange easier to follow through clean instrument pages, filings, events, and market context.</p>
@@ -635,10 +647,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Black Sea Compute</b>
-              <small>Offshore Cloud Concept</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/black-sea-compute.jpg" alt="Screenshot of the Black Sea Compute live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Cloud Infrastructure</span>
             <h3>Black Sea Compute</h3>
             <p>Investor-facing concept for a resilient offshore cloud made from a fleet of autonomous data-center vessels in the Black Sea.</p>
@@ -653,10 +662,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>AClienti</b>
-              <small>Customer Signal Desk</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/aclienti.jpg" alt="Screenshot of the AClienti interface" loading="lazy" width="900" height="390"></div>
             <span>Active / Market Intelligence</span>
             <h3>AClienti</h3>
             <p>Evidence-backed research desk that turns recent public customer signals into ranked opportunities and practical content direction.</p>
@@ -670,10 +676,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Neo Labs OS</b>
-              <small>Company Operating System</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/neo-labs.jpg" alt="Screenshot of the Neo Labs interface" loading="lazy" width="900" height="390"></div>
             <span>Active / Venture Studio</span>
             <h3>Neo Labs</h3>
             <p>A local company operating system for running Neo Labs as a venture studio today and an investment platform over time.</p>
@@ -687,10 +690,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>LEGIT AGENTIC</b>
-              <small>Agent Readiness Audit</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/legit-agentic.jpg" alt="Screenshot of the LEGIT AGENTIC live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Agentic Web</span>
             <h3>LEGIT AGENTIC</h3>
             <p>Transparent web audit toolkit that separates deterministic agent-readiness checks from observational AI visibility research.</p>
@@ -705,10 +705,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>FinPath AI</b>
-              <small>Financial Planning Prototype</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/finpath-ai.jpg" alt="Screenshot of the FinPath AI live build" loading="lazy" width="900" height="390"></div>
             <span>Active / AI Finance</span>
             <h3>FinPath AI</h3>
             <p>Research-informed financial-planning prototype that builds a structured profile and returns an assumption-aware action plan with visible guardrails.</p>
@@ -723,10 +720,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>CARLY</b>
-              <small>Voice-First Daily Companion</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/carly.jpg" alt="Screenshot of the CARLY interface" loading="lazy" width="900" height="390"></div>
             <span>Active / Accessible Care</span>
             <h3>CARLY</h3>
             <p>Voice-first browser prototype helping older adults maintain daily routines and stay connected to a consent-aware trusted care circle.</p>
@@ -740,10 +734,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Streamwin</b>
-              <small>Intelligent Live Studio</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/streamwin.jpg" alt="Screenshot of the Streamwin live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Streaming</span>
             <h3>Streamwin</h3>
             <p>Interactive live-studio prototype combining real-time AI video, multistream distribution, IRL controls, and vision-aware Twitch automations.</p>
@@ -758,10 +749,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>REALSOUL</b>
-              <small>Proof of Human Presence</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/realsoul.jpg" alt="Screenshot of the REALSOUL live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Privacy Infrastructure</span>
             <h3>REALSOUL</h3>
             <p>Privacy-respecting protocol demo for issuing short-lived proof that a live human approved a specific call, message, or transaction.</p>
@@ -776,10 +764,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Magic Dev</b>
-              <small>Developer-First VPS</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/magic-dev.jpg" alt="Screenshot of the Magic Dev live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Developer Tools</span>
             <h3>Magic Dev</h3>
             <p>Interactive product concept for a persistent developer VPS that combines a real server with a browser workspace and automatic previews.</p>
@@ -794,10 +779,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>BestRestShop</b>
-              <small>Commerce Build</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/bestrestshop.jpg" alt="Screenshot of the BestRestShop live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Commerce</span>
             <h3>BestRestShop</h3>
             <p>New commerce project currently taking shape in the active product portfolio.</p>
@@ -812,10 +794,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Recomed</b>
-              <small>Personalized Discovery</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/recomed.jpg" alt="Screenshot of the Recomed live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Recommendations</span>
             <h3>Recomed</h3>
             <p>A recommendation product exploring structured discovery and better decisions through personalized context.</p>
@@ -830,10 +809,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>EZJobs</b>
-              <small>Job Discovery &amp; Quick Apply</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/ezjobs.jpg" alt="Screenshot of the EZJobs interface" loading="lazy" width="900" height="390"></div>
             <span>New / Job Discovery</span>
             <h3>EZJobs</h3>
             <p>A responsive job-discovery and quick-apply prototype designed to make finding, evaluating, and applying for roles simpler.</p>
@@ -864,10 +840,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Accman</b>
-              <small>Account Management</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/accman.jpg" alt="Screenshot of the Accman live build" loading="lazy" width="900" height="390"></div>
             <span>Active / New Build</span>
             <h3>Accman</h3>
             <p>New account-management project currently taking shape in the active product portfolio.</p>
@@ -882,10 +855,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>eFans</b>
-              <small>New Build</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/efans.jpg" alt="Screenshot of the eFans live build" loading="lazy" width="900" height="390"></div>
             <span>Active / New Build</span>
             <h3>eFans</h3>
             <p>New project currently taking shape as part of the active product and automation portfolio.</p>
@@ -900,10 +870,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>HomeSports</b>
-              <small>LoL Esports Matchboard</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/homesports.jpg" alt="Screenshot of the HomeSports live build" loading="lazy" width="900" height="390"></div>
             <span>Active / Esports</span>
             <h3>HomeSports</h3>
             <p>Importance-ranked League of Legends esports matchboard, combining live schedules with transparent ratings for the matches that matter most.</p>
@@ -935,17 +902,14 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>Prody</b>
-              <small>JavaScript Build</small>
-            </div>
-            <span>Active / JavaScript Build</span>
-            <h3>Prody</h3>
-            <p>New JavaScript project currently in active development, adding another build to the 100+ projects worked on across product, automation, and creative technology.</p>
+            <div class="proof-artifact"><img src="assets/project-previews/studiopilot.jpg" alt="Screenshot of the StudioPilot desktop interface" loading="lazy" width="900" height="390"></div>
+            <span>Active / macOS App</span>
+            <h3>StudioPilot</h3>
+            <p>A desktop chat and control surface for Logic Pro that connects natural-language requests to the local LogicProMCP server.</p>
             <ul>
-              <li>Active development</li>
-              <li>JavaScript project</li>
-              <li>Open-source repository</li>
+              <li>Live Logic Pro connection status</li>
+              <li>Transport controls and MCP tools</li>
+              <li>Confirmation for higher-risk actions</li>
             </ul>
             <div class="proof-actions">
               <a href="https://github.com/Vicorico17/prody">GitHub</a>
@@ -1070,10 +1034,7 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-wordmark" aria-hidden="true">
-              <b>masscall</b>
-              <small>AI Command Center</small>
-            </div>
+            <div class="proof-artifact"><img src="assets/project-previews/masscall.jpg" alt="Screenshot of the Masscall live build" loading="lazy" width="900" height="390"></div>
             <span>Active / AI Operations</span>
             <h3>Masscall</h3>
             <p>AI command center for turning natural-language requests into coordinated work across calendars, email, Slack, Notion, and connected tools.</p>
@@ -1765,6 +1726,6 @@
       </section>
 
     </main>
-    <script src="site.js?v=20261010b"></script>
+    <script src="site.js?v=20261011c"></script>
   </body>
 </html>
