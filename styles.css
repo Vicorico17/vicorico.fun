@@ -2204,8 +2204,7 @@ button {
 }
 
 .about-profile {
-  position: sticky;
-  top: 104px;
+  position: static;
 }
 
 .about-profile h2 {
@@ -2226,6 +2225,92 @@ button {
   align-items: start;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   padding-top: clamp(24px, 4vw, 40px);
+}
+
+.travel-map {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid rgba(247, 213, 138, 0.2);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(247, 213, 138, 0.075), rgba(23, 29, 42, 0.82) 42%, rgba(11, 14, 23, 0.96));
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  padding: clamp(16px, 3vw, 30px);
+}
+
+.travel-map-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.travel-map-heading div > span {
+  color: #f7d58a;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.travel-map-heading h3 {
+  margin: 4px 0 3px;
+  color: #fff;
+  font-size: clamp(1.7rem, 3.4vw, 2.65rem);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.travel-map-heading p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.9rem;
+}
+
+.travel-map-key {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(247, 213, 138, 0.25);
+  border-radius: 999px;
+  background: rgba(247, 213, 138, 0.08);
+  color: #fff1bd;
+  font-size: 0.76rem;
+  font-weight: 750;
+  padding: 7px 10px;
+}
+
+.travel-map-key i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #f7d58a;
+  box-shadow: 0 0 12px #f7d58a;
+}
+
+.travel-map img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(163, 202, 216, 0.25);
+  border-radius: 18px;
+  background: #0b141d;
+}
+
+.travel-map-source {
+  margin: 11px 2px 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.travel-map-source a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .bio-facts {
@@ -4951,6 +5036,11 @@ dd {
 
   .about-profile h2 {
     font-size: 3.2rem;
+  }
+
+  .travel-map-heading {
+    align-items: start;
+    flex-direction: column;
   }
 
   .bio-facts div {
