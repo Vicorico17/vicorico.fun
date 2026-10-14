@@ -84,7 +84,8 @@
       dictionary = dictionaries.get(language);
       document.documentElement.lang = language;
       choices.forEach((button) => button.setAttribute('aria-pressed', String(button === choice)));
-      label.textContent = choice.textContent;
+      label.textContent = choice.querySelector('[data-language-name]').textContent;
+      menu.querySelector('[data-language-flag]').textContent = choice.dataset.flag;
       apply();
       status.textContent = '';
       menu.open = false;
