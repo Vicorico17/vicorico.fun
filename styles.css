@@ -1472,12 +1472,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
-  background: rgba(6, 5, 10, 0.54);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+  padding: 0;
 }
 
 .portal-nav .theme-picker {
@@ -5522,7 +5517,6 @@ dd {
     linear-gradient(180deg, rgba(243, 238, 228, 0.08), rgba(243, 238, 228, 0.58));
 }
 
-.home-page[data-theme="paper"] .portal-nav,
 .home-page[data-theme="paper"] .site-header {
   border-color: rgba(63, 53, 41, 0.14);
   background: rgba(250, 247, 239, 0.84);
@@ -5619,7 +5613,6 @@ dd {
     linear-gradient(180deg, rgba(7, 18, 15, 0.06), rgba(7, 18, 15, 0.76));
 }
 
-.home-page[data-theme="grove"] .portal-nav,
 .home-page[data-theme="grove"] .site-header {
   border-color: rgba(125, 207, 174, 0.18);
   background: rgba(7, 18, 15, 0.78);
@@ -5706,6 +5699,54 @@ dd {
 .portal-nav .quest-play:hover {
   border-color: #a4a0ff;
   background: rgba(119, 114, 232, 0.25);
+}
+
+.portal-nav .pdf-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid rgba(164, 160, 255, 0.35);
+  background: rgba(119, 114, 232, 0.12);
+  white-space: nowrap;
+}
+
+.pdf-cv svg {
+  flex-shrink: 0;
+}
+
+.portal-nav .pdf-cv:hover {
+  border-color: #a4a0ff;
+  background: rgba(119, 114, 232, 0.25);
+}
+
+.portal-nav .pdf-cv:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.portal-nav > a,
+.portal-nav .theme-picker,
+.portal-nav .language-menu summary {
+  backdrop-filter: blur(18px);
+}
+
+.home-page[data-theme="paper"] .portal-nav .pdf-cv {
+  border-color: rgba(63, 53, 41, 0.2);
+  background: rgba(250, 247, 239, 0.84);
+}
+
+.home-page[data-theme="paper"] .portal-nav .pdf-cv:hover {
+  background: rgba(63, 53, 41, 0.1);
+}
+
+.home-page[data-theme="grove"] .portal-nav .pdf-cv {
+  border-color: rgba(125, 207, 174, 0.35);
+  background: rgba(7, 18, 15, 0.78);
+}
+
+.home-page[data-theme="grove"] .portal-nav .pdf-cv:hover {
+  background: rgba(35, 146, 112, 0.25);
 }
 
 .github-live-card h4 a {
