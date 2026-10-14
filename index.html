@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=Cinzel:wght@700;900&amp;family=DM+Serif+Display:ital@0;1&amp;family=Orbitron:wght@700;900&amp;family=Righteous&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20261014f">
+    <link rel="stylesheet" href="styles.css?v=20261014g">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
@@ -613,7 +613,7 @@
             <div>
               <span>Beyond the work</span>
               <h3 id="travel-map-title">Places I've been</h3>
-              <p>Select the countries you've visited, then save your map on this device.</p>
+              <p>The places I’ve visited. This map is shared with everyone.</p>
             </div>
             <span class="travel-map-key"><i aria-hidden="true"></i> Visited</span>
           </figcaption>
@@ -628,7 +628,23 @@
             <img src="assets/travel-world-map.svg?v=20261011c" alt="World map for selecting visited countries" loading="lazy" width="1000" height="450">
             <div class="travel-map-tooltip" data-travel-tooltip hidden></div>
           </div>
-          <div class="travel-map-editor">
+          <div class="travel-map-owner-controls">
+            <span data-travel-count>Loading countries…</span>
+            <button type="button" data-travel-select disabled>Select</button>
+          </div>
+          <dialog class="travel-map-auth" data-travel-auth aria-labelledby="travel-auth-title">
+            <form data-travel-login>
+              <h3 id="travel-auth-title">Edit visited countries</h3>
+              <label for="travel-password">Password</label>
+              <input id="travel-password" data-travel-password type="password" autocomplete="current-password" required maxlength="256">
+              <p data-travel-auth-status role="status"></p>
+              <div class="travel-map-actions">
+                <button type="submit">Unlock</button>
+                <button type="button" data-travel-auth-cancel>Cancel</button>
+              </div>
+            </form>
+          </dialog>
+          <div class="travel-map-editor" data-travel-editor hidden>
             <form class="travel-map-picker" data-travel-picker>
               <label for="travel-country-search">Find a country</label>
               <div>
@@ -638,8 +654,8 @@
               </div>
             </form>
             <div class="travel-map-actions">
-              <span data-travel-count>0 countries selected</span>
-              <button type="button" data-travel-save disabled>Save on this device</button>
+              <button type="button" data-travel-save disabled>Save for everyone</button>
+              <button type="button" data-travel-cancel>Cancel</button>
             </div>
           </div>
           <div class="travel-map-selected" data-travel-selected aria-live="polite"></div>
@@ -1779,7 +1795,7 @@
       </section>
 
     </main>
-    <script src="language.js?v=20261014b"></script>
-    <script src="site.js?v=20261014f"></script>
+    <script src="language.js?v=20261014c"></script>
+    <script src="site.js?v=20261014g"></script>
   </body>
 </html>

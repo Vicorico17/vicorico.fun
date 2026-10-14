@@ -38,3 +38,26 @@ source strings. When changing copy, update the matching keys in every dictionary
 Missing translations fall back to English. Brand names and live GitHub commit
 messages remain in their original language. Language choices reset to English on
 a fresh page load.
+
+## Shared travel map
+
+`api/travel-map.js` stores the public country selection under the isolated Redis
+key `vicorico:travel:v1:map`. The existing Redis database's other keys are untouched.
+The Vercel project needs these private environment variables:
+
+- `TRAVEL_REDIS_URL` and `TRAVEL_REDIS_TOKEN`
+- `TRAVEL_PASSWORD_HASH`: a random salt and Node-compatible scrypt hash, separated by `:`
+- `TRAVEL_SESSION_SECRET`: a random signing secret
+
+No password or connection credential belongs in Git. Authentication uses a
+30-minute signed HttpOnly cookie, same-origin requests, and rate-limited password
+checks. Saves validate country IDs and use an atomic revision check to avoid
+silently overwriting another editing session. Saving or cancelling locks the UI.
+Public maps refresh on focus and every minute while the page is visible.
+
+The first authenticated save imports the old browser-local country selection if
+no shared map exists. It must be done from the browser containing that selection.
+A shared map, including an intentionally empty one, takes precedence afterward.
+
+Run API checks with `node --test tests/travel-map.test.cjs`. Static HTTP previews
+can show the page, but the shared map API requires Vercel and its environment.

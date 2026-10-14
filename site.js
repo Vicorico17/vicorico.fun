@@ -1127,148 +1127,223 @@ function initTravelMapZoom(canvas, svg) {
 }
 
 async function initTravelMap() {
-  const canvas = document.querySelector("[data-travel-map]");
+  const canvas = document.querySelector('[data-travel-map]');
   if (!canvas) return;
-
-  const image = canvas.querySelector("img");
-  const tooltip = canvas.querySelector("[data-travel-tooltip]");
-  const picker = document.querySelector("[data-travel-picker]");
-  const search = document.querySelector("[data-travel-search]");
-  const options = document.querySelector("[data-travel-options]");
-  const saveButton = document.querySelector("[data-travel-save]");
-  const count = document.querySelector("[data-travel-count]");
-  const selectedList = document.querySelector("[data-travel-selected]");
-  const status = document.querySelector("[data-travel-status]");
-  if (!image || !tooltip || !picker || !search || !options || !saveButton || !count || !selectedList || !status) return;
-
-  const storageKey = "vicorico-visited-countries-v1";
+  const image = canvas.querySelector('img');
+  const tooltip = canvas.querySelector('[data-travel-tooltip]');
+  const picker = document.querySelector('[data-travel-picker]');
+  const search = document.querySelector('[data-travel-search]');
+  const options = document.querySelector('[data-travel-options]');
+  const saveButton = document.querySelector('[data-travel-save]');
+  const count = document.querySelector('[data-travel-count]');
+  const selectedList = document.querySelector('[data-travel-selected]');
+  const status = document.querySelector('[data-travel-status]');
+  const selectButton = document.querySelector('[data-travel-select]');
+  const editor = document.querySelector('[data-travel-editor]');
+  const dialog = document.querySelector('[data-travel-auth]');
+  const login = document.querySelector('[data-travel-login]');
+  const password = document.querySelector('[data-travel-password]');
+  const authStatus = document.querySelector('[data-travel-auth-status]');
+  const cancelButton = document.querySelector('[data-travel-cancel]');
+  const storageKey = 'vicorico-visited-countries-v1';
   const names = new Map();
   let selected = new Set();
   let saved = new Set();
+  let localSelection = [];
+  let revision = 0;
+  let published = false;
+  let editing = false;
+  let busy = false;
+  let refreshing = false;
   let svg;
 
-  function sameSelection() {
-    return selected.size === saved.size && [...selected].every((id) => saved.has(id));
+  async function request(method = 'GET', body) {
+    const response = await fetch('/api/travel-map', {
+      method, credentials: 'same-origin', cache: 'no-store',
+      ...(body ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {}),
+    });
+    let data;
+    try { data = await response.json(); } catch { throw new Error('Shared map is unavailable. Please try again.'); }
+    if (!response.ok) {
+      const error = new Error(data.error || 'Shared map is unavailable. Please try again.');
+      error.status = response.status;
+      throw error;
+    }
+    return data;
   }
-
   function render() {
-    svg.querySelectorAll("#countries path").forEach((path) => {
-      const isVisited = selected.has(path.id);
-      path.classList.toggle("is-visited", isVisited);
-      path.setAttribute("aria-pressed", String(isVisited));
-      path.setAttribute("aria-label", `${isVisited ? "Remove" : "Add"} ${names.get(path.id)} ${isVisited ? "from" : "to"} visited countries`);
+    svg.dataset.editing = String(editing && !busy);
+    svg.querySelectorAll('#countries path').forEach((path) => {
+      const visited = selected.has(path.id);
+      path.classList.toggle('is-visited', visited);
+      path.setAttribute('role', editing ? 'button' : 'img');
+      path.setAttribute('tabindex', editing && !busy ? '0' : '-1');
+      if (editing) path.setAttribute('aria-pressed', String(visited));
+      else path.removeAttribute('aria-pressed');
+      path.setAttribute('aria-label', editing ? `${visited ? 'Remove' : 'Add'} ${names.get(path.id)}` : `${names.get(path.id)}${visited ? ' · Visited' : ''}`);
     });
     const ordered = [...selected].sort((a, b) => names.get(a).localeCompare(names.get(b)));
-    count.textContent = `${ordered.length} ${ordered.length === 1 ? "country" : "countries"} selected`;
+    count.textContent = `${ordered.length} ${ordered.length === 1 ? 'country selected' : 'countries selected'}`;
     selectedList.replaceChildren(...ordered.map((id) => {
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.dataset.countryId = id;
-      chip.textContent = `${names.get(id)} ×`;
-      chip.setAttribute("aria-label", `Remove ${names.get(id)} from visited countries`);
+      const chip = document.createElement(editing ? 'button' : 'span');
+      chip.textContent = `${names.get(id)}${editing ? ' ×' : ''}`;
+      if (editing) {
+        chip.type = 'button';
+        chip.dataset.countryId = id;
+        chip.disabled = busy;
+        chip.setAttribute('aria-label', `Remove ${names.get(id)}`);
+      }
       return chip;
     }));
-    saveButton.disabled = sameSelection();
+    editor.hidden = !editing;
+    selectButton.hidden = editing;
+    search.disabled = busy;
+    picker.querySelector('button').disabled = busy;
+    cancelButton.disabled = busy;
+    const unchanged = selected.size === saved.size && [...selected].every((id) => saved.has(id));
+    saveButton.disabled = busy || !editing || (published && unchanged);
   }
-
-  function toggle(id) {
-    if (!names.has(id)) return;
-    if (selected.has(id)) selected.delete(id);
-    else selected.add(id);
+  function acceptMap(data) {
+    published = Array.isArray(data.countries);
+    revision = data.revision;
+    saved = new Set((data.countries || []).filter((id) => names.has(id)));
+    selected = new Set(published ? saved : localSelection);
     render();
-    status.textContent = "Changes are ready to save.";
   }
-
+  async function refresh() {
+    if (editing || refreshing || dialog.open || document.hidden) return;
+    refreshing = true;
+    try {
+      const data = await request();
+      if (editing || dialog.open) return;
+      acceptMap(data);
+      status.textContent = !published && localSelection.length
+        ? 'Your browser’s saved countries are ready. Select, unlock, then save for everyone to publish them.'
+        : !published ? 'No countries have been published yet.' : '';
+    } catch (error) { if (!editing) status.textContent = error.message; }
+    finally { refreshing = false; }
+  }
+  function toggle(id) {
+    if (!editing || busy || !names.has(id)) return;
+    if (selected.has(id)) selected.delete(id); else selected.add(id);
+    render();
+    status.textContent = 'Changes are ready to save for everyone.';
+  }
+  function showLogin() {
+    authStatus.textContent = '';
+    password.value = '';
+    dialog.showModal();
+    password.focus();
+  }
   try {
-    const response = await fetch(image.getAttribute("src"));
-    if (!response.ok) throw new Error("Map unavailable");
-    const documentNode = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
-    if (documentNode.querySelector("parsererror")) throw new Error("Map unavailable");
-    svg = document.importNode(documentNode.documentElement, true);
-    svg.setAttribute("role", "group");
-    svg.setAttribute("aria-label", "Select visited countries on the map");
-    svg.querySelectorAll("#countries path").forEach((path) => {
-      names.set(path.id, path.dataset.country);
-      path.setAttribute("role", "button");
-      path.setAttribute("tabindex", "0");
-    });
-    const sortedNames = [...names.values()].sort((a, b) => a.localeCompare(b));
-    options.replaceChildren(...sortedNames.map((name) => {
-      const option = document.createElement("option");
-      option.value = name;
-      return option;
+    const response = await fetch(image.getAttribute('src'));
+    if (!response.ok) throw new Error('Map unavailable');
+    const doc = new DOMParser().parseFromString(await response.text(), 'image/svg+xml');
+    if (doc.querySelector('parsererror')) throw new Error('Map unavailable');
+    svg = document.importNode(doc.documentElement, true);
+    svg.setAttribute('role', 'group');
+    svg.setAttribute('aria-label', 'Visited countries');
+    svg.querySelectorAll('#countries path').forEach((path) => names.set(path.id, path.dataset.country));
+    options.replaceChildren(...[...names.values()].sort().map((name) => {
+      const option = document.createElement('option'); option.value = name; return option;
     }));
     try {
-      const stored = JSON.parse(localStorage.getItem(storageKey) || "[]");
-      if (Array.isArray(stored)) saved = new Set(stored.filter((id) => names.has(id)));
-    } catch { /* Local storage may be unavailable. */ }
-    selected = new Set(saved);
+      const stored = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      if (Array.isArray(stored)) localSelection = stored.filter((id) => names.has(id));
+    } catch { /* Keep public map usable when browser storage is unavailable. */ }
     image.replaceWith(svg);
     initTravelMapZoom(canvas, svg);
+    selected = new Set(localSelection);
     render();
-    status.textContent = "Choose countries on the map or use the search field.";
+    selectButton.disabled = false;
+    await refresh();
   } catch {
-    status.textContent = "Map selection is unavailable right now.";
-    search.disabled = true;
-    picker.querySelector("button").disabled = true;
+    status.textContent = 'Map selection is unavailable right now.';
     return;
   }
-
-  canvas.addEventListener("click", (event) => {
-    const path = event.target.closest("#countries path");
+  selectButton.addEventListener('click', showLogin);
+  document.querySelector('[data-travel-auth-cancel]').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('close', () => { password.value = ''; });
+  login.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const submit = login.querySelector('[type="submit"]');
+    if (submit.disabled) return;
+    submit.disabled = true;
+    const value = password.value;
+    password.value = '';
+    authStatus.textContent = 'Checking password…';
+    try {
+      const data = await request('POST', { password: value });
+      if (!dialog.open) { await request('DELETE'); return; }
+      if (editing && data.revision !== revision) throw new Error('The map changed in another session. Cancel and select again to load the latest version.');
+      if (!editing) acceptMap(data);
+      editing = true;
+      dialog.close();
+      render();
+      status.textContent = !published && localSelection.length
+        ? 'Your saved countries are loaded. Save for everyone to publish them.'
+        : 'Select countries, then save for everyone.';
+    } catch (error) { authStatus.textContent = error.message; }
+    finally { submit.disabled = false; }
+  });
+  canvas.addEventListener('click', (event) => {
+    const path = event.target.closest('#countries path');
     if (path) toggle(path.id);
   });
-  canvas.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    const path = event.target.closest("#countries path");
-    if (!path) return;
-    event.preventDefault();
-    toggle(path.id);
+  canvas.addEventListener('keydown', (event) => {
+    if (!editing || !['Enter', ' '].includes(event.key)) return;
+    const path = event.target.closest('#countries path');
+    if (path) { event.preventDefault(); toggle(path.id); }
   });
-  canvas.addEventListener("pointermove", (event) => {
-    const path = event.target.closest("#countries path");
-    if (!path || event.pointerType === "touch") {
-      tooltip.hidden = true;
-      return;
-    }
+  canvas.addEventListener('pointermove', (event) => {
+    const path = event.target.closest('#countries path');
+    if (!path || event.pointerType === 'touch') { tooltip.hidden = true; return; }
     const rect = canvas.getBoundingClientRect();
     tooltip.textContent = names.get(path.id);
     tooltip.style.left = `${clamp(event.clientX - rect.left, 55, rect.width - 55)}px`;
     tooltip.style.top = `${event.clientY - rect.top}px`;
     tooltip.hidden = false;
   });
-  canvas.addEventListener("pointerleave", () => { tooltip.hidden = true; });
-
-  picker.addEventListener("submit", (event) => {
+  canvas.addEventListener('pointerleave', () => { tooltip.hidden = true; });
+  picker.addEventListener('submit', (event) => {
     event.preventDefault();
+    if (!editing || busy) return;
     const query = search.value.trim().toLocaleLowerCase();
     const match = [...names].find(([, name]) => name.toLocaleLowerCase() === query)
       || [...names].find(([, name]) => name.toLocaleLowerCase().startsWith(query));
-    if (!query || !match) {
-      status.textContent = "Choose a country from the suggestions.";
-      return;
-    }
-    selected.add(match[0]);
-    search.value = "";
-    render();
-    status.textContent = `${match[1]} added. Save to keep your selection.`;
+    if (!query || !match) { status.textContent = 'Choose a country from the suggestions.'; return; }
+    selected.add(match[0]); search.value = ''; render();
+    status.textContent = 'Changes are ready to save for everyone.';
   });
-
-  selectedList.addEventListener("click", (event) => {
-    const chip = event.target.closest("[data-country-id]");
+  selectedList.addEventListener('click', (event) => {
+    const chip = event.target.closest('[data-country-id]');
     if (chip) toggle(chip.dataset.countryId);
   });
-
-  saveButton.addEventListener("click", () => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify([...selected]));
-      saved = new Set(selected);
-      render();
-      status.textContent = "Saved in this browser.";
-    } catch {
-      status.textContent = "This browser could not save the map.";
-    }
+  cancelButton.addEventListener('click', async () => {
+    editing = false;
+    selected = new Set(published ? saved : localSelection);
+    render();
+    try { await request('DELETE'); } catch { /* Server sessions expire automatically. */ }
+    await refresh();
   });
+  saveButton.addEventListener('click', async () => {
+    if (!editing || busy) return;
+    busy = true; render(); status.textContent = 'Saving for everyone…';
+    try {
+      const data = await request('PUT', { countries: [...selected], revision });
+      localSelection = data.countries;
+      try { localStorage.setItem(storageKey, JSON.stringify(localSelection)); } catch { /* Server save is authoritative. */ }
+      editing = false;
+      acceptMap(data);
+      status.textContent = 'Saved for everyone.';
+    } catch (error) {
+      status.textContent = error.message;
+      if (error.status === 401) showLogin();
+    } finally { busy = false; render(); }
+  });
+  window.addEventListener('focus', refresh);
+  document.addEventListener('visibilitychange', refresh);
+  window.setInterval(refresh, 60000);
 }
 
 initIntroGate();
