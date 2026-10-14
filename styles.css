@@ -5938,3 +5938,20 @@ dd {
   background: #faf7ef;
   color: #29251f;
 }
+
+.language-flag {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 24px;
+  height: 16px;
+  border-radius: 2px;
+  object-fit: cover;
+  vertical-align: middle;
+  box-shadow: 0 0 0 1px rgba(150, 150, 150, 0.35);
+}
+
+.home-page .language-options button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
