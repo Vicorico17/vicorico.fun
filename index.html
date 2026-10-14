@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=Cinzel:wght@700;900&amp;family=DM+Serif+Display:ital@0;1&amp;family=Orbitron:wght@700;900&amp;family=Righteous&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20261014d">
+    <link rel="stylesheet" href="styles.css?v=20261014e">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
@@ -77,6 +77,18 @@
       </filter>
     </svg>
     <nav class="portal-nav" aria-label="Site shortcuts">
+      <details class="language-menu notranslate" translate="no" data-language-menu>
+        <summary aria-label="Select website language"><span aria-hidden="true">◎</span> English <span aria-hidden="true">⌄</span></summary>
+        <div class="language-options" role="group" aria-label="Website language">
+          <a href="https://vicorico.fun/" lang="en" hreflang="en" aria-current="true">English</a>
+          <a href="https://translate.google.com/translate?sl=en&amp;tl=ro&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="ro" hreflang="ro">Română</a>
+          <a href="https://translate.google.com/translate?sl=en&amp;tl=es&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="es" hreflang="es">Español</a>
+          <a href="https://translate.google.com/translate?sl=en&amp;tl=fr&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="fr" hreflang="fr">Français</a>
+          <a href="https://translate.google.com/translate?sl=en&amp;tl=de&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="de" hreflang="de">Deutsch</a>
+          <a href="https://translate.google.com/translate?sl=en&amp;tl=zh-CN&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="zh-CN" hreflang="zh-CN">简体中文</a>
+          <p>Automatic translation via Google Translate</p>
+        </div>
+      </details>
       <div class="theme-menu" data-theme-menu>
         <button class="theme-picker" data-theme-picker type="button" aria-expanded="false" aria-controls="theme-options">Themes <span aria-hidden="true">⌄</span></button>
         <div class="theme-options" id="theme-options" role="group" aria-label="Choose website theme" hidden>
@@ -164,7 +176,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.04c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.57 2.53 2.97 1.77.1-.72.39-1.2.7-1.48-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.1-1.43 3.04-1.14 3.04-1.14.61 1.54.23 2.68.11 2.96.72.78 1.15 1.77 1.15 2.99 0 4.29-2.61 5.23-5.1 5.51.4.34.75 1.02.75 2.06V22c0 .29.2.63.76.52A11.1 11.1 0 0 0 12 .9Z" />
               </svg>
-              <span>GitHub profile</span>
+              <span>GitHub</span>
             </a>
           </div>
           <div class="github-carousel" data-github-carousel role="region" aria-label="Latest builds. Projects advance automatically; drag, swipe, or use arrow keys to browse." aria-roledescription="carousel" tabindex="0">
@@ -572,8 +584,8 @@
             </article>
             <article>
               <span>Now</span>
-              <h3>University tech teacher, angel investor, and venture tech founder</h3>
-              <p>Teaching technology at university, investing as an angel, and founding technology ventures.</p>
+              <h3>University tech teacher, AGI-proof angel investor, and venture tech founder</h3>
+              <p>Teaching technology at university, investing as an AGI-proof angel investor, and founding technology ventures.</p>
             </article>
           </div>
           </div>
@@ -611,6 +623,13 @@
             </div>
             <span class="travel-map-key"><i aria-hidden="true"></i> Visited</span>
           </figcaption>
+          <div class="travel-map-zoom" role="group" aria-label="Map zoom controls">
+            <button type="button" data-map-zoom="out" aria-label="Zoom out on map" disabled>−</button>
+            <output data-map-zoom-level aria-live="polite">100%</output>
+            <button type="button" data-map-zoom="in" aria-label="Zoom in on map" disabled>+</button>
+            <button type="button" data-map-zoom="reset" disabled>Reset</button>
+            <span>Zoom in, then drag to move around.</span>
+          </div>
           <div class="travel-map-canvas" data-travel-map>
             <img src="assets/travel-world-map.svg?v=20261011c" alt="World map for selecting visited countries" loading="lazy" width="1000" height="450">
             <div class="travel-map-tooltip" data-travel-tooltip hidden></div>
@@ -1766,6 +1785,6 @@
       </section>
 
     </main>
-    <script src="site.js?v=20261014d"></script>
+    <script src="site.js?v=20261014e"></script>
   </body>
 </html>

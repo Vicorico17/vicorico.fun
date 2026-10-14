@@ -954,6 +954,23 @@ function initProjectCommitCounts() {
   else runPending();
 }
 
+function initLanguageMenu() {
+  const menu = document.querySelector("[data-language-menu]");
+  if (!menu) return;
+  document.addEventListener("pointerdown", (event) => {
+    if (!menu.contains(event.target)) menu.open = false;
+  });
+  menu.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      menu.open = false;
+      menu.querySelector("summary").focus();
+    }
+  });
+  menu.addEventListener("focusout", (event) => {
+    if (!menu.contains(event.relatedTarget)) menu.open = false;
+  });
+}
+
 function initThemePicker() {
   const menu = document.querySelector("[data-theme-menu]");
   if (!menu) return;
@@ -1041,6 +1058,74 @@ function initTitleThemes() {
   trigger.addEventListener("click", nextTheme);
 }
 
+function initTravelMapZoom(canvas, svg) {
+  const base = { x: svg.viewBox.baseVal.x, y: svg.viewBox.baseVal.y, width: svg.viewBox.baseVal.width, height: svg.viewBox.baseVal.height };
+  let zoom = 1;
+  let x = base.x;
+  let y = base.y;
+  let drag = null;
+  let suppressClick = false;
+  const controls = [...document.querySelectorAll("[data-map-zoom]")];
+  const level = document.querySelector("[data-map-zoom-level]");
+  function render() {
+    const width = base.width / zoom;
+    const height = base.height / zoom;
+    x = clamp(x, base.x, base.x + base.width - width);
+    y = clamp(y, base.y, base.y + base.height - height);
+    svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
+    svg.classList.toggle("is-zoomed", zoom > 1);
+    level.textContent = `${Math.round(zoom * 100)}%`;
+    controls.forEach((button) => {
+      button.disabled = button.dataset.mapZoom === "in" ? zoom >= 8 : zoom <= 1;
+    });
+  }
+  function setZoom(next) {
+    const centerX = x + base.width / zoom / 2;
+    const centerY = y + base.height / zoom / 2;
+    zoom = clamp(next, 1, 8);
+    x = centerX - base.width / zoom / 2;
+    y = centerY - base.height / zoom / 2;
+    render();
+  }
+  controls.forEach((button) => button.addEventListener("click", () => {
+    const action = button.dataset.mapZoom;
+    setZoom(action === "reset" ? 1 : zoom * (action === "in" ? 1.5 : 1 / 1.5));
+  }));
+  svg.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary) { drag = null; return; }
+    if (zoom <= 1 || event.button !== 0) return;
+    suppressClick = false;
+    drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, x, y, moved: false };
+  });
+  svg.addEventListener("pointermove", (event) => {
+    if (!drag || drag.id !== event.pointerId) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (!drag.moved && Math.hypot(dx, dy) < 5) return;
+    drag.moved = true;
+    suppressClick = true;
+    svg.setPointerCapture(event.pointerId);
+    const rect = svg.getBoundingClientRect();
+    x = drag.x - dx * base.width / zoom / rect.width;
+    y = drag.y - dy * base.height / zoom / rect.height;
+    render();
+  });
+  const finish = (event) => {
+    if (!drag || drag.id !== event.pointerId) return;
+    if (svg.hasPointerCapture(event.pointerId)) svg.releasePointerCapture(event.pointerId);
+    drag = null;
+    window.setTimeout(() => { suppressClick = false; }, 0);
+  };
+  window.addEventListener("pointerup", finish);
+  window.addEventListener("pointercancel", finish);
+  canvas.addEventListener("click", (event) => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
+  render();
+}
+
 async function initTravelMap() {
   const canvas = document.querySelector("[data-travel-map]");
   if (!canvas) return;
@@ -1119,6 +1204,7 @@ async function initTravelMap() {
     } catch { /* Local storage may be unavailable. */ }
     selected = new Set(saved);
     image.replaceWith(svg);
+    initTravelMapZoom(canvas, svg);
     render();
     status.textContent = "Choose countries on the map or use the search field.";
   } catch {
@@ -1187,6 +1273,7 @@ async function initTravelMap() {
 
 initIntroGate();
 initThemePicker();
+initLanguageMenu();
 initTitleThemes();
 initTravelMap();
 initPortalArt();
