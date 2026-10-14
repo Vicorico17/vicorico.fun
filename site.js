@@ -465,6 +465,12 @@ function setGithubCarouselCards(cards) {
 function initGithubCarousel() {
   if (!latestReposNode || !githubCarouselNode) return;
   githubCarouselCards = [...latestReposNode.querySelectorAll(".github-live-card")];
+  githubCarouselCards.forEach((card) => {
+    const link = card.querySelector("h4 a");
+    if (!link) return;
+    const business = githubBusinessDetails({ html_url: link.href, name: link.textContent });
+    link.prepend(githubBusinessLogo(business));
+  });
   const historyPanel = githubCarouselNode.querySelector("[data-github-history]");
   const historyTitle = historyPanel?.querySelector("[data-github-history-title]");
   const historyList = historyPanel?.querySelector("[data-github-history-list]");
@@ -478,7 +484,7 @@ function initGithubCarousel() {
 
   function renderHistory(card) {
     if (!historyPanel || !card) return;
-    const project = card.querySelector("h4")?.textContent?.trim() || "Project";
+    const project = card.querySelector("h4 a")?.lastChild?.textContent?.trim() || "Project";
     historyTitle.textContent = `${project} · recent commits`;
     const commits = card.commitHistory || [];
     const items = commits.map((commit) => {
@@ -652,22 +658,63 @@ function latestGithubRepos(repos) {
   return [...new Map([...recent, ...ordered.slice(0, 6)].map((repo) => [repo.id, repo])).values()].slice(0, 8);
 }
 
+function githubBusinessDetails(repo) {
+  const archive = [...(projectArchiveNode?.querySelectorAll("article") || [])].find((card) =>
+    [...card.querySelectorAll('a[href]')].some((link) => link.href.replace(/\/$/, "").toLowerCase() === repo.html_url.toLowerCase()));
+  const fallback = [...(latestReposNode?.querySelectorAll(".github-live-card") || [])].find((card) =>
+    card.querySelector("h4 a")?.href === repo.html_url);
+  return {
+    name: archive?.querySelector("h3")?.textContent || fallback?.querySelector("h4 a")?.lastChild?.textContent || repo.name,
+    description: archive?.querySelector("p")?.textContent || repo.description || fallback?.querySelector("p")?.textContent || "Explore this project on GitHub.",
+    logo: archive?.querySelector(".proof-artifact-logo img")?.getAttribute("src"),
+    homepage: archive?.querySelector('.proof-actions a:not([href*="github.com"])')?.href || repo.homepage,
+  };
+}
+
+function githubBusinessLogo(business) {
+  const mark = document.createElement("span");
+  mark.className = "github-business-logo";
+  mark.setAttribute("aria-hidden", "true");
+  mark.textContent = business.name.trim().slice(0, 2).toUpperCase();
+  let src = business.logo;
+  if (!src && business.homepage) {
+    try {
+      const url = new URL(business.homepage);
+      if (["https:", "http:"].includes(url.protocol)) src = `${url.origin}/favicon.ico`;
+    } catch { /* Keep initials for invalid or missing homepages. */ }
+  }
+  if (src) {
+    const image = document.createElement("img");
+    image.alt = "";
+    image.width = 28;
+    image.height = 28;
+    image.addEventListener("load", () => mark.replaceChildren(image), { once: true });
+    image.src = src;
+  }
+  return mark;
+}
+
 function makeGithubCommitCard(repo) {
+  const business = githubBusinessDetails(repo);
   const article = document.createElement("article");
   article.className = "github-live-card";
   article.dataset.historyStatus = "loading";
   const title = document.createElement("h4");
-  title.append(githubLink(repo.html_url, repo.name));
+  const titleLink = githubLink(repo.html_url, business.name);
+  titleLink.prepend(githubBusinessLogo(business));
+  title.append(titleLink);
+  const description = document.createElement("p");
+  description.textContent = business.description;
   const message = document.createElement("button");
   message.type = "button";
   message.className = "github-commit-preview";
-  message.textContent = "Loading project updates…";
-  message.setAttribute("aria-label", `Show recent commits from ${repo.name}`);
+  message.textContent = "Latest commits";
+  message.setAttribute("aria-label", `Show recent commits from ${business.name}`);
   message.setAttribute("aria-controls", "github-history-panel");
   message.setAttribute("aria-expanded", "false");
   const footer = document.createElement("footer");
-  footer.append(githubLink(`${repo.html_url}/commits`, "View commits"));
-  article.append(title, message, footer);
+  footer.append(message, githubLink(`${repo.html_url}/commits`, "GitHub ↗"));
+  article.append(title, description, footer);
   return article;
 }
 
@@ -697,7 +744,7 @@ async function fillGithubCommitCard(repo, card) {
     const commit = commits[0];
     card.commitHistory = commits;
     card.dataset.historyStatus = "ready";
-    message.textContent = commit.commit.message.split("\n")[0].trim() || "Untitled commit";
+    message.title = commit.commit.message.split("\n")[0].trim() || "Untitled commit";
     const date = commit.commit.committer?.date || commit.commit.author?.date;
     const link = githubLink(commit.html_url, `Commit ${commit.sha.slice(0, 7)} ↗`);
     const time = document.createElement("time");
@@ -705,10 +752,11 @@ async function fillGithubCommitCard(repo, card) {
       time.dateTime = date;
       time.textContent = formatGithubDateTime(date);
     }
-    footer.replaceChildren(link, ...(date ? [time] : []));
+    link.title = message.title;
+    footer.replaceChildren(message, link, ...(date ? [time] : []));
   } catch {
     card.dataset.historyStatus = "unavailable";
-    message.textContent = "Project updates unavailable right now.";
+    message.title = "Recent commits unavailable right now. View the project on GitHub.";
   }
   card.dispatchEvent(new Event("github-history-update", { bubbles: true }));
 }

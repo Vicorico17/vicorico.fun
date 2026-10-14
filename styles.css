@@ -3616,25 +3616,24 @@ dd {
 .home-page .github-live .github-commit-preview,
 .home-page .github-live .github-commit-preview:hover,
 .home-page .github-live .github-commit-preview:active {
-  display: -webkit-box;
-  width: 100%;
+  display: inline-flex;
+  width: auto;
   min-height: 0;
   overflow: hidden;
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: rgba(255, 255, 255, 0.76);
+  color: #f7d58a;
   font: inherit;
-  font-size: 0.96rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 850;
   line-height: 1.45;
   padding: 0;
   text-align: left;
   text-shadow: none;
   transform: none;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  cursor: pointer;
 }
 
 .home-page .github-live .github-commit-preview:hover,
@@ -5707,4 +5706,32 @@ dd {
 .portal-nav .quest-play:hover {
   border-color: #a4a0ff;
   background: rgba(119, 114, 232, 0.25);
+}
+
+.github-live-card h4 a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.github-business-logo {
+  display: inline-flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(160, 160, 180, 0.3);
+  border-radius: 9px;
+  background: rgba(160, 160, 180, 0.12);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.github-business-logo img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 5px;
 }
