@@ -1491,7 +1491,7 @@ button {
   font-size: 0.78rem;
   font-weight: 750;
   line-height: 1.2;
-  padding: 0.42rem 1.6rem 0.42rem 0.65rem;
+  padding: 0.42rem 0.65rem;
   transition: background 180ms ease, border-color 180ms ease;
 }
 
@@ -1501,9 +1501,61 @@ button {
   background: rgba(255, 255, 255, 0.13);
 }
 
-.portal-nav .theme-picker option {
+.theme-menu {
+  position: relative;
+}
+
+.theme-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: grid;
+  gap: 5px;
+  min-width: 155px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
   background: #15131a;
   color: #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+.theme-options[hidden] {
+  display: none;
+}
+
+.theme-options button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.theme-options button:is(:hover, [aria-pressed="true"]) {
+  border-color: currentColor;
+  background: rgba(150, 150, 150, 0.15);
+}
+
+.theme-options button:focus-visible,
+.theme-picker:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.theme-options button span {
+  font-size: 1.2rem;
+}
+
+.home-page[data-theme="grove"] .theme-options {
+  background: #122c22;
 }
 
 .portal-nav a {
@@ -5497,7 +5549,7 @@ dd {
   background: rgba(63, 53, 41, 0.06);
 }
 
-.home-page[data-theme="paper"] .theme-picker option {
+.home-page[data-theme="paper"] .theme-options {
   background: #faf7ef;
   color: #29251f;
 }
@@ -5617,4 +5669,42 @@ dd {
   .proof-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.portal-nav .quest-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 9px 4px 5px;
+  border: 1px solid rgba(164, 160, 255, 0.35);
+  background: rgba(119, 114, 232, 0.12);
+}
+
+.quest-play img {
+  flex-shrink: 0;
+}
+
+.quest-play-copy {
+  display: grid;
+  gap: 3px;
+  line-height: 1;
+}
+
+.quest-name {
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+}
+
+.quest-action {
+  font-size: 0.8rem;
+}
+
+.quest-action span {
+  margin-left: 3px;
+  font-size: 0.6rem;
+}
+
+.portal-nav .quest-play:hover {
+  border-color: #a4a0ff;
+  background: rgba(119, 114, 232, 0.25);
 }

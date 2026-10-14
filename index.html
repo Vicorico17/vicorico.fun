@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=Cinzel:wght@700;900&amp;family=DM+Serif+Display:ital@0;1&amp;family=Orbitron:wght@700;900&amp;family=Righteous&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20261014a">
+    <link rel="stylesheet" href="styles.css?v=20261014b">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
@@ -77,12 +77,18 @@
       </filter>
     </svg>
     <nav class="portal-nav" aria-label="Site shortcuts">
-      <select class="theme-picker" data-theme-picker aria-label="Choose website theme">
-        <option value="signal">Signal</option>
-        <option value="paper">Paper</option>
-        <option value="grove">Grove</option>
-      </select>
-      <a href="game.html">Game CV</a>
+      <div class="theme-menu" data-theme-menu>
+        <button class="theme-picker" data-theme-picker type="button" aria-expanded="false" aria-controls="theme-options">Themes <span aria-hidden="true">⌄</span></button>
+        <div class="theme-options" id="theme-options" role="group" aria-label="Choose website theme" hidden>
+          <button type="button" data-theme-option="signal" aria-pressed="false"><span aria-hidden="true">📡</span> Signal</button>
+          <button type="button" data-theme-option="paper" aria-pressed="false"><span aria-hidden="true">📜</span> Paper</button>
+          <button type="button" data-theme-option="grove" aria-pressed="false"><span aria-hidden="true">🌿</span> Grove</button>
+        </div>
+      </div>
+      <a class="quest-play" href="game.html" aria-label="Play Vico’s Quest">
+        <img src="assets/vicos-quest.svg" width="32" height="32" alt="">
+        <span class="quest-play-copy"><span class="quest-name">Vico’s Quest</span><span class="quest-action">Play <span aria-hidden="true">▶</span></span></span>
+      </a>
       <a href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">PDF CV</a>
     </nav>
     <main>
@@ -506,7 +512,7 @@
               </div>
               <div>
                 <h3>Playable Site</h3>
-                <p>Vic's Quest turns the CV into an explorable route through systems, crypto, and worlds.</p>
+                <p>Vico’s Quest turns the CV into an explorable route through systems, crypto, and worlds.</p>
               </div>
             </div>
           </div>
@@ -1094,9 +1100,9 @@
       <section id="game-cv" class="game-entry section" aria-labelledby="game-entry-title">
         <div class="game-entry-copy">
           <p class="eyebrow">Playable Route</p>
-          <h2 id="game-entry-title">Enter Vic's Quest</h2>
+          <h2 id="game-entry-title">Enter Vico’s Quest</h2>
           <p>
-            Vic's Quest turns the same career material into an explorable 3D world map with routes
+            Vico’s Quest turns the same career material into an explorable 3D world map with routes
             through AI systems, crypto rails, creative automation, security, and game-world thinking.
           </p>
           <a class="button primary" href="game.html">Open Game</a>
@@ -1750,6 +1756,6 @@
       </section>
 
     </main>
-    <script src="site.js?v=20261011c"></script>
+    <script src="site.js?v=20261014b"></script>
   </body>
 </html>

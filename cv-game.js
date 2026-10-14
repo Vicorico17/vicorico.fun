@@ -425,11 +425,11 @@ const castles = [
       {
         id: "playable-portfolio",
         title: "Playable Portfolio",
-        project: "Vic's Quest",
+        project: "Vico’s Quest",
         tag: "worlds",
-        fact: "Vic's Quest is this game, a CV built in Three.js.",
+        fact: "Vico’s Quest is this game, a CV built in Three.js.",
         example:
-          "Vic's Quest is this game: a CV turned into an explorable route with castles, combat, objectives, upgrades, and a boss, built as a static Three.js site.",
+          "Vico’s Quest is this game: a CV turned into an explorable route with castles, combat, objectives, upgrades, and a boss, built as a static Three.js site.",
         link: { label: "View the source", href: "https://github.com/Vicorico17/vicorico.fun" },
         upgrade: { lane: "ALL", name: "Dev Mode", effect: "+1 damage on everything, dash recharges 50% faster, boss numbers visible.", perks: { flatDamage: 1, dashCooldownMult: 0.5, showNumbers: true } },
       },

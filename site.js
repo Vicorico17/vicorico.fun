@@ -906,21 +906,63 @@ function initProjectCommitCounts() {
 }
 
 function initThemePicker() {
-  const picker = document.querySelector("[data-theme-picker]");
-  if (!picker) return;
-  const themes = new Set(["signal", "paper", "grove"]);
+  const menu = document.querySelector("[data-theme-menu]");
+  if (!menu) return;
+  const picker = menu.querySelector("[data-theme-picker]");
+  const panel = menu.querySelector(".theme-options");
+  const options = [...menu.querySelectorAll("[data-theme-option]")];
+  const themes = new Set(options.map((option) => option.dataset.themeOption));
+  let pinned = false;
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    picker.setAttribute("aria-expanded", String(open));
+  };
+  const selectTheme = (theme) => {
+    document.body.dataset.theme = theme;
+    options.forEach((option) => option.setAttribute("aria-pressed", String(option.dataset.themeOption === theme)));
+  };
   let saved = "signal";
   try {
     const preference = localStorage.getItem("vicorico-site-theme");
     if (themes.has(preference)) saved = preference;
   } catch { /* Storage may be disabled. */ }
-  document.body.dataset.theme = saved;
-  picker.value = saved;
-  picker.addEventListener("change", () => {
-    const theme = themes.has(picker.value) ? picker.value : "signal";
-    document.body.dataset.theme = theme;
-    try { localStorage.setItem("vicorico-site-theme", theme); } catch { /* Storage may be disabled. */ }
+  selectTheme(saved);
+  picker.addEventListener("click", () => {
+    pinned = !pinned;
+    setOpen(pinned);
   });
+  menu.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "mouse") setOpen(true);
+  });
+  menu.addEventListener("pointerleave", () => {
+    if (!pinned && !menu.contains(document.activeElement)) setOpen(false);
+  });
+  menu.addEventListener("focusout", (event) => {
+    if (!menu.contains(event.relatedTarget)) { pinned = false; setOpen(false); }
+  });
+  menu.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      pinned = false;
+      setOpen(false);
+      picker.focus();
+    }
+    if (event.key === "ArrowDown" && event.target === picker) {
+      event.preventDefault();
+      setOpen(true);
+      options[0].focus();
+    }
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!menu.contains(event.target)) { pinned = false; setOpen(false); }
+  });
+  options.forEach((option) => option.addEventListener("click", () => {
+    const theme = option.dataset.themeOption;
+    selectTheme(theme);
+    try { localStorage.setItem("vicorico-site-theme", theme); } catch { /* Storage may be disabled. */ }
+    pinned = false;
+    setOpen(false);
+    picker.focus();
+  }));
 }
 
 function initTitleThemes() {
