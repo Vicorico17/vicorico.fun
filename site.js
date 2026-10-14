@@ -666,7 +666,7 @@ function githubBusinessDetails(repo) {
     card.querySelector("h4 a")?.href === repo.html_url);
   return {
     name: archive?.querySelector("h3")?.textContent || fallback?.querySelector("h4 a")?.lastChild?.textContent || repo.name,
-    description: archive?.querySelector("p")?.textContent || repo.description || fallback?.querySelector("p")?.textContent || "Explore this project on GitHub.",
+    description: (window.siteI18n?.originalText(archive?.querySelector("p")) || archive?.querySelector("p")?.textContent) || repo.description || fallback?.querySelector("p")?.textContent || "Explore this project on GitHub.",
     logo: archive?.querySelector(".proof-artifact-logo img")?.getAttribute("src"),
     homepage: archive?.querySelector('.proof-actions a:not([href*="github.com"])')?.href || repo.homepage,
   };

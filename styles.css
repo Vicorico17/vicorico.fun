@@ -5840,3 +5840,38 @@ dd {
 .travel-map-canvas svg.is-zoomed:active #countries path {
   cursor: grabbing;
 }
+
+.home-page .language-options button {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  text-shadow: none;
+  transform: none;
+  cursor: pointer;
+}
+
+.home-page .language-options button::before,
+.home-page .language-options button::after {
+  display: none;
+}
+
+.home-page .language-options button:is(:hover, [aria-pressed="true"]) {
+  background: rgba(150, 150, 150, 0.15);
+  border-color: currentColor;
+}
+
+.home-page .language-options button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.language-options p:empty {
+  display: none;
+}

@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=Cinzel:wght@700;900&amp;family=DM+Serif+Display:ital@0;1&amp;family=Orbitron:wght@700;900&amp;family=Righteous&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20261014e">
+    <link rel="stylesheet" href="styles.css?v=20261014f">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
@@ -77,16 +77,16 @@
       </filter>
     </svg>
     <nav class="portal-nav" aria-label="Site shortcuts">
-      <details class="language-menu notranslate" translate="no" data-language-menu>
-        <summary aria-label="Select website language"><span aria-hidden="true">◎</span> English <span aria-hidden="true">⌄</span></summary>
+      <details class="language-menu" translate="no" data-language-menu>
+        <summary aria-label="Select website language"><span aria-hidden="true">◎</span> <span data-language-label>English</span> <span aria-hidden="true">⌄</span></summary>
         <div class="language-options" role="group" aria-label="Website language">
-          <a href="https://vicorico.fun/" lang="en" hreflang="en" aria-current="true">English</a>
-          <a href="https://translate.google.com/translate?sl=en&amp;tl=ro&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="ro" hreflang="ro">Română</a>
-          <a href="https://translate.google.com/translate?sl=en&amp;tl=es&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="es" hreflang="es">Español</a>
-          <a href="https://translate.google.com/translate?sl=en&amp;tl=fr&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="fr" hreflang="fr">Français</a>
-          <a href="https://translate.google.com/translate?sl=en&amp;tl=de&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="de" hreflang="de">Deutsch</a>
-          <a href="https://translate.google.com/translate?sl=en&amp;tl=zh-CN&amp;u=https%3A%2F%2Fvicorico.fun%2F" lang="zh-CN" hreflang="zh-CN">简体中文</a>
-          <p>Automatic translation via Google Translate</p>
+          <button type="button" data-language="en" lang="en" aria-pressed="true">English</button>
+          <button type="button" data-language="ro" lang="ro" aria-pressed="false">Română</button>
+          <button type="button" data-language="es" lang="es" aria-pressed="false">Español</button>
+          <button type="button" data-language="fr" lang="fr" aria-pressed="false">Français</button>
+          <button type="button" data-language="de" lang="de" aria-pressed="false">Deutsch</button>
+          <button type="button" data-language="zh-CN" lang="zh-CN" aria-pressed="false">简体中文</button>
+          <p data-language-status role="status"></p>
         </div>
       </details>
       <div class="theme-menu" data-theme-menu>
@@ -1779,6 +1779,7 @@
       </section>
 
     </main>
-    <script src="site.js?v=20261014e"></script>
+    <script src="language.js?v=20261014a"></script>
+    <script src="site.js?v=20261014f"></script>
   </body>
 </html>

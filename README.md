@@ -27,3 +27,14 @@ python3 -m http.server 8765
 ```
 
 Then open `http://localhost:8765/game.html`.
+
+## Languages
+
+The home page starts in English. `language.js` switches its text in place using
+`assets/locales/{ro,es,fr,de,zh-CN}.json`; visitors stay on the same URL and no
+translation service is contacted. The dictionaries contain automatic translations,
+with corrections for interface and technical terms. `en.json` records the English
+source strings. When changing copy, update the matching keys in every dictionary.
+Missing translations fall back to English. Brand names and live GitHub commit
+messages remain in their original language. Language choices reset to English on
+a fresh page load.
