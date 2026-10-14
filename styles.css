@@ -1647,7 +1647,7 @@ button {
   line-height: inherit;
   padding: 0;
   text-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
-  touch-action: manipulation;
+  touch-action: auto;
   transform: perspective(900px) rotateX(var(--title-x, 0deg)) rotateY(var(--title-y, 0deg)) rotateZ(var(--title-z, 0deg));
   transform-style: preserve-3d;
   transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1), color 300ms ease, text-shadow 300ms ease;
@@ -2149,7 +2149,7 @@ button {
     linear-gradient(110deg, rgba(28, 36, 66, 0.78), rgba(13, 17, 36, 0.86));
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.16);
   user-select: none;
-  touch-action: none;
+  touch-action: pan-y pinch-zoom;
 }
 
 .portal-slide-track::before {
@@ -2219,7 +2219,7 @@ button {
   line-height: 1;
   cursor: grab;
   user-select: none;
-  touch-action: none;
+  touch-action: pan-y pinch-zoom;
   transform: translateX(var(--slide-x));
   transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms ease;
 }

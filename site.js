@@ -261,9 +261,10 @@ function initIntroGate() {
   }
 
   track.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary) { resetDrag(); return; }
     if (entered || pointerId !== null || (event.pointerType === "mouse" && event.button !== 0)) return;
     const trackRect = track.getBoundingClientRect();
-    event.preventDefault();
+    if (event.pointerType === "mouse") event.preventDefault();
     pointerId = event.pointerId;
     dragStartX = event.clientX;
     dragDistance = 0;
@@ -275,7 +276,7 @@ function initIntroGate() {
 
   function updateDrag(event) {
     if (event.pointerId !== pointerId || entered) return;
-    event.preventDefault();
+    if (event.pointerType === "mouse") event.preventDefault();
     dragDistance = Math.max(0, event.clientX - dragStartX);
     setPosition((dragDistance / dragAvailable) * maxTravel());
     if (dragDistance >= 36 && maxTravel() && position / maxTravel() >= 0.7) enterSite();
