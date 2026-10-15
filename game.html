@@ -33,6 +33,13 @@
     <main class="game-shell">
       <div class="game-stage" data-game-stage data-phase="intro" data-dash="false" data-near-castle="false">
         <canvas id="game" aria-label="Vico’s Quest 3D CV game"></canvas>
+        <aside class="game-funding" aria-label="Graphics funding">
+          <span id="game-funding-label">fund my . graphics</span>
+          <div class="game-funding-track" role="progressbar" aria-labelledby="game-funding-label" aria-valuemin="0" aria-valuemax="10000" aria-valuenow="8759" aria-valuetext="8759 dollars of 10000 dollars">
+            <span class="game-funding-fill" aria-hidden="true"></span>
+            <strong>8759$ /10000$</strong>
+          </div>
+        </aside>
         <button class="game-sound-toggle" type="button" data-game-sound aria-label="Mute game audio" aria-pressed="false">
           <span aria-hidden="true">♪</span><span data-game-sound-label>Sound on</span>
         </button>
