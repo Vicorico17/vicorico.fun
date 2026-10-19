@@ -1035,6 +1035,11 @@ function initTitleThemes() {
   const title = document.querySelector("[data-title-themes]");
   if (!title) return;
   const trigger = title.querySelector(".text-flip-trigger");
+  const domains = [
+    "vicorico.com", "vicorico.xyz", "vicorico.shop",
+    "vicorico.fun", "vicorico.store", "vicorico.net",
+  ];
+  let domainIndex = 0;
 
   const themes = [
     "signal", "paper", "grove", "arcade", "lava", "ice",
@@ -1047,6 +1052,19 @@ function initTitleThemes() {
   function nextTheme() {
     index = (index + 1) % themes.length;
     title.dataset.titleTheme = themes[index];
+    domainIndex = (domainIndex + 1) % domains.length;
+    const domain = domains[domainIndex];
+    const letters = [...domain].map((letter, letterIndex) => {
+      const span = document.createElement("span");
+      span.setAttribute("aria-hidden", "true");
+      span.style.setProperty("--i", letterIndex);
+      span.textContent = letter;
+      return span;
+    });
+    trigger.replaceChildren(...letters);
+    trigger.style.fontSize = `${Math.min(1, 11 / domain.length)}em`;
+    title.setAttribute("aria-label", domain);
+    trigger.setAttribute("aria-label", `Change ${domain} title style`);
   }
 
   function start(event) {
