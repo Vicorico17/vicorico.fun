@@ -935,5 +935,7 @@
   "Unlock": "Desbloquear",
   "Visited countries": "Países visitados",
   "Your browser’s saved countries are ready. Select, unlock, then save for everyone to publish them.": "Los países guardados en su navegador están listos. Seleccione, desbloquee y luego guárdelo para que todos los publiquen.",
-  "Your saved countries are loaded. Save for everyone to publish them.": "Tus países guardados están cargados. Guárdalos para que todos los publiquen."
+  "Your saved countries are loaded. Save for everyone to publish them.": "Tus países guardados están cargados. Guárdalos para que todos los publiquen.",
+  "Year 4 · Multi-Agent Orchestration": "4.º año · Orquestación multiagente",
+  "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "Un curso práctico sobre agentes de IA: abre chats separados, asigna a cada agente una tarea diferente en el mismo repositorio y coordina su trabajo. Aprende a definir responsabilidades, compartir contexto, revisar cambios, resolver conflictos e integrar los resultados en un despliegue funcional."
 }

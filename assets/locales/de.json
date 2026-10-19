@@ -935,5 +935,7 @@
   "Unlock": "Entsperren",
   "Visited countries": "Besuchte Länder",
   "Your browser’s saved countries are ready. Select, unlock, then save for everyone to publish them.": "Die in Ihrem Browser gespeicherten Länder sind bereit. Auswählen, entsperren und dann speichern, damit jeder sie veröffentlichen kann.",
-  "Your saved countries are loaded. Save for everyone to publish them.": "Ihre gespeicherten Länder werden geladen. Speichern Sie sie, damit jeder sie veröffentlichen kann."
+  "Your saved countries are loaded. Save for everyone to publish them.": "Ihre gespeicherten Länder werden geladen. Speichern Sie sie, damit jeder sie veröffentlichen kann.",
+  "Year 4 · Multi-Agent Orchestration": "4. Jahr · Multi-Agenten-Orchestrierung",
+  "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "Ein praktischer Kurs über KI-Agenten: Öffne separate Chats, weise jedem Agenten eine andere Aufgabe im selben Repository zu und koordiniere ihre Arbeit. Lerne, Verantwortlichkeiten festzulegen, Kontext zu teilen, Änderungen zu prüfen, Konflikte zu lösen und die Ergebnisse zu einer funktionsfähigen Bereitstellung zusammenzuführen."
 }

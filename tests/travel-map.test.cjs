@@ -26,7 +26,7 @@ global.fetch = async (_, options) => {
   return { ok: true, json: async () => ({ result }) };
 };
 async function request(method, body, extra = {}) {
-  const req = { method, body, headers: { host: 'vicorico.fun', origin: 'https://vicorico.fun', 'content-type': 'application/json', ...extra } };
+  const req = { method, body, headers: { host: 'vicorico.com', origin: 'https://vicorico.com', 'content-type': 'application/json', ...extra } };
   const res = { headers: {}, setHeader(key, value) { this.headers[key] = value; }, status(code) { this.code = code; return this; }, json(data) { this.data = data; return this; } };
   await handler(req, res);
   return res;
