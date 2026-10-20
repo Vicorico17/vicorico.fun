@@ -937,5 +937,6 @@
   "Your browser’s saved countries are ready. Select, unlock, then save for everyone to publish them.": "您的浏览器保存的国家/地区已准备就绪。选择、解锁，然后保存，供大家发布。",
   "Your saved countries are loaded. Save for everyone to publish them.": "您保存的国家/地区已加载。留着供大家发表。",
   "Year 4 · Multi-Agent Orchestration": "四年级 · 多智能体编排",
-  "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "一门实践型智能体课程：开启独立的 AI 对话，为每个智能体分配同一代码仓库中的不同任务，并协调它们的工作。学习划分职责、共享上下文、审查修改、解决冲突，并整合成果，完成可运行的部署。"
+  "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "一门实践型智能体课程：开启独立的 AI 对话，为每个智能体分配同一代码仓库中的不同任务，并协调它们的工作。学习划分职责、共享上下文、审查修改、解决冲突，并整合成果，完成可运行的部署。",
+  "Menu": "菜单"
 }

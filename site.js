@@ -1031,6 +1031,33 @@ function initThemePicker() {
   }));
 }
 
+function initMobileMenu() {
+  const button = document.querySelector("[data-mobile-menu]");
+  const nav = button?.closest(".portal-nav");
+  if (!nav) return;
+  function close() {
+    button.setAttribute("aria-expanded", "false");
+    nav.querySelector("[data-language-menu]")?.removeAttribute("open");
+    const themeOptions = nav.querySelector(".theme-options");
+    if (themeOptions) themeOptions.hidden = true;
+    nav.querySelector("[data-theme-picker]")?.setAttribute("aria-expanded", "false");
+  }
+  button.addEventListener("click", () => {
+    if (button.getAttribute("aria-expanded") === "true") close();
+    else button.setAttribute("aria-expanded", "true");
+  });
+  document.addEventListener("click", (event) => {
+    if (!nav.contains(event.target) || event.target.closest(".portal-nav-items a")) close();
+  });
+  nav.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+      close();
+      button.focus();
+    }
+  });
+  window.matchMedia("(max-width: 760px)").addEventListener("change", close);
+}
+
 function initTitleThemes() {
   const title = document.querySelector("[data-title-themes]");
   if (!title) return;
@@ -1367,6 +1394,7 @@ async function initTravelMap() {
 initIntroGate();
 initThemePicker();
 initLanguageMenu();
+initMobileMenu();
 initTitleThemes();
 initTravelMap();
 initPortalArt();
