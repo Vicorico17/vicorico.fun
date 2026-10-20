@@ -1642,7 +1642,7 @@ button {
   line-height: inherit;
   padding: 0;
   text-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
-  touch-action: auto;
+  touch-action: manipulation;
   transform: perspective(900px) rotateX(var(--title-x, 0deg)) rotateY(var(--title-y, 0deg)) rotateZ(var(--title-z, 0deg));
   transform-style: preserve-3d;
   transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1), color 300ms ease, text-shadow 300ms ease;
