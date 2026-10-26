@@ -243,14 +243,40 @@ function initIntroGate() {
     releaseDrag();
     setPosition(maxTravel());
     slider.classList.add("is-complete");
-    document.documentElement.classList.remove("scroll-locked");
-    document.body.classList.remove("scroll-locked");
 
-    window.requestAnimationFrame(() => {
+    // Let the thumb settle at the end before moving the page away.
+    window.setTimeout(() => {
+      document.documentElement.classList.remove("scroll-locked");
+      document.body.classList.remove("scroll-locked");
       window.requestAnimationFrame(() => {
-        targetSection.scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
+        if (reducedMotion.matches) {
+          targetSection.scrollIntoView({ behavior: "instant", block: "start" });
+          return;
+        }
+        const startY = window.scrollY;
+        const destination = Math.min(
+          startY + targetSection.getBoundingClientRect().top,
+          document.documentElement.scrollHeight - window.innerHeight,
+        );
+        let startTime;
+        let frame;
+        function stopScroll() {
+          window.cancelAnimationFrame(frame);
+          for (const type of ["pointerdown", "wheel", "keydown"]) window.removeEventListener(type, stopScroll);
+        }
+        function animateScroll(time) {
+          startTime ??= time;
+          const progress = Math.min(1, (time - startTime) / 1100);
+          // Quintic easing starts and ends with zero velocity and acceleration.
+          const eased = progress ** 3 * (progress * (progress * 6 - 15) + 10);
+          window.scrollTo({ top: startY + (destination - startY) * eased, behavior: "instant" });
+          if (progress < 1) frame = window.requestAnimationFrame(animateScroll);
+          else stopScroll();
+        }
+        for (const type of ["pointerdown", "wheel", "keydown"]) window.addEventListener(type, stopScroll, { passive: true });
+        frame = window.requestAnimationFrame(animateScroll);
       });
-    });
+    }, reducedMotion.matches ? 0 : 340);
   }
 
   function releaseDrag() {
@@ -286,12 +312,14 @@ function initIntroGate() {
     if (event.pointerType === "mouse") event.preventDefault();
     dragDistance = Math.max(0, event.clientX - dragStartX);
     setPosition((dragDistance / dragAvailable) * maxTravel());
-    if (dragDistance >= 36 && maxTravel() && position / maxTravel() >= 0.7) enterSite();
   }
 
   function finishSlide(event) {
     if (event.pointerId !== pointerId) return;
-    if (event.type === "pointerup") updateDrag(event);
+    if (event.type === "pointerup") {
+      updateDrag(event);
+      if (dragDistance >= 36 && maxTravel() && position / maxTravel() >= 0.96) enterSite();
+    }
     if (!entered) resetDrag();
   }
 
