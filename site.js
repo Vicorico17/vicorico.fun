@@ -240,8 +240,7 @@ function initIntroGate() {
   function enterSite() {
     if (entered) return;
     entered = true;
-    pointerId = null;
-    slider.classList.remove("is-dragging");
+    releaseDrag();
     setPosition(maxTravel());
     slider.classList.add("is-complete");
     document.documentElement.classList.remove("scroll-locked");
@@ -254,21 +253,29 @@ function initIntroGate() {
     });
   }
 
-  function resetDrag() {
+  function releaseDrag() {
+    const activePointerId = pointerId;
     pointerId = null;
     slider.classList.remove("is-dragging");
+    if (activePointerId !== null && track.hasPointerCapture(activePointerId)) {
+      track.releasePointerCapture(activePointerId);
+    }
+  }
+
+  function resetDrag() {
+    releaseDrag();
     if (!entered) setPosition(0);
   }
 
   track.addEventListener("pointerdown", (event) => {
-    if (!event.isPrimary) { resetDrag(); return; }
+    if (!event.isPrimary) return;
     if (entered || pointerId !== null || (event.pointerType === "mouse" && event.button !== 0)) return;
     const trackRect = track.getBoundingClientRect();
     if (event.pointerType === "mouse") event.preventDefault();
     pointerId = event.pointerId;
     dragStartX = event.clientX;
     dragDistance = 0;
-    dragAvailable = Math.max(1, trackRect.right - event.clientX - 12);
+    dragAvailable = Math.max(1, Math.min(maxTravel(), trackRect.right - event.clientX - thumb.offsetWidth / 2 - 6));
     slider.classList.add("is-dragging");
     setPosition(0);
     try { track.setPointerCapture(pointerId); } catch { /* Window listeners still track the drag. */ }
@@ -291,6 +298,9 @@ function initIntroGate() {
   window.addEventListener("pointermove", updateDrag, { passive: false });
   window.addEventListener("pointerup", finishSlide);
   window.addEventListener("pointercancel", finishSlide);
+  track.addEventListener("lostpointercapture", (event) => {
+    if (event.pointerId === pointerId) resetDrag();
+  });
   window.addEventListener("blur", resetDrag);
   thumb.addEventListener("keydown", (event) => {
     if (entered) return;
