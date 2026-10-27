@@ -3,8 +3,21 @@ import { createGameAudio } from "./game-audio.js";
 
 const canvas = document.getElementById("game");
 const stageNode = document.querySelector("[data-game-stage]");
-document.querySelector("[data-game-funding]")?.addEventListener("click", () => {
-  document.getElementById("game-funding-label").textContent = "kidding, but thx.";
+let fundingClicks = 0;
+document.querySelector("[data-game-funding]")?.addEventListener("click", (event) => {
+  const fundingNode = event.currentTarget.closest(".game-funding");
+  const labelNode = document.getElementById("game-funding-label");
+  fundingClicks += 1;
+  fundingNode.querySelector(".game-funding-track").hidden = true;
+  if (fundingClicks === 1) {
+    labelNode.textContent = "kidding, but thx.";
+    event.currentTarget.setAttribute("aria-label", "kidding, but thx.");
+  } else if (fundingClicks === 2) {
+    labelNode.textContent = "< 3";
+    event.currentTarget.setAttribute("aria-label", "Dismiss heart");
+  } else {
+    fundingNode.remove();
+  }
 });
 if (stageNode) {
   const preventPinchZoom = (event) => {
