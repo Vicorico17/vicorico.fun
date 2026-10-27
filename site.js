@@ -266,7 +266,7 @@ function initIntroGate() {
         }
         function animateScroll(time) {
           startTime ??= time;
-          const progress = Math.min(1, (time - startTime) / 1100);
+          const progress = Math.min(1, (time - startTime) / 600);
           // Quintic easing starts and ends with zero velocity and acceleration.
           const eased = progress ** 3 * (progress * (progress * 6 - 15) + 10);
           window.scrollTo({ top: startY + (destination - startY) * eased, behavior: "instant" });

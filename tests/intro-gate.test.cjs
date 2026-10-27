@@ -117,7 +117,7 @@ test('completion settles before a gradual scroll that reaches the target', () =>
   assert.deepEqual(s.positions, []);
   s.timers.shift()();
   s.tick(0);
-  for (const time of [0, 110, 550, 990, 1100]) s.tick(time);
+  for (const time of [0, 60, 300, 540, 600]) s.tick(time);
   assert.equal(s.positions[0], 0);
   assert.ok(s.positions[1] < 40);
   assert.equal(s.positions[2], 400);
