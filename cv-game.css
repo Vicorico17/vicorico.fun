@@ -104,6 +104,25 @@
   background: #111722;
 }
 
+.game-funding-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.game-funding-trigger:focus-visible {
+  outline: 2px solid #f4bf45;
+  outline-offset: 4px;
+}
+
 .game-funding-fill {
   position: absolute;
   inset: 0 auto 0 0;

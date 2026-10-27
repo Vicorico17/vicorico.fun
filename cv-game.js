@@ -3,6 +3,9 @@ import { createGameAudio } from "./game-audio.js";
 
 const canvas = document.getElementById("game");
 const stageNode = document.querySelector("[data-game-stage]");
+document.querySelector("[data-game-funding]")?.addEventListener("click", () => {
+  document.getElementById("game-funding-label").textContent = "kidding, but thx.";
+});
 if (stageNode) {
   const preventPinchZoom = (event) => {
     if (event.touches?.length > 1 || event.type.startsWith("gesture")) event.preventDefault();
