@@ -5,6 +5,17 @@ const portalArtNode = document.querySelector("[data-portal-art]");
 const projectArchiveNode = document.querySelector("#projects .proof-grid");
 const projectPushDates = new Map();
 
+// Keep the landing screen in place until Explore is activated, including on touch devices.
+const exploreLink = document.querySelector(".portal-explore");
+if (exploreLink) {
+  const gatedSections = [...document.querySelectorAll(".portal-start ~ section")];
+  gatedSections.forEach((section) => { section.inert = true; });
+  exploreLink.addEventListener("click", () => {
+    gatedSections.forEach((section) => { section.inert = false; });
+    document.documentElement.classList.remove("explore-pending");
+  }, { once: true });
+}
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }

@@ -19,6 +19,20 @@ html {
   scroll-behavior: smooth;
 }
 
+html.explore-pending {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.explore-pending body.home-page {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   color: var(--ink);
