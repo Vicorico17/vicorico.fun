@@ -2170,7 +2170,7 @@ button {
 .about-details {
   display: grid;
   grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(24px, 5vw, 56px);
   align-items: start;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
@@ -5995,4 +5995,13 @@ dd {
   .home-page[data-theme="grove"] .portal-nav-items {
     background: #122c22;
   }
+}
+
+@media (max-width: 640px) {
+  .bio-facts { grid-template-columns: minmax(72px, 0.65fr) minmax(0, 2fr); gap: 10px; }
+  .bio-facts > div { grid-template-columns: 1fr; align-content: center; gap: 6px; padding: 16px; border-radius: 16px; box-shadow: none; }
+  .bio-facts dt { font-size: 0.65rem; letter-spacing: 0.12em; }
+  .bio-facts dd { margin: 0; font-size: 1rem; line-height: 1.35; }
+  .bio-facts > div:first-child dd { font-size: 1.55rem; line-height: 1.1; }
+  .bio-facts .bio-skills-row { grid-column: 1 / -1; padding: 4px 0 0; }
 }

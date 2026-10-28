@@ -38,8 +38,6 @@ function syncSoundButton() {
   soundButtonNode.setAttribute("aria-label", gameAudio.muted ? "Unmute game audio" : "Mute game audio");
   if (soundLabelNode) soundLabelNode.textContent = gameAudio.muted ? "Sound off" : "Sound on";
 }
-const heartsNode = document.querySelector("[data-game-hearts]");
-const heartNodes = heartsNode?.querySelectorAll("b") || [];
 const weaponNodes = document.querySelectorAll("[data-game-weapon]");
 const ammoChipNode = document.querySelector("[data-game-ammo-chip]");
 const ammoCountNode = document.querySelector("[data-game-ammo]");
@@ -98,6 +96,93 @@ function createPowerIcon(name) {
   icon.append(use);
   return icon;
 }
+
+const powerPresentation = {
+  "Inference Boost": {
+    "icon": "strike",
+    "text": "Faster attacks · faster arrows"
+  },
+  "Private Vault": {
+    "icon": "dash",
+    "text": "+8% movement speed"
+  },
+  "Agent Companion": {
+    "icon": "drone",
+    "text": "Auto-zap drone · every 1.5s"
+  },
+  "Enriched Kills": {
+    "icon": "sword",
+    "text": "+1 damage"
+  },
+  "Multi-Shot": {
+    "icon": "bow",
+    "text": "3 arrows · +1 arc target"
+  },
+  "Self-Improving": {
+    "icon": "growth",
+    "text": "+4% damage / kill · max 60%"
+  },
+  "Holder Rally": {
+    "icon": "guard",
+    "text": "Hit-triggered shockwave"
+  },
+  "Favorable Odds": {
+    "icon": "target",
+    "text": "25% critical chance · grows on misses"
+  },
+  "x402 Rails": {
+    "icon": "dash",
+    "text": "40% faster dash recharge · dash damage"
+  },
+  "Cycle Survivor": {
+    "icon": "dash",
+    "text": "+12% movement speed"
+  },
+  "Grant Funding": {
+    "icon": "flow",
+    "text": "+50% healing · heal 30"
+  },
+  "Tooling Surfaces": {
+    "icon": "target",
+    "text": "More range on every weapon"
+  },
+  "Clip Cutter": {
+    "icon": "sword",
+    "text": "Sword cleave · 7-unit reach"
+  },
+  "Artist Roster": {
+    "icon": "drone",
+    "text": "+1 drone · max 2"
+  },
+  "Vision-Aware": {
+    "icon": "target",
+    "text": "30% slower shots · firing warnings"
+  },
+  "Cost-Aware": {
+    "icon": "guard",
+    "text": "30% less damage"
+  },
+  "Checkpoint Tap": {
+    "icon": "guard",
+    "text": "3s castle shield · +12% speed"
+  },
+  "Read the Tape": {
+    "icon": "target",
+    "text": "+1 damage to weakened enemies"
+  },
+  "Still Running": {
+    "icon": "flow",
+    "text": "Regenerate after 3s"
+  },
+  "Importance Ranking": {
+    "icon": "target",
+    "text": "+1 damage to toughest enemy"
+  },
+  "Dev Mode": {
+    "icon": "all",
+    "text": "+1 damage · 50% faster dash recharge"
+  }
+};
 
 const roleLine = "Forward Deployed Engineer & Graph Engineer";
 const pitchLine = "I turn messy workflows into useful AI systems, agents, and payment tools.";
@@ -530,7 +615,6 @@ const buildingColliders = [];
 const mobs = [];
 const projectiles = [];
 const enemyProjectiles = [];
-const pickups = [];
 const particles = [];
 const effects = [];
 const companions = [];
@@ -992,7 +1076,6 @@ function buildWorld() {
 
   buildArena();
   buildTrees();
-  buildPickups();
   buildSky();
 }
 
@@ -1627,52 +1710,6 @@ function buildTrees() {
   }
 }
 
-const heartMaterial = material("#fb7185", { emissive: "#fb7185", emissiveIntensity: 1.05, roughness: 0.28, metalness: 0.08 });
-
-function buildPickups() {
-  castles.forEach((castle, index) => {
-    if (index === castles.length - 1) return;
-    const nextCastle = castles[index + 1];
-    const z = (castle.position[1] + nextCastle.position[1]) / 2;
-    [-1, 1].forEach((side) => {
-      addHeart(side * (7.2 + (index % 2) * 2.8), z);
-    });
-  });
-  // Two hearts before the arena so the final fight starts topped up.
-  addHeart(-6.5, bossArena.entryZ + 7);
-  addHeart(6.5, bossArena.entryZ + 7);
-}
-
-function addHeart(x, z) {
-  const pickup = createHeartPickup(heartMaterial);
-  pickup.position.set(x, 0.85, z);
-  pickup.userData.baseY = pickup.position.y;
-  pickup.userData.spin = Math.sign(x || 1) * 1.15;
-  pickup.userData.active = true;
-  pickups.push(pickup);
-  worldObjects.push(pickup);
-  scene.add(pickup);
-  return pickup;
-}
-
-function createHeartPickup(pickupMat) {
-  const group = new THREE.Group();
-  const left = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 12), pickupMat);
-  left.position.set(-0.18, 0.12, 0);
-  const right = left.clone();
-  right.position.x = 0.18;
-  const point = new THREE.Mesh(new THREE.ConeGeometry(0.36, 0.58, 18), pickupMat);
-  point.position.set(0, -0.18, 0);
-  point.rotation.z = Math.PI;
-  group.add(left, right, point);
-  group.rotation.z = -0.12;
-  group.scale.setScalar(1.15);
-  group.traverse((child) => {
-    if (child.isMesh) child.castShadow = true;
-  });
-  return group;
-}
-
 function buildSky() {
   const count = 900;
   const positions = new Float32Array(count * 3);
@@ -2011,10 +2048,6 @@ function resetGame() {
     mob.position.set(mob.userData.baseX, 0, mob.userData.baseZ);
     mob.scale.setScalar(mob.userData.baseScale);
   });
-  pickups.forEach((pickup) => {
-    pickup.userData.active = true;
-    pickup.visible = true;
-  });
   castleObjects.forEach((item) => {
     item.gateProgress = 0;
     item.lit = 0;
@@ -2059,7 +2092,6 @@ function update(dt) {
     updateCompanions(dt);
     updateProjectiles(dt);
     updateEnemyProjectiles(dt);
-    updatePickups(dt);
     updateRegen(dt);
     updatePriorityTarget();
     updateIdlePrompt();
@@ -2566,23 +2598,6 @@ function updateCompanions(dt) {
     spawnBeam(drone.position.x, drone.position.z, best.position.x, best.position.z, "#8bd3ff", 0.3, 1.5);
     showProjectSprite(index === 0 ? "companion0" : "companion1", index === 0 ? "Masscall" : "AutoArt", best.position.x, best.position.z, "#8bd3ff");
     data.zapTimer = 1.5 * state.perks.cooldownMult;
-  });
-}
-
-function updatePickups(dt) {
-  pickups.forEach((pickup) => {
-    if (!pickup.userData.active) return;
-    pickup.rotation.y += dt * 2.8 * Math.sign(pickup.userData.spin || 1);
-    pickup.position.y = pickup.userData.baseY + Math.sin(clock.elapsedTime * 3 + pickup.position.z) * 0.16;
-    const distance = Math.hypot(state.player.x - pickup.position.x, state.player.z - pickup.position.z);
-    if (distance < 1.35) {
-      pickup.userData.active = false;
-      pickup.visible = false;
-      const healed = heal(22);
-      spawnBurst(pickup.position.x, pickup.position.y, pickup.position.z, "#fb7185", 8, { speed: 2.6, lift: 3, life: 0.6, scale: 0.8 });
-      gameAudio.cue("pickup");
-      setMessage(state.perks.healMult > 1 ? `Grant Funding: +${healed} health.` : `+${healed} health.`);
-    }
   });
 }
 
@@ -3259,7 +3274,7 @@ function setCardList(items) {
 const bossCardLine = "The Fragmenter is every disconnected system a team lives with. This is what Victor gets hired to reconnect.";
 
 function updateHud(force = false) {
-  if (!heartsNode || !cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
+  if (!cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const item = castleObjects[state.unlockedIndex] || null;
   const fight = state.boss.stage === "fight";
   const mobsLeft = fight ? targetMobs().filter((mob) => !mob.userData.isBoss).length : item ? activeMobsForCastle(item.index).length : 0;
@@ -3292,9 +3307,6 @@ function updateHud(force = false) {
   if (!force && signature === state.lastHudId) return;
   state.lastHudId = signature;
 
-  const alive = state.playerHealth > 0;
-  heartNodes.forEach((heart) => heart.classList.toggle("is-empty", !alive));
-  heartsNode.setAttribute("aria-label", alive ? "Health: five of five hearts" : "Health: no hearts");
   if (toastNode) {
     toastNode.textContent = state.message;
     toastNode.classList.toggle("is-hidden", !toastVisible);
@@ -3330,7 +3342,7 @@ function updateHud(force = false) {
     cardCopyNode.textContent = bossCardLine;
     setCardList(
       state.boss.stage === "approach"
-        ? [{ text: "Follow the road past the last castle" }, { text: "Two hearts wait before the arena" }]
+        ? [{ text: "Follow the road past the last castle" }]
         : [
             { text: fragmentsAlive() > 0 ? `${fragmentsAlive()} fragments shield the core` : "Core exposed", done: fragmentsAlive() === 0 },
             { text: state.abilities.dash ? "Dash out of the slam ring" : "Step out of the slam ring" },
@@ -3475,7 +3487,7 @@ function openDiscovery(item) {
   discoveryNode.style.setProperty("--castle-color", castle.color);
   discoveryKickerNode.textContent = castle.shortTitle;
   discoveryTitleNode.textContent = "Choose a power";
-  discoveryIntroNode.textContent = "Pick a project to power your build.";
+  discoveryIntroNode.textContent = "";
   discoveryChoicesNode.replaceChildren(
     ...castle.artifacts.map((artifact, index) => {
       const button = document.createElement("button");
@@ -3488,16 +3500,14 @@ function openDiscovery(item) {
       lane.className = "artifact-lane";
       lane.title = artifact.upgrade.lane;
       lane.setAttribute("aria-label", `${artifact.upgrade.lane} power`);
-      lane.append(createPowerIcon(artifact.upgrade.lane));
+      lane.append(createPowerIcon(powerPresentation[artifact.upgrade.name]?.icon || artifact.upgrade.lane));
       const title = document.createElement("b");
       title.textContent = artifact.upgrade.name;
-      const project = document.createElement("small");
-      project.className = "artifact-project";
-      project.textContent = artifact.project;
       const teaser = document.createElement("span");
       teaser.className = "artifact-effect";
-      teaser.textContent = artifact.upgrade.effect;
-      button.append(key, lane, title, project, teaser);
+      teaser.textContent = powerPresentation[artifact.upgrade.name]?.text || artifact.upgrade.effect;
+      button.title = artifact.upgrade.effect;
+      button.append(key, lane, title, teaser);
       button.addEventListener("click", () => chooseArtifact(index));
       return button;
     }),
@@ -3524,8 +3534,9 @@ function chooseArtifact(index) {
     button.classList.toggle("is-selected", buttonIndex === index);
   });
   if (revealLaneNode) revealLaneNode.replaceChildren(createPowerIcon(artifact.upgrade.lane), document.createTextNode(artifact.upgrade.lane));
-  revealTitleNode.textContent = artifact.title;
-  revealGameNode.textContent = `${artifact.upgrade.name}: ${artifact.upgrade.effect}`;
+  revealTitleNode.textContent = artifact.upgrade.name;
+  revealGameNode.textContent = powerPresentation[artifact.upgrade.name]?.text || artifact.upgrade.effect;
+  discoveryRevealNode.querySelector("details")?.removeAttribute("open");
   revealRealNode.textContent = `${artifact.project} · ${artifact.example}`;
   revealLinkNode.textContent = artifact.link.label;
   revealLinkNode.href = artifact.link.href;
@@ -3533,11 +3544,11 @@ function chooseArtifact(index) {
   if (revealUnlockNode) {
     revealUnlockNode.classList.toggle("is-hidden", !unlock);
     if (unlock) {
-      revealUnlockTitleNode.replaceChildren(createPowerIcon(unlock.id), document.createTextNode(`${unlock.name} (${unlock.kind})`));
-      revealUnlockCopyNode.textContent = `${unlock.effect} ${unlock.control}. ${unlock.cv}`;
+      revealUnlockTitleNode.replaceChildren(createPowerIcon(unlock.id), document.createTextNode(unlock.name));
+      revealUnlockCopyNode.textContent = `${unlock.effect} ${unlock.control}.`;
     }
   }
-  discoveryContinueNode.textContent = item.index === castles.length - 1 ? "Face the Fragmenter" : "Continue the quest";
+  discoveryContinueNode.textContent = item.index === castles.length - 1 ? "Face the Fragmenter" : "Continue";
   discoveryRevealNode.classList.remove("is-hidden");
   discoveryContinueNode.focus();
   discoveryRevealNode.scrollIntoView?.({ block: "nearest" });
@@ -3572,7 +3583,7 @@ function continueDiscovery() {
   state.run.lastInputAt = clock.elapsedTime;
   if (item.index === castles.length - 1) {
     state.boss.stage = "approach";
-    setMessage("Something waits at the end of the road. Two hearts first.");
+    setMessage("The final challenge waits at the end of the road.");
     updateHud(true);
     return;
   }
@@ -4157,7 +4168,6 @@ window.render_game_to_text = () => {
     joystick: { active: state.joystick.active, magnitude: Number(state.joystick.magnitude.toFixed(2)) },
     collected: state.collected.map((entry) => entry.artifactId),
     castleColliders: buildingColliders.length,
-    pickupCount: pickups.length,
     visitedCount: visited.size,
     visitedIds: [...visited],
     castleCount: castles.length,
