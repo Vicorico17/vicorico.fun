@@ -83,6 +83,7 @@
       language = next;
       dictionary = dictionaries.get(language);
       document.documentElement.lang = language;
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
       choices.forEach((button) => button.setAttribute('aria-pressed', String(button === choice)));
       label.textContent = choice.querySelector('[data-language-name]').textContent;
       menu.querySelector('[data-language-flag]').src = choice.dataset.flag;

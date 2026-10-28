@@ -419,7 +419,6 @@
   "Latest commits": "Cele mai recente commituri",
   "Latest update": "Ultima actualizare",
   "Launch mechanics": "Lansați mecanica",
-  "Launched $GONE, the biggest community coin on Polygon, reaching $10M market cap and over 20k holders.": "S-a lansat $GONE, cea mai mare monedă comunitară de pe Polygon, atingând o capitalizare de piață de 10 milioane USD și peste 20.000 deținători.",
   "Launched Baguri, a Romanian independent-designer marketplace, and Spritzbox, a DIY home cocktail delivery kit, while learning checkout, logistics, acquisition, and creator operations from the inside.": "S-au lansat Baguri, o piață românească independentă de designer, și Spritzbox, un kit de livrare de cocktailuri la domiciliu, în timp ce învățau din interior operațiunile de checkout, logistică, achiziție și creatori.",
   "Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.": "S-au lansat Baguri, o piață românească pentru designeri independenți, și Spritzbox, un kit de livrare de cocktailuri la domiciliu.",
   "Launched and grew Polygon-native community projects, including $GONE, community fundraising, grant work, memes, launch mechanics, and on-chain culture experiments.": "Am lansat și am dezvoltat proiecte comunitare native din Polygon, inclusiv $GONE, strângere de fonduri comunitare, granturi, meme-uri, mecanisme de lansare și experimente culturale în lanț.",
@@ -938,5 +937,14 @@
   "Your saved countries are loaded. Save for everyone to publish them.": "Țările dvs. salvate sunt încărcate. Salvați pentru ca toată lumea să le publice.",
   "Year 4 · Multi-Agent Orchestration": "Anul 4 · Orchestrarea mai multor agenți",
   "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "Un curs practic despre lucrul cu agenți AI: deschide conversații separate, atribuie fiecărui agent o sarcină diferită în același repository și coordonează munca lor. Învață să definești responsabilități, să împărtășești contextul, să verifici modificările, să rezolvi conflictele și să integrezi rezultatele într-o aplicație funcțională publicată.",
-  "Menu": "Meniu"
+  "Menu": "Meniu",
+  "Learn about my history": "Descoperă povestea mea",
+  "Hide my history": "Ascunde povestea mea",
+  "Home": "Acasă",
+  "Explore": "Explorează",
+  "About": "Despre mine",
+  "Projects": "Proiecte",
+  "Main": "Navigare principală",
+  "Most of what I build is open source. You can take it and make it better. Good luck!": "Majoritatea lucrurilor pe care le construiesc sunt open source. Le poți prelua și îmbunătăți. Mult succes!",
+  "Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap.": "Am salvat Crăciunul. Am lansat $GONE printr-un airdrop către peste 20.000 de oameni, transformându-l în cea mai mare monedă comunitară de pe Polygon, cu o capitalizare de piață de peste 10 milioane de dolari."
 }

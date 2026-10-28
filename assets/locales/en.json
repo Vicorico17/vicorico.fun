@@ -426,7 +426,6 @@
   "Latest commits": "Latest commits",
   "Latest update": "Latest update",
   "Launch mechanics": "Launch mechanics",
-  "Launched $GONE, the biggest community coin on Polygon, reaching $10M market cap and over 20k holders.": "Launched $GONE, the biggest community coin on Polygon, reaching $10M market cap and over 20k holders.",
   "Launched Baguri, a Romanian independent-designer marketplace, and Spritzbox, a DIY home cocktail delivery kit, while learning checkout, logistics, acquisition, and creator operations from the inside.": "Launched Baguri, a Romanian independent-designer marketplace, and Spritzbox, a DIY home cocktail delivery kit, while learning checkout, logistics, acquisition, and creator operations from the inside.",
   "Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.": "Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.",
   "Launched and grew Polygon-native community projects, including $GONE, community fundraising, grant work, memes, launch mechanics, and on-chain culture experiments.": "Launched and grew Polygon-native community projects, including $GONE, community fundraising, grant work, memes, launch mechanics, and on-chain culture experiments.",
@@ -938,5 +937,14 @@
   "zubair-trabzada/geo-seo-claude": "zubair-trabzada/geo-seo-claude",
   "Year 4 · Multi-Agent Orchestration": "Year 4 · Multi-Agent Orchestration",
   "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.",
-  "Menu": "Menu"
+  "Menu": "Menu",
+  "Learn about my history": "Learn about my history",
+  "Hide my history": "Hide my history",
+  "Home": "Home",
+  "Explore": "Explore",
+  "About": "About",
+  "Projects": "Projects",
+  "Main": "Main",
+  "Most of what I build is open source. You can take it and make it better. Good luck!": "Most of what I build is open source. You can take it and make it better. Good luck!",
+  "Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap.": "Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap."
 }

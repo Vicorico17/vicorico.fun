@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="scroll-locked">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,7 +25,7 @@
       plausible.init();
     </script>
   </head>
-  <body class="home-page scroll-locked">
+  <body class="home-page">
     <svg class="glass-filter" aria-hidden="true" focusable="false">
       <filter
         id="glass-distortion"
@@ -88,6 +88,7 @@
           <button type="button" data-language="fr" data-flag="assets/flags/fr.svg" lang="fr" aria-pressed="false"><img class="language-flag" src="assets/flags/fr.svg" alt="" width="24" height="16"> <span data-language-name>Français</span></button>
           <button type="button" data-language="de" data-flag="assets/flags/de.svg" lang="de" aria-pressed="false"><img class="language-flag" src="assets/flags/de.svg" alt="" width="24" height="16"> <span data-language-name>Deutsch</span></button>
           <button type="button" data-language="zh-CN" data-flag="assets/flags/cn.svg" lang="zh-CN" aria-pressed="false"><img class="language-flag" src="assets/flags/cn.svg" alt="" width="24" height="16"> <span data-language-name>简体中文</span></button>
+          <button type="button" data-language="ar" data-flag="assets/flags/ar.svg" lang="ar" dir="rtl" aria-pressed="false"><img class="language-flag" src="assets/flags/ar.svg" alt="" width="24" height="16"> <span data-language-name>العربية</span></button>
           <p data-language-status role="status"></p>
         </div>
       </details>
@@ -99,13 +100,6 @@
           <button type="button" data-theme-option="grove" aria-pressed="false"><span aria-hidden="true">🌿</span> Grove</button>
         </div>
       </div>
-      <a class="pdf-cv" href="assets/victor-cazacu-cv.pdf" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-          <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" />
-          <path d="M14 3v6h6M8 13h8M8 17h5" />
-        </svg>
-        <span>PDF CV</span>
-      </a>
       <a class="quest-play" href="game.html" aria-label="Play Vico’s Quest">
         <img src="assets/vicos-quest.svg" width="32" height="32" alt="">
         <span class="quest-play-copy"><span class="quest-name">Vico’s Quest</span><span class="quest-action">Play <span aria-hidden="true">▶</span></span></span>
@@ -113,7 +107,7 @@
       </div>
     </nav>
     <main>
-      <section class="portal-start section" aria-label="Enter vicorico.com">
+      <section id="home" class="portal-start section" aria-label="Enter vicorico.com">
         <canvas class="portal-orbit-field" data-portal-art aria-hidden="true"></canvas>
         <h1 class="text-flip" aria-label="vicorico.com" data-title-themes>
           <button class="text-flip-trigger" type="button" aria-label="Change vicorico.com title style">
@@ -155,15 +149,10 @@
             </svg>
           </a>
         </div>
-        <div class="portal-enter portal-slide" data-enter-site data-target="#proof">
-          <div class="portal-slide-track" data-enter-track>
-            <span class="portal-slide-fill" aria-hidden="true"></span>
-            <span class="portal-slide-label" aria-hidden="true">EXPLORE</span>
-            <div class="portal-slide-thumb" role="slider" tabindex="0" aria-label="Slide to explore" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Drag right to explore" data-enter-thumb>
-              <span aria-hidden="true">»</span>
-            </div>
-          </div>
-        </div>
+        <a class="portal-enter portal-explore" href="#proof">
+          <span>EXPLORE</span>
+          <span aria-hidden="true">↓</span>
+        </a>
       </section>
 
       <section id="proof" class="proof-section section" aria-labelledby="proof-title">
@@ -251,29 +240,23 @@
           <h3 class="journey-heading">The path so far</h3>
           <div class="journey-list">
             <article>
-              <span>2010</span>
-              <h3>Started young</h3>
-              <p>Started coding at 10, selling cupcakes, and learning early that products, margins, and distribution are a real game.</p>
+              <span>Now</span>
+              <h3>University tech teacher, AGI-proof angel investor, and zero-human venture founder</h3>
+              <p>Teaching technology at university, investing as an AGI-proof angel investor, and founding technology ventures. Focused on software architecture and maintainable systems that reduce coordination and expand what small teams can build.</p>
+            </article>
+          </div>
+          <details class="journey-history">
+            <summary><span class="journey-history-open">Learn about my history</span><span class="journey-history-close">Hide my history</span></summary>
+            <div class="journey-list">
+            <article>
+              <span>2025</span>
+              <h3>AI, crypto, and agentic commerce</h3>
+              <p>Built across AI infrastructure, local-first applications, crypto tooling, and agentic commerce. Connected automation, creative systems, and internet-native distribution through automated content generation, smart contracts, payment-enabled agents, second brains, and zero-human-company systems.</p>
             </article>
             <article>
-              <span>2015</span>
-              <h3>First sustainable revenue-generating business</h3>
-              <p>Built my first dropshipping website and started learning internet commerce from the inside.</p>
-            </article>
-            <article>
-              <span>2017</span>
-              <h3>First Bitcoin</h3>
-              <p>Got my first Bitcoin from trading CS:GO skins and went deeper into internet-native markets.</p>
-            </article>
-            <article>
-              <span>2019</span>
-              <h3>Baguri and Spritzbox</h3>
-              <p>Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.</p>
-            </article>
-            <article>
-              <span>2021</span>
-              <h3>All in crypto</h3>
-              <p>Went all in on crypto and built several projects, with Arkadia Park still running today, while building across blockchains such as Terra Luna, Polygon, and Solana.</p>
+              <span>2023</span>
+              <h3>Polygon community coin, $GONE</h3>
+              <p>Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap.</p>
             </article>
             <article>
               <span>2022</span>
@@ -281,21 +264,32 @@
               <p>Started teaching myself AI and learning about machine learning technology.</p>
             </article>
             <article>
-              <span>2023</span>
-              <h3>Polygon community coin, $GONE</h3>
-              <p>Launched $GONE, the biggest community coin on Polygon, reaching $10M market cap and over 20k holders.</p>
+              <span>2021</span>
+              <h3>All in crypto</h3>
+              <p>Went all in on crypto and built several projects, with Arkadia Park still running today, while building across blockchains such as Terra Luna, Polygon, and Solana.</p>
             </article>
             <article>
-              <span>2025</span>
-              <h3>AI, crypto, and agentic commerce</h3>
-              <p>Built across AI infrastructure, local-first applications, crypto tooling, and agentic commerce. Connected automation, creative systems, and internet-native distribution through automated content generation, smart contracts, payment-enabled agents, second brains, and zero-human-company systems.</p>
+              <span>2019</span>
+              <h3>Baguri and Spritzbox</h3>
+              <p>Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.</p>
             </article>
             <article>
-              <span>Now</span>
-              <h3>University tech teacher, AGI-proof angel investor, and zero-human venture founder</h3>
-              <p>Teaching technology at university, investing as an AGI-proof angel investor, and founding technology ventures. Focused on software architecture and maintainable systems that reduce coordination and expand what small teams can build.</p>
+              <span>2017</span>
+              <h3>First Bitcoin</h3>
+              <p>Got my first Bitcoin from trading CS:GO skins and went deeper into internet-native markets.</p>
             </article>
-          </div>
+            <article>
+              <span>2015</span>
+              <h3>First sustainable revenue-generating business</h3>
+              <p>Built my first dropshipping website and started learning internet commerce from the inside.</p>
+            </article>
+            <article>
+              <span>2010</span>
+              <h3>Started young</h3>
+              <p>Started coding at 10, selling cupcakes, and learning early that products, margins, and distribution are a real game.</p>
+            </article>
+            </div>
+          </details>
           </div>
         </div>
         <div class="about-details">
@@ -680,6 +674,7 @@
         <div class="proof-heading">
           <p class="eyebrow">Project archive</p>
           <h2 id="projects-title">Selected Projects</h2>
+          <p>Most of what I build is open source. You can take it and make it better. Good luck!</p>
           <p>Sorted by latest GitHub activity. Public repositories show their default branch commit count.</p>
         </div>
         <div class="proof-grid">
@@ -1813,6 +1808,8 @@
       </section>
 
     </main>
+    <div id="liquid-navbar-root" class="site-liquid-dock"></div>
+    <script type="module" src="/src/main.tsx"></script>
     <script src="language.js?v=20261014d"></script>
     <script src="site.js?v=20261014g"></script>
   </body>

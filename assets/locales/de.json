@@ -419,7 +419,6 @@
   "Latest commits": "Neueste Commits",
   "Latest update": "Neuestes Update",
   "Launch mechanics": "Mechanik starten",
-  "Launched $GONE, the biggest community coin on Polygon, reaching $10M market cap and over 20k holders.": "Einführung von $GONE, dem größten Community-Coin auf Polygon, der eine Marktkapitalisierung von 10 Millionen US-Dollar und über 20.000 Inhaber erreicht.",
   "Launched Baguri, a Romanian independent-designer marketplace, and Spritzbox, a DIY home cocktail delivery kit, while learning checkout, logistics, acquisition, and creator operations from the inside.": "Einführung von Baguri, einem rumänischen Marktplatz für unabhängige Designer, und Spritzbox, einem DIY-Cocktail-Lieferset für zu Hause, während gleichzeitig Kassen-, Logistik-, Beschaffungs- und Gestaltungsvorgänge von innen erlernt wurden.",
   "Launched Baguri, a Romanian marketplace for independent designers, and Spritzbox, a DIY home cocktail delivery kit.": "Einführung von Baguri, einem rumänischen Marktplatz für unabhängige Designer, und Spritzbox, einem DIY-Cocktail-Lieferset für zu Hause.",
   "Launched and grew Polygon-native community projects, including $GONE, community fundraising, grant work, memes, launch mechanics, and on-chain culture experiments.": "Startete und erweiterte Polygon-native Community-Projekte, darunter $GONE, Community-Fundraising, Fördermittelarbeit, Memes, Startmechanismen und On-Chain-Kulturexperimente.",
@@ -938,5 +937,14 @@
   "Your saved countries are loaded. Save for everyone to publish them.": "Ihre gespeicherten Länder werden geladen. Speichern Sie sie, damit jeder sie veröffentlichen kann.",
   "Year 4 · Multi-Agent Orchestration": "4. Jahr · Multi-Agenten-Orchestrierung",
   "A practical agentic course: open separate AI chats, assign each agent a different task in the same repository, and coordinate their work. Learn to define responsibilities, share context, review changes, resolve conflicts, and bring the results together into a working deployment.": "Ein praktischer Kurs über KI-Agenten: Öffne separate Chats, weise jedem Agenten eine andere Aufgabe im selben Repository zu und koordiniere ihre Arbeit. Lerne, Verantwortlichkeiten festzulegen, Kontext zu teilen, Änderungen zu prüfen, Konflikte zu lösen und die Ergebnisse zu einer funktionsfähigen Bereitstellung zusammenzuführen.",
-  "Menu": "Menü"
+  "Menu": "Menü",
+  "Learn about my history": "Mehr über meinen Werdegang",
+  "Hide my history": "Meinen Werdegang ausblenden",
+  "Home": "Start",
+  "Explore": "Entdecken",
+  "About": "Über mich",
+  "Projects": "Projekte",
+  "Main": "Hauptnavigation",
+  "Most of what I build is open source. You can take it and make it better. Good luck!": "Das meiste, was ich entwickle, ist Open Source. Du kannst es übernehmen und verbessern. Viel Erfolg!",
+  "Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap.": "Weihnachten gerettet. $GONE mit einem Airdrop an über 20.000 Menschen gestartet und zum größten Community-Coin auf Polygon mit einer Marktkapitalisierung von über 10 Millionen Dollar ausgebaut."
 }

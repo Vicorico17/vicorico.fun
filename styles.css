@@ -19,12 +19,6 @@ html {
   scroll-behavior: smooth;
 }
 
-html.scroll-locked,
-body.scroll-locked {
-  height: 100%;
-  overflow: hidden;
-}
-
 body {
   margin: 0;
   color: var(--ink);
@@ -50,12 +44,6 @@ body.home-page {
   min-height: 100svh;
   overflow-x: hidden;
   overflow-x: clip;
-}
-
-body.home-page.scroll-locked {
-  position: fixed;
-  inset: 0;
-  width: 100%;
 }
 
 body.home-page::before {
@@ -2100,144 +2088,33 @@ button {
   user-select: none;
 }
 
-.portal-start .portal-slide {
-  --slide-x: 0px;
-  z-index: 2;
-  width: min(348px, calc(100vw - 48px));
-  height: 80px;
-  padding: 5px;
-  border: 1px solid rgba(218, 228, 255, 0.46);
-  border-radius: 25px;
-  background: linear-gradient(145deg, rgba(242, 246, 255, 0.22), rgba(80, 111, 182, 0.12) 42%, rgba(20, 24, 45, 0.48));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
-    0 8px 0 rgba(5, 8, 20, 0.84),
-    0 24px 42px rgba(0, 0, 0, 0.45),
-    0 0 35px rgba(116, 159, 255, 0.19);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  transform: perspective(900px) rotateX(7deg);
-  transition: border-color 240ms ease, box-shadow 300ms ease;
-}
-
-.portal-start .portal-slide:hover,
-.portal-start .portal-slide:focus-within {
-  border-color: rgba(240, 247, 255, 0.9);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 8px 0 rgba(5, 8, 20, 0.84),
-    0 24px 45px rgba(0, 0, 0, 0.48),
-    0 0 42px rgba(122, 171, 255, 0.42);
-}
-
-.portal-slide-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border: 1px solid rgba(228, 239, 255, 0.2);
-  border-radius: 19px;
-  background:
-    radial-gradient(ellipse at 20% -10%, rgba(255, 255, 255, 0.2), transparent 58%),
-    radial-gradient(ellipse at 80% 110%, rgba(115, 153, 255, 0.23), transparent 55%),
-    linear-gradient(110deg, rgba(28, 36, 66, 0.78), rgba(13, 17, 36, 0.86));
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.16);
-  user-select: none;
-  /* Keep diagonal finger movement from cancelling the explore gesture. */
-  touch-action: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
-
-.portal-slide-track::before {
-  position: absolute;
-  inset: 2px 9px auto;
-  height: 45%;
-  border-radius: 18px 18px 60% 60%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
-  pointer-events: none;
-  content: "";
-}
-
-.portal-slide-fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: calc(66px + var(--slide-x));
-  background: linear-gradient(90deg, rgba(222, 239, 255, 0.34), rgba(126, 172, 255, 0.24) 72%, rgba(198, 222, 255, 0.12));
-  box-shadow: 0 0 26px rgba(133, 182, 255, 0.36), inset -1px 0 0 rgba(255, 255, 255, 0.25);
-  transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.portal-slide.is-dragging .portal-slide-fill,
-.portal-slide.is-dragging .portal-slide-thumb {
-  transition: none;
-}
-
-.portal-slide-label {
-  position: absolute;
-  top: 50%;
-  right: 25px;
-  transform: translateY(-50%);
-  color: #f7fbff;
+.portal-start .portal-explore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-height: 56px;
+  padding: 16px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
   font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.08rem;
-  font-weight: 800;
-  letter-spacing: 0.19em;
-  text-shadow: 0 0 9px rgba(236, 246, 255, 0.95), 0 0 26px rgba(120, 179, 255, 0.8), 0 0 50px rgba(105, 132, 255, 0.65);
-  opacity: var(--slide-label-opacity, 1);
-  pointer-events: none;
-  animation: portalSlideGlow 2.3s ease-in-out infinite alternate;
-}
-
-.portal-slide-thumb {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  border-radius: 15px;
-  background:
-    radial-gradient(circle at 30% 12%, rgba(255, 255, 255, 0.95), transparent 42%),
-    linear-gradient(145deg, rgba(221, 239, 255, 0.76), rgba(137, 179, 247, 0.56) 55%, rgba(88, 112, 191, 0.7));
-  box-shadow:
-    inset 0 2px 2px rgba(255, 255, 255, 0.8),
-    inset 0 -4px 7px rgba(29, 54, 116, 0.25),
-    0 5px 16px rgba(91, 146, 255, 0.45),
-    0 0 18px rgba(151, 199, 255, 0.38);
-  backdrop-filter: blur(12px) saturate(175%);
-  -webkit-backdrop-filter: blur(12px) saturate(175%);
-  color: #15315b;
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 2rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  line-height: 1;
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
-  transform: translateX(var(--slide-x));
-  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms ease;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  transition: background 180ms ease, border-color 180ms ease;
 }
 
-.portal-slide-thumb:hover,
-.portal-slide-thumb:focus-visible {
-  box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.9), 0 7px 22px rgba(131, 183, 255, 0.68), 0 0 26px rgba(159, 208, 255, 0.6);
+.portal-start .portal-explore:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
-.portal-slide-thumb:focus-visible {
-  outline: 2px solid #e9f6ff;
-  outline-offset: 3px;
-}
-
-.portal-slide.is-dragging .portal-slide-thumb { cursor: grabbing; }
-.portal-slide.is-complete .portal-slide-thumb { cursor: default; }
-
-@keyframes portalSlideGlow {
-  from { filter: brightness(0.62); text-shadow: 0 0 5px rgba(195, 221, 255, 0.7), 0 0 16px rgba(104, 148, 255, 0.56); }
-  to { filter: brightness(1.28); text-shadow: 0 0 12px #fff, 0 0 32px rgba(138, 197, 255, 0.95), 0 0 58px rgba(111, 146, 255, 0.8); }
+.portal-start .portal-explore:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 5px;
 }
 
 .about-intro {
@@ -2646,6 +2523,32 @@ button {
   gap: 10px;
 }
 
+.journey-history > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 12px 18px;
+  border: 1px solid rgba(247, 213, 138, 0.45);
+  border-radius: 10px;
+  color: #f7d58a;
+  background: rgba(247, 213, 138, 0.08);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.journey-history > summary::-webkit-details-marker { display: none; }
+.journey-history > summary::after { content: "+"; font-size: 1.4rem; }
+.journey-history[open] > summary::after { content: "−"; }
+.journey-history > summary:hover { background: rgba(247, 213, 138, 0.16); }
+.journey-history > summary:focus-visible { outline: 2px solid #f7d58a; outline-offset: 4px; }
+.journey-history-close,
+.journey-history[open] .journey-history-open { display: none; }
+.journey-history[open] .journey-history-close { display: inline; }
+.journey-history > .journey-list { margin-top: 14px; }
+
 .journey-list article {
   display: grid;
   grid-template-columns: 70px minmax(0, 1fr);
@@ -2724,13 +2627,11 @@ button {
 
   .text-flip::before,
   .home-page .text-flip .text-flip-trigger,
-  .portal-slide,
-  .portal-slide-fill,
-  .portal-slide-thumb {
+  .portal-start .portal-explore {
     transition: none;
   }
 
-  .portal-slide-label { animation: none; }
+  html { scroll-behavior: auto; }
 
   .home-page .chapter-card,
   .home-page .flow-summary,
