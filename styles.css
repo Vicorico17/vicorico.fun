@@ -2553,6 +2553,31 @@ button {
   list-style: none;
 }
 
+.journey-current {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.journey-current-date {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journey-current-title {
+  color: var(--ink);
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  line-height: 1.35;
+}
+
+.journey-current-copy {
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
 .journey-history > summary::-webkit-details-marker { display: none; }
 .journey-history > summary::after { content: "+"; font-size: 1.4rem; }
 .journey-history[open] > summary::after { content: "−"; }
