@@ -108,7 +108,6 @@
   "Agents fixing their own tests": "Agents réparant leurs propres tests",
   "Agents managing agents": "Agents gérant des agents",
   "All in crypto": "Tout en crypto",
-  "All selected projects": "Tous les projets sélectionnés",
   "An NFC attendance checkpoint with secure check-in and check-out.": "Un point de contrôle de présence NFC avec enregistrement et départ sécurisés.",
   "An early-stage project exploring a new peptide-focused product experience.": "Un projet en phase préliminaire explorant une nouvelle expérience produit axée sur les peptides.",
   "An open-source, read-only terminal that makes the Bucharest Stock Exchange easier to follow through clean instrument pages, filings, events, and market context.": "Un terminal open source en lecture seule qui facilite le suivi de la Bourse de Bucarest grâce à des pages d'instruments, des dépôts, des événements et un contexte de marché clairs.",
@@ -369,7 +368,6 @@
   "Head of AI or transformation lead for internal automation programs.": "Responsable de l'IA ou responsable de la transformation des programmes d'automatisation internes.",
   "Headless agent teams": "Équipes d'agents sans tête",
   "HeartMuLa/heartlib": "HeartMuLa/heartlib",
-  "Here’s What I’m Building": "Voici ce que je construis",
   "HeyPuter/puter": "HeyPuter/ordinateur",
   "HomeSports": "AccueilSports",
   "Hosted many workshops and Twitter Spaces for crypto and startup communities.": "Hébergement de nombreux ateliers et espaces Twitter pour les communautés de crypto et de startups.",
@@ -946,5 +944,7 @@
   "Projects": "Projets",
   "Main": "Navigation principale",
   "Most of what I build is open source. You can take it and make it better. Good luck!": "La plupart de mes créations sont open source. Vous pouvez les reprendre et les améliorer. Bonne chance !",
-  "Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap.": "J’ai sauvé Noël. J’ai lancé $GONE avec un airdrop à plus de 20 000 personnes, pour en faire la plus grande monnaie communautaire sur Polygon, avec une capitalisation de plus de 10 millions de dollars."
+  "Saved Christmas. Launched $GONE with an airdrop to over 20k people, growing it into the biggest community coin on Polygon with a $10M+ market cap.": "J’ai sauvé Noël. J’ai lancé $GONE avec un airdrop à plus de 20 000 personnes, pour en faire la plus grande monnaie communautaire sur Polygon, avec une capitalisation de plus de 10 millions de dollars.",
+  "What I’m Actually Building": "Ce que je construis concrètement",
+  "All projects": "Tous les projets"
 }
