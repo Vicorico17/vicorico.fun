@@ -28,16 +28,8 @@ if (stageNode) {
     stageNode.addEventListener(type, preventPinchZoom, { passive: false });
   }
 }
-const soundButtonNode = document.querySelector("[data-game-sound]");
-const soundLabelNode = document.querySelector("[data-game-sound-label]");
 const gameAudio = createGameAudio();
 
-function syncSoundButton() {
-  if (!soundButtonNode) return;
-  soundButtonNode.setAttribute("aria-pressed", String(gameAudio.muted));
-  soundButtonNode.setAttribute("aria-label", gameAudio.muted ? "Unmute game audio" : "Mute game audio");
-  if (soundLabelNode) soundLabelNode.textContent = gameAudio.muted ? "Sound off" : "Sound on";
-}
 const weaponNodes = document.querySelectorAll("[data-game-weapon]");
 const ammoChipNode = document.querySelector("[data-game-ammo-chip]");
 const ammoCountNode = document.querySelector("[data-game-ammo]");
@@ -3273,7 +3265,12 @@ function setCardList(items) {
 
 const bossCardLine = "The Fragmenter is every disconnected system a team lives with. This is what Victor gets hired to reconnect.";
 
+function syncFirstCastleTutorial() {
+  if (stageNode) stageNode.dataset.tutorial = visited.has(castles[0].id) ? "complete" : "active";
+}
+
 function updateHud(force = false) {
+  syncFirstCastleTutorial();
   if (!cardNode || !cardKickerNode || !cardTitleNode || !cardCopyNode || !cardListNode) return;
   const item = castleObjects[state.unlockedIndex] || null;
   const fight = state.boss.stage === "fight";
@@ -3904,11 +3901,6 @@ document.addEventListener("visibilitychange", () => {
   gameAudio.setPlaying(state.phase === "play" && !document.hidden);
 });
 
-soundButtonNode?.addEventListener("click", () => {
-  gameAudio.setMuted(!gameAudio.muted);
-  syncSoundButton();
-});
-
 function setJoystickFromEvent(event) {
   const joystick = state.joystick;
   const dx = event.clientX - joystick.centerX;
@@ -4183,7 +4175,6 @@ buildWorld();
 resize();
 updateWeaponUi();
 updateAbilityUi();
-syncSoundButton();
 syncCompanions();
 updateHud(true);
 hidePanel(discoveryNode);

@@ -118,9 +118,19 @@
   cursor: pointer;
 }
 
-.game-funding-trigger:focus-visible {
-  outline: 2px solid #f4bf45;
-  outline-offset: 4px;
+/* Keep every funding step frameless, including touch and keyboard focus. */
+.game-funding-trigger,
+.game-funding-trigger:focus,
+.game-funding-trigger:focus-visible,
+.game-funding-trigger:active {
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.game-funding:has(.game-funding-trigger:focus-visible) > #game-funding-label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .game-funding-fill {
@@ -148,41 +158,9 @@
   }
 }
 
-.game-sound-toggle {
-  position: absolute;
-  top: max(18px, env(safe-area-inset-top));
-  right: max(24px, env(safe-area-inset-right));
-  z-index: 7;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  min-width: 98px;
-  min-height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 999px;
-  background: rgba(5, 7, 12, 0.78);
-  color: #ffffff;
-  cursor: pointer;
-  font: 850 0.78rem/1 Inter, ui-sans-serif, system-ui, sans-serif;
-  padding: 0.6rem 0.8rem;
-  backdrop-filter: blur(18px);
-}
 
-.game-sound-toggle:hover,
-.game-sound-toggle:focus-visible {
-  border-color: #f4bf45;
-  background: rgba(34, 39, 53, 0.9);
-}
 
-.game-sound-toggle:focus-visible {
-  outline: 2px solid #f4bf45;
-  outline-offset: 3px;
-}
 
-.game-sound-toggle[aria-pressed="true"] {
-  color: rgba(255, 255, 255, 0.64);
-}
 
 @keyframes attackPulse {
   0%,
@@ -418,7 +396,7 @@
 }
 
 @media (min-width: 761px) and (pointer: fine) {
-  .game-stage[data-phase="play"][data-near-castle="true"] .pc-controls-panel {
+  .game-stage[data-phase="play"][data-tutorial="active"] .pc-controls-panel {
     display: block;
   }
 }
@@ -1062,9 +1040,6 @@
     display: flex;
   }
 
-  .game-sound-toggle {
-    display: none;
-  }
 
   .game-stage,
   .game-shell {
@@ -1318,6 +1293,11 @@
   .game-panel h2 {
     font-size: 1.4rem;
   }
+}
+
+/* Reveal the weapon and ammo only after leaving the start screen. */
+.game-stage[data-phase="intro"] .hud-statusline {
+  display: none;
 }
 
 /* Keep the top status row light and unboxed. */
@@ -1914,4 +1894,21 @@
 @media (hover: none) {
   .game-discovery .artifact-choice kbd { display: none; }
   .game-discovery .artifact-choice { grid-template-columns: 54px minmax(0, 1fr); grid-template-areas: "lane title" "lane teaser"; }
+}
+
+.pc-controls-panel .pc-tutorial-steps {
+  display: grid;
+  gap: 7px;
+  margin: 0 0 14px;
+  padding-inline-start: 18px;
+}
+.pc-controls-panel .pc-tutorial-steps li {
+  display: list-item;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.pc-controls-panel {
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+  pointer-events: auto;
 }
