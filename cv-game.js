@@ -610,6 +610,7 @@ const enemyProjectiles = [];
 const particles = [];
 const effects = [];
 const companions = [];
+const decorativeAlpacas = [];
 const worldBoundsX = 26;
 const worldStartZ = 8;
 const worldEndZ = -300;
@@ -765,6 +766,7 @@ const particleGeometry = new THREE.BoxGeometry(0.18, 0.18, 0.18);
 const particleMaterials = new Map();
 const pulseGeometry = new THREE.RingGeometry(0.75, 1, 40);
 const scratchVector = new THREE.Vector3();
+const limbForward = new THREE.Vector3(0, 0, 1);
 const scratchColor = new THREE.Color();
 const baseThemeColor = new THREE.Color("#111827");
 const bossThemeColor = new THREE.Color("#2a1638");
@@ -904,7 +906,7 @@ function markInput() {
 
 function createPlayer() {
   const group = new THREE.Group();
-  const bodyMat = material("#e65f3f", { roughness: 0.38, metalness: 0.18 });
+  const bodyMat = material("#d85638", { roughness: 0.38, metalness: 0.18 });
   const darkMat = material("#17252b", { roughness: 0.62 });
   const skinMat = material("#f3c58f", { roughness: 0.72 });
   const glowMat = material("#8bd3ff", { emissive: "#8bd3ff", emissiveIntensity: 0.65 });
@@ -912,16 +914,52 @@ function createPlayer() {
   const bowMat = material("#6fd18c", { emissive: "#6fd18c", emissiveIntensity: 0.75, roughness: 0.34, metalness: 0.12 });
   const arcMat = material("#8bd3ff", { emissive: "#8bd3ff", emissiveIntensity: 1.1, roughness: 0.3, metalness: 0.2 });
 
-  const body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.25, 0.58), bodyMat);
-  body.position.y = 0.92;
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.78, 0.5), bodyMat);
+  body.position.y = 1.14;
   body.castShadow = true;
 
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 16), skinMat);
   head.position.y = 1.82;
   head.castShadow = true;
 
-  const visor = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.08, 0.08), darkMat);
-  visor.position.set(0.12, 1.88, -0.36);
+  // A readable, stylized adventurer silhouette, built at the original weapon scale.
+  const hairMat = material("#30231f", { roughness: 0.95 });
+  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.435, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.55), hairMat);
+  hair.position.set(0, 1.86, 0.02);
+  const fringe = makeBox(0.65, 0.16, 0.16, "#30231f", 0.02, 2.05, -0.31);
+  fringe.rotation.z = -0.12;
+  const nose = makeBox(0.12, 0.14, 0.14, "#f3c58f", 0, 1.8, -0.41);
+  const collar = makeBox(0.57, 0.12, 0.57, "#17252b", 0, 1.5, 0);
+  const zip = makeBox(0.035, 0.62, 0.025, "#f7d58a", 0, 1.13, -0.265);
+  const belt = makeBox(0.85, 0.1, 0.53, "#17252b", 0, 0.79, 0);
+  const badge = makeBox(0.16, 0.16, 0.03, "#8bd3ff", -0.23, 1.31, -0.27);
+  group.add(hair, fringe, nose, collar, zip, belt, badge);
+  for (const side of [-1, 1]) {
+    const eye = makeBox(0.085, 0.085, 0.05, "#17252b", side * 0.16, 1.89, -0.386);
+    const ear = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), skinMat);
+    ear.position.set(side * 0.4, 1.82, 0);
+    group.add(eye, ear);
+  }
+  const legs = [-1, 1].map((side) => {
+    const leg = new THREE.Group();
+    leg.position.set(side * 0.23, 0.78, 0);
+    leg.add(makeBox(0.29, 0.51, 0.31, "#26394a", 0, -0.26, 0));
+    leg.add(makeBox(0.33, 0.23, 0.47, "#17252b", 0, -0.65, -0.07));
+    leg.add(makeBox(0.34, 0.05, 0.48, "#d6b88c", 0, -0.75, -0.07));
+    group.add(leg);
+    return leg;
+  });
+  const leftArm = new THREE.Group();
+  leftArm.position.set(-0.53, 1.43, 0);
+  leftArm.add(makeBox(0.25, 0.48, 0.28, "#d85638", 0, -0.22, 0));
+  leftArm.add(makeBox(0.22, 0.2, 0.22, "#f3c58f", 0, -0.53, 0));
+  const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.24, 1), bodyMat);
+  rightArm.geometry.translate(0, 0, 0.5);
+  group.add(leftArm, rightArm);
+  group.userData.legs = legs;
+  group.userData.leftArm = leftArm;
+  group.userData.rightArm = rightArm;
+  group.userData.gripTarget = new THREE.Vector3();
 
   const pack = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.82, 0.24), darkMat);
   pack.position.set(0, 0.94, 0.42);
@@ -998,7 +1036,13 @@ function createPlayer() {
   arcPivot.add(staff, arcCore, arcNodeA, arcNodeB, arcNodeC);
   arcPivot.visible = false;
 
-  group.add(body, head, visor, pack, leftWing, rightWing, weaponPivot, bowPivot, arcPivot);
+  // Hands belong to weapon pivots so they follow every swing, draw, and cast.
+  for (const pivot of [weaponPivot, bowPivot, arcPivot]) {
+    const hand = new THREE.Mesh(new THREE.BoxGeometry(0.23, 0.23, 0.23), skinMat);
+    hand.position.set(0.04, 0, 0.08);
+    pivot.add(hand);
+  }
+  group.add(body, head, pack, leftWing, rightWing, weaponPivot, bowPivot, arcPivot);
   group.userData.wings = [leftWing, rightWing];
   group.userData.wingMaterial = glowMat;
   group.userData.weaponPivot = weaponPivot;
@@ -1068,7 +1112,60 @@ function buildWorld() {
 
   buildArena();
   buildTrees();
+  buildAlpacas();
   buildSky();
+}
+
+// Scenery only: never registered as mobs, colliders, collectibles, or interactables.
+function buildAlpacas() {
+  const woolGeometry = new THREE.IcosahedronGeometry(1, 1);
+  const legGeometry = new THREE.CylinderGeometry(0.1, 0.12, 0.74, 6);
+  const woolMaterials = ["#f5ead4", "#c89b6c", "#eee8df"].map((color) => material(color, { roughness: 1 }));
+  const faceMaterial = material("#d6b993", { roughness: 1 });
+  const darkMaterial = material("#302923", { roughness: 1 });
+  const earGeometry = new THREE.ConeGeometry(0.12, 0.5, 5);
+  const placements = [[-7, 1], [-8.8, -1], [8, -10]];
+  castles.forEach((castle, index) => {
+    const side = index % 2 ? 1 : -1;
+    placements.push([side * 8.5, castle.position[1] - 12], [side * 10.5, castle.position[1] - 14]);
+  });
+  placements.forEach(([x, z], index) => {
+    const alpaca = new THREE.Group();
+    alpaca.name = "decorative-alpaca";
+    const wool = woolMaterials[index % woolMaterials.length];
+    const puff = (mat, position, scale) => {
+      const mesh = new THREE.Mesh(woolGeometry, mat);
+      mesh.position.set(...position);
+      mesh.scale.set(...scale);
+      mesh.castShadow = true;
+      alpaca.add(mesh);
+      return mesh;
+    };
+    puff(wool, [0, 1.05, 0], [0.48, 0.57, 0.82]);
+    puff(wool, [0, 1.64, -0.56], [0.25, 0.77, 0.26]);
+    puff(wool, [0, 2.3, -0.64], [0.31, 0.34, 0.36]);
+    puff(faceMaterial, [0, 2.18, -0.94], [0.23, 0.18, 0.23]);
+    puff(darkMaterial, [0, 2.2, -1.14], [0.08, 0.05, 0.04]);
+    puff(wool, [0, 1.27, 0.82], [0.15, 0.28, 0.22]);
+    for (const side of [-1, 1]) {
+      puff(darkMaterial, [side * 0.26, 2.34, -0.84], [0.045, 0.06, 0.05]);
+      const ear = new THREE.Mesh(earGeometry, wool);
+      ear.position.set(side * 0.19, 2.71, -0.61);
+      ear.rotation.z = side * -0.16;
+      alpaca.add(ear);
+      for (const end of [-1, 1]) {
+        const leg = new THREE.Mesh(legGeometry, faceMaterial);
+        leg.position.set(side * 0.29, 0.4, end * 0.47);
+        alpaca.add(leg);
+        puff(darkMaterial, [side * 0.29, 0.1, end * 0.47], [0.12, 0.1, 0.15]);
+      }
+    }
+    alpaca.position.set(x, 0, z);
+    alpaca.rotation.y = index * 1.7;
+    alpaca.scale.setScalar(index % 4 === 1 ? 0.7 : 1);
+    scene.add(alpaca);
+    decorativeAlpacas.push(alpaca);
+  });
 }
 
 function buildRoadGraphics() {
@@ -3208,6 +3305,17 @@ function updatePlayer(dt) {
     player.userData.arcCore.rotation.y += dt * (3 + flash * 20);
     player.userData.arcCore.scale.setScalar(1 + flash * 0.9);
   }
+  const stride = Math.sin(clock.elapsedTime * 10) * Math.min(state.player.speed / 8, 1);
+  player.userData.legs.forEach((leg, index) => { leg.rotation.x = stride * (index ? -0.55 : 0.55); });
+  player.userData.leftArm.rotation.x = -stride * 0.4 - swing * 0.25;
+  const heldWeapon = state.weapon === "bow" ? bowPivot : state.weapon === "arc" ? arcPivot : weaponPivot;
+  const grip = player.userData.gripTarget.set(0.04, 0, 0.08)
+    .multiplyScalar(heldWeapon.scale.x).applyEuler(heldWeapon.rotation).add(heldWeapon.position);
+  const arm = player.userData.rightArm;
+  arm.position.set(0.48, 1.4, 0);
+  arm.scale.z = arm.position.distanceTo(grip);
+  // Orient in player-local coordinates, before the player's world rotation is applied.
+  arm.quaternion.setFromUnitVectors(limbForward, grip.sub(arm.position).normalize());
   player.userData.wingMaterial.emissiveIntensity = state.weapon === "arc" ? 1.4 + Math.sin(clock.elapsedTime * 6) * 0.3 : 0.65;
 
   player.rotation.x = -swing * 0.1;
@@ -4109,6 +4217,8 @@ window.render_game_to_text = () => {
   const targets = targetMobs();
   return JSON.stringify({
     renderer: "threejs",
+    decorativeAlpacas: decorativeAlpacas.length,
+    playerSkin: "adventurer",
     mode: "linear-castle-quest",
     phase: state.phase,
     active: state.activeCastle?.id || "hub",
