@@ -1191,12 +1191,76 @@ function buildRoadGraphics() {
   scene.add(markers);
 }
 
+// Repeated masonry and trim use instancing to keep the extra detail inexpensive.
+const castleDetailGeometry = new THREE.BoxGeometry(1, 1, 1);
+const castleStoneMaterial = material("#929aa0", { roughness: 0.84, metalness: 0.03 });
+const castleBrassMaterial = material("#c5a36b", { roughness: 0.36, metalness: 0.55 });
+const castleWindowMaterial = material("#ffdc98", { emissive: "#ffc775", emissiveIntensity: 0.7, roughness: 0.4 });
+
+function addCastleDetails(group, gate, towers) {
+  const stone = [], brass = [], windows = [];
+  // Cornices and corner blocks give the keeps a layered stone silhouette.
+  for (const side of [-1, 1]) {
+    const x = side * 2.95;
+    for (const y of [0.4, 2.4, 4.8]) stone.push([x, y, 0, 1.85, 0.16, 3.15]);
+    brass.push([x, 4.94, 0, 1.88, 0.06, 3.18]);
+    for (const y of [1.1, 1.8, 2.8, 3.5, 4.2]) {
+      for (const edge of [-1, 1]) stone.push([x + edge * 0.72, y, 1.53, 0.22, 0.25, 0.09]);
+    }
+    for (const y of [1.55, 3.25]) {
+      windows.push([x, y, 1.52, 0.32, 0.7, 0.05]);
+      brass.push([x, y, 1.56, 0.035, 0.76, 0.04], [x, y, 1.56, 0.38, 0.04, 0.04]);
+    }
+    // Entrance columns stay outside the existing gate opening.
+    stone.push([side * 1.94, 1.5, 3.95, 0.23, 2.8, 0.32]);
+    brass.push([side * 1.94, 2.83, 3.95, 0.34, 0.12, 0.4]);
+  }
+  stone.push([0, 3.63, 3.72, 4.05, 0.14, 0.76]);
+  brass.push([0, 3.75, 3.72, 4.12, 0.07, 0.8]);
+  // Battlements on the side walls and a framed crest above the entrance.
+  for (const side of [-1, 1]) {
+    for (const z of [-2.4, -1.2, 0, 1.2, 2.4]) stone.push([side * 3.72, 2.12, z, 0.52, 0.42, 0.46]);
+  }
+  brass.push([0, 3.2, 4.04, 0.46, 0.48, 0.06]);
+  for (const [x, z] of towers) {
+    for (const y of [0.42, 4.75]) {
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.88, 0.88, 0.16, 12), castleStoneMaterial);
+      band.position.set(x, y, z);
+      group.add(band);
+    }
+    brass.push([x, 6.4, z, 0.08, 0.42, 0.08]);
+    windows.push([x, 3.3, z + 0.82, 0.2, 0.65, 0.04]);
+  }
+  const batch = (parent, parts, mat) => {
+    const mesh = new THREE.InstancedMesh(castleDetailGeometry, mat, parts.length);
+    const transform = new THREE.Object3D();
+    parts.forEach(([x, y, z, w, h, d], index) => {
+      transform.position.set(x, y, z);
+      transform.scale.set(w, h, d);
+      transform.updateMatrix();
+      mesh.setMatrixAt(index, transform.matrix);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+  };
+  batch(group, stone, castleStoneMaterial);
+  batch(group, brass, castleBrassMaterial);
+  batch(group, windows, castleWindowMaterial);
+  // Gate ornaments move with the gate rather than blocking it when it opens.
+  const gateTrim = [];
+  for (const x of [-1.45, 0, 1.45]) gateTrim.push([x, 0, 0.17, 0.07, 2.25, 0.05]);
+  for (const y of [-0.85, 0.85]) gateTrim.push([0, y, 0.17, 3.1, 0.07, 0.05]);
+  batch(gate, gateTrim, castleBrassMaterial);
+}
+
 function buildCastle(castle, index) {
   const [x, z] = castle.position;
   const group = new THREE.Group();
   group.position.set(x, 0, z);
   const accent = castle.color;
-  const wall = index % 2 ? "#2b2f3a" : "#232b30";
+  const wall = index % 2 ? "#626675" : "#596570";
+  const roofColor = new THREE.Color(accent).multiplyScalar(0.38);
   const dark = "#10141d";
   const accentMat = material(accent, { emissive: accent, emissiveIntensity: 0.22, metalness: 0.16, roughness: 0.42 });
   const accentMeshes = [];
@@ -1204,8 +1268,8 @@ function buildCastle(castle, index) {
   const base = makeBox(9.4, 0.18, 8.8, "#1d2527", 0, 0.09, 0, { roughness: 0.72 });
   const leftKeep = makeBox(1.7, 4.8, 3.0, wall, -2.95, 2.52, 0, { roughness: 0.55, metalness: 0.08 });
   const rightKeep = makeBox(1.7, 4.8, 3.0, wall, 2.95, 2.52, 0, { roughness: 0.55, metalness: 0.08 });
-  const leftRoof = makeCone(1.55, 1.55, accent, -2.95, 5.68, 0, { emissive: accent, emissiveIntensity: 0.18 });
-  const rightRoof = makeCone(1.55, 1.55, accent, 2.95, 5.68, 0, { emissive: accent, emissiveIntensity: 0.18 });
+  const leftRoof = makeCone(1.55, 1.55, roofColor, -2.95, 5.68, 0, { emissive: accent, emissiveIntensity: 0.18 });
+  const rightRoof = makeCone(1.55, 1.55, roofColor, 2.95, 5.68, 0, { emissive: accent, emissiveIntensity: 0.18 });
   const arch = makeBox(3.9, 0.75, 0.58, wall, 0, 3.2, 3.72, { roughness: 0.55, metalness: 0.08 });
   const backArch = makeBox(3.9, 0.5, 0.44, wall, 0, 2.6, -3.72, { roughness: 0.55, metalness: 0.08 });
   const gate = makeBox(3.5, 2.45, 0.28, dark, 0, 1.32, 3.86, { emissive: accent, emissiveIntensity: 0.18 });
@@ -1222,7 +1286,7 @@ function buildCastle(castle, index) {
   ];
   for (const [tx, tz] of towerPositions) {
     const tower = makeCylinder(0.82, 4.8, wall, tx, 2.5, tz, { roughness: 0.54 });
-    const cap = makeCone(1.15, 1.45, accent, tx, 5.62, tz, { emissive: accent, emissiveIntensity: 0.16 });
+    const cap = makeCone(1.15, 1.45, roofColor, tx, 5.62, tz, { emissive: accent, emissiveIntensity: 0.16 });
     accentMeshes.push(cap);
     group.add(tower, cap);
   }
@@ -1236,6 +1300,7 @@ function buildCastle(castle, index) {
     makeBox(0.44, 1.8, 7.2, wall, 3.72, 1.02, 0),
   ];
   walls.forEach((wallMesh) => group.add(wallMesh));
+  addCastleDetails(group, gate, towerPositions);
 
   // Bright trim makes each castle entrance easier to spot from the road.
   const gateTrimMaterial = new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.82, depthWrite: false });
