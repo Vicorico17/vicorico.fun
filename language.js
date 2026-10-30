@@ -73,7 +73,7 @@
     menu.setAttribute('aria-busy', 'true');
     try {
       if (!dictionaries.has(next)) {
-        const response = await fetch(`assets/locales/${next}.json?v=20261030a`);
+        const response = await fetch(`assets/locales/${next}.json?v=20261030b`);
         if (!response.ok) throw new Error('Translation unavailable');
         const data = await response.json();
         if (!data || typeof data !== 'object' || Object.values(data).some((value) => typeof value !== 'string')) throw new Error('Invalid translation');
