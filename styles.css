@@ -6030,3 +6030,32 @@ dd {
   .bio-facts > div:first-child dd { font-size: 1.55rem; line-height: 1.1; }
   .bio-facts .bio-skills-row { grid-column: 1 / -1; padding: 4px 0 0; }
 }
+
+/* Keep the extended career record optional, with social links outside it. */
+.career-more > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 48px;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  background: var(--panel);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.career-more > summary::-webkit-details-marker { display: none; }
+.career-more > summary::after { content: "+"; font-size: 1.5rem; }
+.career-more[open] > summary::after { content: "−"; }
+.career-more > summary:hover { border-color: var(--accent); }
+.career-more > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.career-more-content {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2rem);
+  padding-top: 2rem;
+}
+.career-more-content > .section { width: 100%; }
