@@ -33,6 +33,7 @@ const gameAudio = createGameAudio();
 const weaponNodes = document.querySelectorAll("[data-game-weapon]");
 const ammoChipNode = document.querySelector("[data-game-ammo-chip]");
 const ammoCountNode = document.querySelector("[data-game-ammo]");
+const ammoStatusNode = document.querySelector("[data-game-ammo-status]");
 const ammoIconNode = document.querySelector("[data-game-ammo-icon] use");
 const toastNode = document.querySelector("[data-game-toast]");
 const cardNode = document.querySelector("[data-game-card]");
@@ -188,8 +189,8 @@ const castles = [
   {
     id: "ai",
     chapter: 1,
-    title: "AI Systems Castle",
-    shortTitle: "AI Systems",
+    title: "The Mindforge",
+    shortTitle: "The Mindforge",
     color: "#f4bf45",
     position: [0, -24],
     intro: "Build AI that works in practice: deploy models, connect private data, and give agents useful tasks.",
@@ -237,8 +238,8 @@ const castles = [
   {
     id: "automation",
     chapter: 2,
-    title: "Automation Castle",
-    shortTitle: "Automation",
+    title: "Clockwork Keep",
+    shortTitle: "Clockwork Keep",
     color: "#7cc77d",
     position: [0, -62],
     intro: "Replace repetitive work with reliable workflows, from lead research to content distribution.",
@@ -286,8 +287,8 @@ const castles = [
   {
     id: "crypto",
     chapter: 3,
-    title: "Crypto Rails Castle",
-    shortTitle: "Crypto Rails",
+    title: "Obsidian Vault",
+    shortTitle: "Obsidian Vault",
     color: "#4f70ff",
     position: [0, -100],
     intro: "Build crypto tools for digital ownership, payments, and online communities.",
@@ -335,8 +336,8 @@ const castles = [
   {
     id: "places",
     chapter: 4,
-    title: "Places & Projects Castle",
-    shortTitle: "Places & Projects",
+    title: "Wayfarer Citadel",
+    shortTitle: "Wayfarer Citadel",
     color: "#f97316",
     position: [0, -138],
     intro: "Experience across crypto communities, grant-funded ecosystem work, and product teams.",
@@ -384,8 +385,8 @@ const castles = [
   {
     id: "creative",
     chapter: 5,
-    title: "Creative Factory Castle",
-    shortTitle: "Creative Factory",
+    title: "Prism Spire",
+    shortTitle: "Prism Spire",
     color: "#d95f9d",
     position: [0, -176],
     intro: "Turn ideas into short videos, AI music releases, and interactive live experiences.",
@@ -433,8 +434,8 @@ const castles = [
   {
     id: "projects",
     chapter: 6,
-    title: "Projects Castle",
-    shortTitle: "Projects",
+    title: "The Ironworks",
+    shortTitle: "The Ironworks",
     color: "#6fd18c",
     position: [0, -214],
     intro: "Shipped tools for marketplace search, workplace attendance, and market research.",
@@ -482,8 +483,8 @@ const castles = [
   {
     id: "games",
     chapter: 7,
-    title: "Game Worlds Castle",
-    shortTitle: "Game Worlds",
+    title: "Dreamweaver Keep",
+    shortTitle: "Dreamweaver Keep",
     color: "#fb7185",
     position: [0, -252],
     intro: "Build games and communities that give players reasons to return.",
@@ -690,6 +691,7 @@ const state = {
   completed: false,
   attackCooldown: 0,
   attackTimer: 0,
+  bowAimAngle: null,
   attackHeld: false,
   weapon: "sword",
   weapons: ["sword", "bow"],
@@ -2023,6 +2025,78 @@ function spawnBeam(fromX, fromZ, toX, toZ, color, duration = 1.3, y = 1.1) {
   scene.add(mesh);
 }
 
+function spawnLightning(fromX, fromZ, toX, toZ, fromY = 1.3) {
+  const segments = 12;
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(segments * 6);
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const mesh = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+    color: "#c7f5ff", transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthWrite: false,
+  }));
+  // Dynamic vertices span world coordinates; avoid stale bounds hiding the bolt.
+  mesh.frustumCulled = false;
+  const dx = toX - fromX, dz = toZ - fromZ;
+  const length = Math.max(0.01, Math.hypot(dx, dz));
+  const effect = {
+    kind: "electric", mesh, age: 0, maxAge: 0.36,
+    tick(t) {
+      for (let i = 0; i < segments; i++) {
+        for (let end = 0; end < 2; end++) {
+          const n = i + end, u = n / segments;
+          const jitter = Math.sin(n * 5.7 + t * 28) * Math.sin(u * Math.PI) * 0.32;
+          const j = i * 6 + end * 3;
+          positions[j] = fromX + dx * u - dz / length * jitter;
+          positions[j + 1] = fromY + (1.3 - fromY) * u + jitter;
+          positions[j + 2] = fromZ + dz * u + dx / length * jitter;
+        }
+      }
+      geometry.attributes.position.needsUpdate = true;
+      mesh.material.opacity = 1 - t;
+    },
+  };
+  effect.tick(0);
+  effects.push(effect);
+  scene.add(mesh);
+}
+
+function spawnElectrified(mob) {
+  // Repeated hits refresh the existing aura instead of stacking GPU resources.
+  const existing = effects.find((effect) => effect.kind === "electric" && effect.target === mob);
+  if (existing) { existing.age = 0; return; }
+  const segments = lowPower ? 24 : 40;
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(segments * 6);
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const mesh = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+    color: "#80eaff", transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthWrite: false,
+  }));
+  mesh.frustumCulled = false;
+  const radius = mob.userData.isBoss ? 2.2 : (mob.userData.baseScale || 1) * 0.9;
+  const effect = {
+    kind: "electric", target: mob, mesh, age: 0, maxAge: 0.65,
+    tick(t) {
+      mesh.position.copy(mob.position);
+      for (let i = 0; i < segments; i++) {
+        const angle = i * 2.399;
+        for (let end = 0; end < 2; end++) {
+          const a = angle + end * 0.35;
+          const r = radius * (1 + Math.sin(i * 4 + t * 20 + end) * 0.12 + t * 0.2);
+          const j = i * 6 + end * 3;
+          positions[j] = Math.cos(a) * r;
+          positions[j + 1] = 0.3 + (i % 5) * radius * 0.38 + end * Math.sin(i + t * 18) * 0.3;
+          positions[j + 2] = Math.sin(a) * r;
+        }
+      }
+      geometry.attributes.position.needsUpdate = true;
+      mesh.material.opacity = (1 - t) * 0.95;
+    },
+  };
+  effect.tick(0);
+  effects.push(effect);
+  scene.add(mesh);
+  spawnRingPulse(mob.position.x, mob.position.z, "#80eaff", radius * 1.6, 0.4);
+}
+
 function spawnArcBolt(fromX, fromZ, toX, toZ) {
   const mesh = new THREE.Mesh(
     arcBoltGeometry,
@@ -2083,7 +2157,7 @@ function updateEffects(dt) {
     if (effect.age >= effect.maxAge) {
       scene.remove(effect.mesh);
       effect.mesh.material.dispose();
-      if (effect.kind === "beam") effect.mesh.geometry.dispose();
+      if (effect.kind === "beam" || effect.kind === "electric") effect.mesh.geometry.dispose();
       effects.splice(i, 1);
     }
   }
@@ -2098,7 +2172,7 @@ function clearTransientObjects() {
   effects.splice(0).forEach((effect) => {
     scene.remove(effect.mesh);
     effect.mesh.material.dispose();
-    if (effect.kind === "beam") effect.mesh.geometry.dispose();
+    if (effect.kind === "beam" || effect.kind === "electric") effect.mesh.geometry.dispose();
   });
 }
 
@@ -2160,6 +2234,7 @@ function resetGame() {
   state.player.x = 0;
   state.player.z = 0;
   state.player.rotation = Math.PI;
+  state.bowAimAngle = null;
   state.player.speed = 0;
   state.player.vx = 0;
   state.player.vz = 0;
@@ -2952,7 +3027,8 @@ function damageMob(mob, base, knockback = 0.55, options = {}) {
   const push = knockback * (data.isBoss || data.isFragment ? 0 : 1);
   mob.position.x += (dx / length) * push;
   mob.position.z += (dz / length) * push;
-  spawnBurst(mob.position.x, 1.1, mob.position.z, crit ? "#ffffff" : "#fff6a3", crit ? 8 : 4, {
+  if (options.source === "arc") spawnElectrified(mob);
+  spawnBurst(mob.position.x, 1.1, mob.position.z, options.source === "arc" ? "#80eaff" : crit ? "#ffffff" : "#fff6a3", options.source === "arc" ? 10 : crit ? 8 : 4, {
     speed: crit ? 3.4 : 2.6,
     lift: 2.4,
     life: 0.45,
@@ -3148,6 +3224,14 @@ function fireArrows() {
   updateAmmoUi();
   const count = Math.max(1, Math.round(state.perks.arrowCount));
   const baseAngle = aimAngle();
+  state.bowAimAngle = baseAngle;
+  // The model and bow point along local -Z; movement angles use +Z.
+  // Align before spawning so even a sudden rearward shot visibly leaves the bow.
+  player.rotation.y = baseAngle + Math.PI;
+  updatePlayer(0);
+  player.updateWorldMatrix(true, true);
+  const launch = new THREE.Vector3(0.04, 0, -1.08);
+  player.userData.bowPivot.localToWorld(launch);
   const speed = 25 * state.perks.arrowSpeedMult;
   const range = bowRange + state.perks.bowRange;
   for (let i = 0; i < count; i += 1) {
@@ -3163,9 +3247,9 @@ function fireArrows() {
     head.position.z = -0.85;
     head.rotation.x = -Math.PI / 2;
     arrow.add(shaft, head, glow);
-    arrow.position.set(state.player.x + dirX * 0.9, 1.08, state.player.z + dirZ * 0.9);
+    arrow.position.copy(launch);
     arrow.rotation.y = Math.atan2(-dirX, -dirZ);
-    arrow.userData = { vx: dirX * speed, vz: dirZ * speed, age: 0, maxAge: range / speed };
+    arrow.userData = { vx: dirX * speed, vz: dirZ * speed, launchY: launch.y, age: 0, maxAge: range / speed };
     projectiles.push(arrow);
     scene.add(arrow);
   }
@@ -3184,13 +3268,17 @@ function fireArc() {
     }
   });
   state.ammo.arc -= 1;
-  if (state.ammo.arc < arcCapacity && state.ammo.arcRecharge === 0) state.ammo.arcRecharge = arcRechargeDuration;
+  // Mana starts regenerating after a full quiet interval since the last cast.
+  state.ammo.arcRecharge = arcRechargeDuration;
   updateAmmoUi();
+  state.arcFlash = 0.3;
+  updatePlayer(0);
+  const wandTip = player.userData.arcCore.getWorldPosition(new THREE.Vector3());
   if (!first) {
     const endX = state.player.x + Math.sin(state.player.rotation) * range;
     const endZ = state.player.z + Math.cos(state.player.rotation) * range;
     spawnArcBolt(state.player.x, state.player.z, endX, endZ);
-    spawnBeam(state.player.x, state.player.z, endX, endZ, "#8bd3ff", 0.2, 1.3);
+    spawnLightning(wandTip.x, wandTip.z, endX, endZ, wandTip.y);
     setMessage("Graph Arc missed. Move closer to an enemy.");
     return;
   }
@@ -3211,13 +3299,15 @@ function fireArc() {
     chain.push(next);
     current = next;
   }
-  let fromX = state.player.x;
-  let fromZ = state.player.z;
+  let fromX = wandTip.x;
+  let fromZ = wandTip.z;
+  let fromY = wandTip.y;
   chain.forEach((mob) => {
-    spawnBeam(fromX, fromZ, mob.position.x, mob.position.z, "#8bd3ff", 0.35, 1.3);
+    spawnLightning(fromX, fromZ, mob.position.x, mob.position.z, fromY);
     spawnArcBolt(fromX, fromZ, mob.position.x, mob.position.z);
     fromX = mob.position.x;
     fromZ = mob.position.z;
+    fromY = 1.3;
     damageMob(mob, 1, 0.4, { source: "arc" });
   });
   state.arcFlash = 0.3;
@@ -3231,7 +3321,7 @@ function updateProjectiles(dt) {
     data.age += dt;
     projectile.position.x += data.vx * dt;
     projectile.position.z += data.vz * dt;
-    projectile.position.y = 1.08 + Math.sin(data.age * 28) * 0.035;
+    projectile.position.y = (data.launchY ?? 1.08) + Math.sin(data.age * 28) * 0.035;
 
     let remove = data.age >= data.maxAge;
     if (!remove) {
@@ -3316,7 +3406,10 @@ function updateTheme() {
 
 function updatePlayer(dt) {
   player.position.set(state.player.x, 0, state.player.z);
-  player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, state.player.rotation, Math.min(1, dt * 10));
+  const bowFiring = state.weapon === "bow" && state.attackTimer > 0 && state.bowAimAngle !== null;
+  const facing = (bowFiring ? state.bowAimAngle : state.player.rotation) + Math.PI;
+  const turn = Math.atan2(Math.sin(facing - player.rotation.y), Math.cos(facing - player.rotation.y));
+  player.rotation.y += turn * Math.min(1, dt * 10);
   const bob = Math.sin(clock.elapsedTime * 10) * 0.055 * Math.min(state.player.speed / 8, 1);
   player.position.y = bob;
 
@@ -3343,8 +3436,9 @@ function updatePlayer(dt) {
   if (bowPivot) {
     bowPivot.visible = state.weapon === "bow";
     const draw = state.weapon === "bow" ? swing : 0;
-    bowPivot.rotation.x = 0.18 - draw * 0.12;
-    bowPivot.rotation.y = -0.18 + draw * 0.16;
+    // Roll gives the bow a natural tilt without misaligning its arrow axis.
+    bowPivot.rotation.x = 0;
+    bowPivot.rotation.y = 0;
     bowPivot.rotation.z = -0.28 - draw * 0.18;
     bowPivot.position.x = 0.64 - draw * 0.1;
     bowPivot.position.z = -0.3 - draw * 0.12;
@@ -3383,8 +3477,8 @@ function updatePlayer(dt) {
   arm.quaternion.setFromUnitVectors(limbForward, grip.sub(arm.position).normalize());
   player.userData.wingMaterial.emissiveIntensity = state.weapon === "arc" ? 1.4 + Math.sin(clock.elapsedTime * 6) * 0.3 : 0.65;
 
-  player.rotation.x = -swing * 0.1;
-  player.rotation.z = -swing * 0.08;
+  player.rotation.x = state.weapon === "bow" ? 0 : -swing * 0.1;
+  player.rotation.z = state.weapon === "bow" ? 0 : -swing * 0.08;
 
   const wings = player.userData.wings || [];
   wings.forEach((wing, index) => {
@@ -3559,13 +3653,27 @@ function updateAmmoUi(force = false) {
   const hasAmmo = weapon === "bow" || weapon === "arc";
   const remaining = weapon === "bow" ? state.ammo.bow : state.ammo.arc;
   const capacity = weapon === "bow" ? bowMagazine : arcCapacity;
-  const label = hasAmmo ? remaining === 0 ? `0/${capacity} ↻` : `${remaining}/${capacity}` : "";
-  const signature = `${weapon}:${label}`;
+  const timer = weapon === "bow" ? state.ammo.bowReload : state.ammo.arcRecharge;
+  const duration = weapon === "bow" ? bowReloadDuration : arcRechargeDuration;
+  const countdown = (Math.ceil(timer * 10) / 10).toFixed(1);
+  const label = hasAmmo ? `${remaining}/${capacity}` : "";
+  const status = timer > 0
+    ? weapon === "bow" ? `Reloading · ${countdown}s` : `+1 charge in ${countdown}s`
+    : weapon === "bow" ? "Arrows · auto-reload" : "Mana full";
+  const signature = `${weapon}:${label}:${status}`;
   if (!force && signature === lastAmmoLabel) return;
   lastAmmoLabel = signature;
   ammoChipNode?.classList.toggle("is-hidden", !hasAmmo);
   if (ammoChipNode && hasAmmo) ammoChipNode.setAttribute("aria-label", remaining === 0 ? `${weaponLabels[weapon]} ${weapon === "bow" ? "reloading" : "recharging"}` : `${weaponLabels[weapon]} ammunition: ${remaining} of ${capacity}`);
   if (ammoCountNode) ammoCountNode.textContent = label;
+  if (ammoStatusNode) ammoStatusNode.textContent = status;
+  if (ammoChipNode) {
+    ammoChipNode.style.setProperty("--ammo-progress", timer > 0 ? String(1 - timer / duration) : "1");
+    ammoChipNode.classList.toggle("is-refilling", hasAmmo && timer > 0);
+    ammoChipNode.title = weapon === "bow"
+      ? "12 shots per quiver. One shot per volley. Reloads automatically in 1.6 seconds when empty, even while using another weapon."
+      : "4 mana charges. Each cast uses one. After 2.4 seconds without casting, recover one charge every 2.4 seconds, even while using another weapon.";
+  }
   if (ammoIconNode && hasAmmo) ammoIconNode.setAttribute("href", `#power-${weapon}`);
   document.querySelectorAll('[data-game-tap="Weapon"]').forEach((button) => {
     button.setAttribute("aria-label", hasAmmo ? `Switch weapon. ${weaponLabels[weapon]} has ${remaining} of ${capacity} shots.` : "Switch weapon. Sword selected.");

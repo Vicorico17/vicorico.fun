@@ -10,7 +10,7 @@
     <title>Vico’s Quest | vico.wtf</title>
     <link rel="icon" href="assets/vicos-quest.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="cv-game.css">
+    <link rel="stylesheet" href="cv-game.css?v=20261031a">
   </head>
   <body class="game-page">
     <svg class="game-icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -49,7 +49,7 @@
             <div class="hud-zone">
               <div class="hud-chips">
                 <span class="hud-chip hud-chip-weapon" title="Current weapon"><svg class="power-icon" data-game-weapon-icon aria-hidden="true"><use href="#power-sword"></use></svg><b data-game-weapon>Sword</b></span>
-                <span class="hud-chip hud-chip-ammo is-hidden" data-game-ammo-chip title="Weapon ammunition"><svg class="power-icon" data-game-ammo-icon aria-hidden="true"><use href="#power-bow"></use></svg><b data-game-ammo>12/12</b></span>
+                <span class="hud-chip hud-chip-ammo is-hidden" data-game-ammo-chip title="Weapon ammunition"><svg class="power-icon" data-game-ammo-icon aria-hidden="true"><use href="#power-bow"></use></svg><span class="ammo-readout"><b data-game-ammo>12/12</b><small data-game-ammo-status>Arrows · auto-reload</small></span></span>
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@
         <aside class="pc-controls-panel" aria-label="First castle tutorial">
           <p>First castle · quick guide</p>
           <ol class="pc-tutorial-steps">
-            <li>Follow the road to the AI Systems castle.</li>
+            <li>Follow the road to the Mindforge.</li>
             <li>Defeat the enemies and walk into the glowing nodes to collect them.</li>
             <li>Enter the open gate, choose a power, then continue.</li>
           </ol>
@@ -109,10 +109,9 @@
 
         <div class="game-overlay" data-game-overlay>
           <section class="game-panel game-intro" data-game-intro role="dialog" aria-modal="true" aria-labelledby="intro-title">
-            <p class="panel-kicker">Vico’s Quest · The playable CV</p>
+            <p class="panel-kicker">Vico’s Quest</p>
             <h1 id="intro-title">Reconnect the system.</h1>
-            <p class="panel-role"><strong>Victor Cazacu</strong> · Forward Deployed Engineer &amp; Graph Engineer.</p>
-            <p>Explore seven chapters, choose projects from my CV, and take on the final challenge.</p>
+            <p>Explore seven castles, unlock new powers, and defeat the Fragmenter.</p>
             <p class="intro-rule">One hit. Game over.</p>
             <div class="panel-actions">
               <button class="panel-button primary" type="button" data-game-start>Begin the quest</button>
@@ -199,6 +198,6 @@
       </div>
     </main>
 
-    <script type="module" src="cv-game.js?v=20261030b"></script>
+    <script type="module" src="cv-game.js?v=20261031a"></script>
   </body>
 </html>
