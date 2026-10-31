@@ -1,6 +1,6 @@
-# vicorico.fun
+# vico.wtf
 
-Static personal website for `vicorico.fun`.
+Static personal website for `vico.wtf`.
 
 ## Files
 

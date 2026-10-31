@@ -958,7 +958,7 @@ function initTitleThemes() {
   if (!title) return;
   const trigger = title.querySelector(".text-flip-trigger");
   const domains = [
-    "vicorico.com", "vicorico.xyz", "vicorico.shop",
+    "vico.wtf", "vicorico.com", "vicorico.xyz", "vicorico.shop",
     "vicorico.fun", "vicorico.store", "vicorico.net",
   ];
   let domainIndex = 0;
