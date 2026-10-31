@@ -362,10 +362,10 @@ function initGithubCarousel() {
   if (!latestReposNode || !githubCarouselNode) return;
   githubCarouselCards = [...latestReposNode.querySelectorAll(".github-live-card")];
   githubCarouselCards.forEach((card) => {
-    const link = card.querySelector("h4 a");
-    if (!link) return;
-    const business = githubBusinessDetails({ html_url: link.href, name: link.textContent });
-    link.prepend(githubBusinessLogo(business));
+    const title = card.querySelector("h4 a, h4");
+    if (!title) return;
+    const business = githubBusinessDetails({ html_url: card.dataset.repoUrl, name: title.textContent });
+    title.prepend(githubBusinessLogo(business));
   });
   const historyPanel = githubCarouselNode.querySelector("[data-github-history]");
   const historyTitle = historyPanel?.querySelector("[data-github-history-title]");
@@ -558,13 +558,22 @@ function githubBusinessDetails(repo) {
   const archive = [...(projectArchiveNode?.querySelectorAll("article") || [])].find((card) =>
     [...card.querySelectorAll('a[href]')].some((link) => link.href.replace(/\/$/, "").toLowerCase() === repo.html_url.toLowerCase()));
   const fallback = [...(latestReposNode?.querySelectorAll(".github-live-card") || [])].find((card) =>
-    card.querySelector("h4 a")?.href === repo.html_url);
+    card.dataset.repoUrl === repo.html_url);
   return {
-    name: archive?.querySelector("h3")?.textContent || fallback?.querySelector("h4 a")?.lastChild?.textContent || repo.name,
+    name: archive?.querySelector("h3")?.textContent || fallback?.querySelector("h4 a, h4")?.lastChild?.textContent || repo.name,
     description: (window.siteI18n?.originalText(archive?.querySelector("p")) || archive?.querySelector("p")?.textContent) || repo.description || fallback?.querySelector("p")?.textContent || "Explore this project on GitHub.",
     logo: archive?.querySelector(".proof-artifact-logo img")?.getAttribute("src"),
-    homepage: archive?.querySelector('.proof-actions a:not([href*="github.com"])')?.href || repo.homepage,
+    homepage: projectWebsite(archive?.querySelector('.proof-actions a:not([href*="github.com"])')?.href) || projectWebsite(repo.homepage),
   };
+}
+
+function projectWebsite(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (!["https:", "http:"].includes(url.protocol) || /(^|\.)github\.com$/i.test(url.hostname)) return null;
+    return url.href;
+  } catch { return null; }
 }
 
 function githubBusinessLogo(business) {
@@ -596,7 +605,9 @@ function makeGithubCommitCard(repo) {
   article.className = "github-live-card";
   article.dataset.historyStatus = "loading";
   const title = document.createElement("h4");
-  const titleLink = githubLink(repo.html_url, business.name);
+  article.dataset.repoUrl = repo.html_url;
+  const titleLink = business.homepage ? githubLink(business.homepage, business.name) : document.createElement("span");
+  titleLink.textContent = business.name;
   titleLink.prepend(githubBusinessLogo(business));
   title.append(titleLink);
   const description = document.createElement("p");
