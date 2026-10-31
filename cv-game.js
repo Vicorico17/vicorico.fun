@@ -3659,14 +3659,17 @@ function updateAmmoUi(force = false) {
   const label = hasAmmo ? `${remaining}/${capacity}` : "";
   const status = timer > 0
     ? weapon === "bow" ? `Reloading · ${countdown}s` : `+1 charge in ${countdown}s`
-    : weapon === "bow" ? "Arrows · auto-reload" : "Mana full";
+    : weapon === "bow" ? "" : "Mana full";
   const signature = `${weapon}:${label}:${status}`;
   if (!force && signature === lastAmmoLabel) return;
   lastAmmoLabel = signature;
   ammoChipNode?.classList.toggle("is-hidden", !hasAmmo);
   if (ammoChipNode && hasAmmo) ammoChipNode.setAttribute("aria-label", remaining === 0 ? `${weaponLabels[weapon]} ${weapon === "bow" ? "reloading" : "recharging"}` : `${weaponLabels[weapon]} ammunition: ${remaining} of ${capacity}`);
   if (ammoCountNode) ammoCountNode.textContent = label;
-  if (ammoStatusNode) ammoStatusNode.textContent = status;
+  if (ammoStatusNode) {
+    ammoStatusNode.textContent = status;
+    ammoStatusNode.hidden = !hasAmmo || !status;
+  }
   if (ammoChipNode) {
     ammoChipNode.style.setProperty("--ammo-progress", timer > 0 ? String(1 - timer / duration) : "1");
     ammoChipNode.classList.toggle("is-refilling", hasAmmo && timer > 0);
