@@ -692,6 +692,7 @@ const state = {
   attackCooldown: 0,
   attackTimer: 0,
   bowAimAngle: null,
+  swordAimAngle: null,
   attackHeld: false,
   weapon: "sword",
   weapons: ["sword", "bow"],
@@ -1057,16 +1058,16 @@ function createPlayer() {
 const player = createPlayer();
 scene.add(player);
 
-// Ground decals ignore the depth test so plaza and castle bases never hide them.
-const attackRing = new THREE.Mesh(
-  new THREE.RingGeometry(attackRadius - 0.22, attackRadius, 48),
+// A forward crescent traces the sword sweep; it never implies a full-circle hit.
+const swordSlash = new THREE.Mesh(
+  new THREE.RingGeometry(attackRadius - 0.28, attackRadius, 32, 1, Math.PI / 6, Math.PI * 2 / 3),
   new THREE.MeshBasicMaterial({ color: "#fff6a3", transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, depthTest: false }),
 );
-attackRing.rotation.x = -Math.PI / 2;
-attackRing.position.y = 0.07;
-attackRing.renderOrder = 10;
-attackRing.visible = false;
-scene.add(attackRing);
+swordSlash.rotation.x = -Math.PI / 2;
+swordSlash.position.y = 0.07;
+swordSlash.renderOrder = 10;
+swordSlash.visible = false;
+scene.add(swordSlash);
 
 const shieldBubble = new THREE.Mesh(
   new THREE.SphereGeometry(1.35, 20, 14),
@@ -2235,6 +2236,7 @@ function resetGame() {
   state.player.z = 0;
   state.player.rotation = Math.PI;
   state.bowAimAngle = null;
+  state.swordAimAngle = null;
   state.player.speed = 0;
   state.player.vx = 0;
   state.player.vz = 0;
@@ -2824,7 +2826,7 @@ function updateCompanions(dt) {
       return;
     }
     damageMob(best, 1, 0.3, { source: "companion" });
-    spawnBeam(drone.position.x, drone.position.z, best.position.x, best.position.z, "#8bd3ff", 0.3, 1.5);
+    spawnLightning(drone.position.x, drone.position.z, best.position.x, best.position.z, drone.position.y);
     showProjectSprite(index === 0 ? "companion0" : "companion1", index === 0 ? "Masscall" : "AutoArt", best.position.x, best.position.z, "#8bd3ff");
     data.zapTimer = 1.5 * state.perks.cooldownMult;
   });
@@ -3027,8 +3029,9 @@ function damageMob(mob, base, knockback = 0.55, options = {}) {
   const push = knockback * (data.isBoss || data.isFragment ? 0 : 1);
   mob.position.x += (dx / length) * push;
   mob.position.z += (dz / length) * push;
-  if (options.source === "arc") spawnElectrified(mob);
-  spawnBurst(mob.position.x, 1.1, mob.position.z, options.source === "arc" ? "#80eaff" : crit ? "#ffffff" : "#fff6a3", options.source === "arc" ? 10 : crit ? 8 : 4, {
+  const electricHit = options.source === "arc" || options.source === "companion";
+  if (electricHit) spawnElectrified(mob);
+  spawnBurst(mob.position.x, 1.1, mob.position.z, electricHit ? "#80eaff" : crit ? "#ffffff" : "#fff6a3", electricHit ? 10 : crit ? 8 : 4, {
     speed: crit ? 3.4 : 2.6,
     lift: 2.4,
     life: 0.45,
@@ -3124,7 +3127,7 @@ function triggerRally() {
 }
 
 function swordRadius() {
-  return attackRadius + state.perks.swordRadius + (lowPower ? 0.4 : 0);
+  return 2.4 + state.perks.swordRadius;
 }
 
 function attack() {
@@ -3155,12 +3158,21 @@ function attack() {
     return;
   }
 
+  state.swordAimAngle = state.player.rotation;
+  player.rotation.y = state.swordAimAngle + Math.PI;
+  updatePlayer(0);
   const radius = swordRadius();
+  const facingX = Math.sin(state.swordAimAngle);
+  const facingZ = Math.cos(state.swordAimAngle);
+  const forwardLimit = Math.cos(Math.PI / 3);
   const hitSet = new Set();
   const targets = targetMobs();
   targets.forEach((mob) => {
-    const distance = Math.hypot(state.player.x - mob.position.x, state.player.z - mob.position.z);
-    if (distance > radius + (mob.userData.isBoss ? 1.6 : 0)) return;
+    const dx = mob.position.x - state.player.x;
+    const dz = mob.position.z - state.player.z;
+    const distance = Math.hypot(dx, dz);
+    if (distance < 0.01 || distance > radius + (mob.userData.isBoss ? 1.6 : 0)) return;
+    if ((dx * facingX + dz * facingZ) / distance < forwardLimit) return;
     damageMob(mob, 1, 0.7, { source: "sword" });
     hitSet.add(mob);
   });
@@ -3181,7 +3193,7 @@ function attack() {
     spawnBeam(state.player.x, state.player.z, state.player.x + facingX * state.perks.coneRange, state.player.z + facingZ * state.perks.coneRange, "#fff6a3", 0.25, 1.0);
   }
   if (hitSet.size) reportCombat();
-  else if (state.perks.coneRange <= 0) setMessage("Move closer to a foe before attacking.");
+  else if (state.perks.coneRange <= 0) setMessage("Face a nearby foe before swinging.");
 }
 
 function reportCombat() {
@@ -3407,7 +3419,8 @@ function updateTheme() {
 function updatePlayer(dt) {
   player.position.set(state.player.x, 0, state.player.z);
   const bowFiring = state.weapon === "bow" && state.attackTimer > 0 && state.bowAimAngle !== null;
-  const facing = (bowFiring ? state.bowAimAngle : state.player.rotation) + Math.PI;
+  const swordSwinging = state.weapon === "sword" && state.attackTimer > 0 && state.swordAimAngle !== null;
+  const facing = (bowFiring ? state.bowAimAngle : swordSwinging ? state.swordAimAngle : state.player.rotation) + Math.PI;
   const turn = Math.atan2(Math.sin(facing - player.rotation.y), Math.cos(facing - player.rotation.y));
   player.rotation.y += turn * Math.min(1, dt * 10);
   const bob = Math.sin(clock.elapsedTime * 10) * 0.055 * Math.min(state.player.speed / 8, 1);
@@ -3421,15 +3434,15 @@ function updatePlayer(dt) {
   const weaponPivot = player.userData.weaponPivot;
   if (weaponPivot) {
     weaponPivot.visible = state.weapon === "sword";
-    const slashArc = THREE.MathUtils.lerp(-1.55, 2.45, strike);
-    const returnArc = THREE.MathUtils.lerp(slashArc, -0.5, recovery);
-    weaponPivot.rotation.x = THREE.MathUtils.lerp(0.52, -0.34, strike) + recovery * 0.46;
-    weaponPivot.rotation.y = THREE.MathUtils.lerp(1.3, -2.8, strike) + recovery * 2.8;
-    weaponPivot.rotation.z = -0.62 - windup * 1.15 + returnArc;
-    weaponPivot.position.x = 0.58 + windup * 0.28 - strike * 0.78 + recovery * 0.5;
-    weaponPivot.position.y = 1.16 + windup * 0.34 - recovery * 0.34;
-    weaponPivot.position.z = -0.2 - strike * 0.84 + recovery * 0.84;
-    weaponPivot.scale.setScalar(1 + swing * 0.14);
+    // Wind up, sweep across the space in front, then return to guard.
+    const sweep = THREE.MathUtils.lerp(-0.95, 0.95, strike);
+    weaponPivot.rotation.set(
+      -0.15 - windup * 0.3 + strike * 0.3,
+      THREE.MathUtils.lerp(sweep, -0.35, recovery),
+      -0.1 - swing * 0.22,
+    );
+    weaponPivot.position.set(0.42 - strike * 0.55 + recovery * 0.55, 1.16 + windup * 0.25 - strike * 0.2, -0.38 - swing * 0.3);
+    weaponPivot.scale.setScalar(1 + swing * 0.12);
   }
 
   const bowPivot = player.userData.bowPivot;
@@ -3486,10 +3499,11 @@ function updatePlayer(dt) {
   });
 
   const swordFlash = state.weapon === "sword" && state.attackTimer > 0 ? state.attackTimer / attackDuration : 0;
-  attackRing.position.set(state.player.x, 0.07, state.player.z);
-  attackRing.visible = swordFlash > 0;
-  attackRing.material.opacity = swordFlash * 0.75;
-  attackRing.scale.setScalar((swordRadius() / attackRadius) * (1 + (1 - swordFlash) * 0.08));
+  swordSlash.position.set(state.player.x, 0.9 + swing * 0.15, state.player.z);
+  swordSlash.rotation.set(-Math.PI / 2, 0, (state.swordAimAngle ?? state.player.rotation) + Math.PI);
+  swordSlash.visible = swordFlash > 0;
+  swordSlash.material.opacity = swing * 0.8;
+  swordSlash.scale.setScalar((swordRadius() / attackRadius) * (1 + (1 - swordFlash) * 0.08));
 
   const shielded = state.invulnTimer > 0 || state.dash.timer > 0;
   shieldBubble.visible = shielded;
@@ -4020,9 +4034,27 @@ function openEnding() {
   state.attackHeld = false;
   hidePanel(cvNode);
   setPhase("ending");
+  const victory = state.boss.stage === "defeated";
+  endingNode.querySelector("#ending-title").textContent = victory ? "Victory!" : "Your journey";
+  endingNode.querySelector(".victory-build-title").textContent = victory ? "Your winning build" : "Your build";
+  endingNode.querySelector("[data-ending-message]").textContent = victory
+    ? "The Fragmenter has fallen. You reconnected the world."
+    : "Your adventure, your choices. Here’s the build you created.";
   if (endingSummaryNode) endingSummaryNode.textContent = buildSummary();
   if (endingStatsNode) {
-    endingStatsNode.textContent = `${formatDuration(clock.elapsedTime - state.run.startedAt)} played · ${state.deaths} ${pluralize("fall", state.deaths)} · ${state.collected.length}/${castles.length} upgrades${state.boss.stage === "defeated" ? " · Fragmenter defeated" : ""}`;
+    endingStatsNode.replaceChildren(...[
+      [formatDuration(clock.elapsedTime - state.run.startedAt), "Time played"],
+      [String(state.kills), "Foes defeated"],
+      [`${state.collected.length}/${castles.length}`, "Powers collected"],
+    ].map(([value, label]) => {
+      const stat = document.createElement("div");
+      const number = document.createElement("strong");
+      const caption = document.createElement("span");
+      number.textContent = value;
+      caption.textContent = label;
+      stat.append(number, caption);
+      return stat;
+    }));
   }
   if (endingDoesNode) {
     endingDoesNode.replaceChildren(
@@ -4045,7 +4077,7 @@ function openEnding() {
         const title = document.createElement("strong");
         title.textContent = found.artifact.upgrade.name;
         const chapter = document.createElement("span");
-        chapter.textContent = `${found.artifact.title} · ${found.artifact.fact}`;
+        chapter.textContent = `${found.castle.shortTitle} · ${found.artifact.upgrade.effect}`;
         const link = document.createElement("a");
         link.href = found.artifact.link.href;
         link.textContent = found.artifact.link.label;

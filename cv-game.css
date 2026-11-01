@@ -1927,3 +1927,23 @@
   transform-origin: left;
 }
 .hud-chip-ammo.is-refilling::after { background: #f4bf45; }
+
+.game-ending {
+  width: min(760px, 100%);
+  border-color: #b28d42;
+  background: radial-gradient(ellipse at 50% 0, rgba(244,191,69,.18), transparent 45%), #0b101b;
+}
+.victory-header { text-align: center; }
+.victory-emblem { margin: 0 auto 12px; width: 68px; height: 68px; display: grid; place-items: center; border: 1px solid #f4bf45; border-radius: 50%; color: #ffe4a1; font-size: 48px; box-shadow: 0 0 35px #f4bf4526; }
+.game-ending #ending-title { margin: 4px 0 12px; color: #ffe4a1; font-size: clamp(3rem, 10vw, 5.2rem); line-height: 1; letter-spacing: -.04em; }
+.victory-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 24px 0; }
+.victory-stats > div { display: grid; gap: 5px; padding: 14px 6px; text-align: center; background: #ffffff08; border: 1px solid #ffffff14; border-radius: 10px; }
+.victory-stats strong { font-size: clamp(1.25rem, 5vw, 1.8rem); color: #ffe4a1; }
+.victory-stats span { font-size: .72rem; color: #bfc6d5; }
+.victory-build-title { margin-bottom: 4px; }
+.victory-build-note { color: #bfc6d5; font-size: .85rem; }
+.game-ending .artifact-collection { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px; }
+.game-ending .artifact-collection li { padding: 14px; background: #ffffff06; border-left: 3px solid var(--castle-color); border-radius: 8px; }
+.victory-actions { margin-top: 24px; }
+.victory-more { margin-top: 22px; padding-top: 16px; border-top: 1px solid #ffffff20; }
+.victory-more summary { cursor: pointer; color: #bfc6d5; font-size: .85rem; }

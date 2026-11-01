@@ -10,7 +10,7 @@
     <title>Vico’s Quest | vico.wtf</title>
     <link rel="icon" href="assets/vicos-quest.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="cv-game.css?v=20261031a">
+    <link rel="stylesheet" href="cv-game.css?v=20261101a">
   </head>
   <body class="game-page">
     <svg class="game-icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -175,29 +175,36 @@
           </section>
 
           <section class="game-panel game-ending is-hidden" data-game-ending role="dialog" aria-modal="true" aria-labelledby="ending-title">
-            <p class="panel-kicker">Quest complete</p>
-            <h2 id="ending-title">The world is reconnected.</h2>
-            <p class="panel-role"><strong>Victor Cazacu</strong> · Forward Deployed Engineer &amp; Graph Engineer</p>
-            <p class="panel-note" data-ending-stats></p>
-            <p class="panel-kicker panel-kicker-spaced">What Victor does</p>
-            <ul class="role-list" data-ending-does></ul>
-            <p class="panel-summary" data-ending-summary></p>
-            <div class="panel-actions">
-              <a class="panel-button" href="index.html#proof">View selected projects</a>
-              <a class="panel-button" href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a class="panel-button" href="https://x.com/Vicorico17" target="_blank" rel="noopener noreferrer">X / Twitter</a>
-              <a class="panel-button" href="index.html">Main site</a>
-              <button class="panel-button ghost" type="button" data-game-restart>Play again</button>
+            <div class="victory-header">
+              <div class="victory-emblem" aria-hidden="true">✦</div>
+              <p class="panel-kicker">Vico’s Quest</p>
+              <h2 id="ending-title">Victory!</h2>
+              <p data-ending-message>The Fragmenter has fallen. You reconnected the world.</p>
             </div>
-            <p class="panel-kicker panel-kicker-spaced">Your build</p>
+            <div class="victory-stats" data-ending-stats></div>
+            <h3 class="victory-build-title">Your winning build</h3>
+            <p class="victory-build-note">Every power below is one you chose along the way.</p>
             <ul class="artifact-collection" data-ending-artifacts></ul>
-            <p class="panel-kicker panel-kicker-spaced">Core abilities</p>
+            <p class="panel-kicker panel-kicker-spaced">Your abilities</p>
             <ul class="build-list" data-ending-abilities></ul>
+            <div class="panel-actions victory-actions">
+              <button class="panel-button primary" type="button" data-game-restart>Play again</button>
+              <a class="panel-button" href="index.html#proof">Explore the projects</a>
+            </div>
+            <details class="victory-more">
+              <summary>Meet the builder behind the quest</summary>
+              <ul class="role-list" data-ending-does></ul>
+              <p class="panel-summary" data-ending-summary></p>
+              <div class="panel-actions">
+                <a class="panel-button" href="https://github.com/Vicorico17" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="panel-button" href="https://x.com/Vicorico17" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+              </div>
+            </details>
           </section>
         </div>
       </div>
     </main>
 
-    <script type="module" src="cv-game.js?v=20261031b"></script>
+    <script type="module" src="cv-game.js?v=20261101a"></script>
   </body>
 </html>
