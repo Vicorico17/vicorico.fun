@@ -6094,3 +6094,133 @@ dd {
 #projects .proof-meta {
   margin-top: 0.8rem;
 }
+
+/* Material faces stay in front of their extruded letter silhouettes. */
+.home-page .text-flip[data-title-theme] .text-flip-trigger {
+  text-shadow: none;
+  transform: perspective(900px) rotateX(calc(var(--title-x, 8deg) + var(--pointer-x, 0deg))) rotateY(calc(var(--title-y, -8deg) + var(--pointer-y, 0deg))) rotateZ(var(--title-z, -2deg));
+  filter: drop-shadow(0 12px 14px #0008) drop-shadow(0 0 22px var(--title-glow));
+}
+
+.home-page .text-flip[data-title-theme] .text-flip-trigger span {
+  position: relative;
+  isolation: isolate;
+  text-shadow: none;
+}
+
+.home-page .text-flip[data-title-theme] .text-flip-trigger span::before {
+  content: attr(data-letter);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--title-edge);
+  -webkit-text-fill-color: var(--title-edge);
+  -webkit-text-stroke: 0;
+  text-shadow: 1px 1px var(--title-edge), 2px 2px var(--title-edge),
+    3px 3px var(--title-edge), 4px 4px var(--title-edge),
+    5px 5px var(--title-edge), 6px 6px var(--title-edge),
+    7px 7px var(--title-edge), 8px 8px var(--title-edge),
+    9px 9px var(--title-edge), 10px 10px var(--title-edge),
+    11px 12px 0 #101020, 12px 14px 2px #0006;
+}
+
+.home-page .text-flip:is([data-title-theme="titanium"], [data-title-theme="opal"], [data-title-theme="carbon"], [data-title-theme="mercury"], [data-title-theme="copper"], [data-title-theme="sapphire"], [data-title-theme="plasma"], [data-title-theme="obsidian"]) {
+  --title-face: #e9f6ff;
+  --title-edge: #364564;
+  --title-glow: #719fff77;
+  --title-x: 12deg;
+  --title-y: -12deg;
+  --title-z: -2deg;
+  font-family: Bungee, Impact, sans-serif;
+  font-size: clamp(1.85rem, 6.8vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+
+.home-page .text-flip[data-title-theme="titanium"] {
+  --material: linear-gradient(165deg, #f6ffffba, #456e9377 42%, #d8fcffcc 49%, #20385155 70%), url("assets/title-metal.jpg");
+}
+.home-page .text-flip[data-title-theme="opal"] {
+  --title-edge: #775393;
+  --title-glow: #ffb7ea88;
+  --material: repeating-conic-gradient(from 25deg at 35% 60%, #fff0fb, #97fce4 12%, #adbaff 22%, #ffbce1 32%, #fff6cd 44%, #fff0fb 50%);
+}
+.home-page .text-flip[data-title-theme="carbon"] {
+  --title-edge: #171e2b;
+  --title-glow: #64c4ff66;
+  --material: linear-gradient(135deg, #d4efff88, transparent 40%, #90adcb66 52%, transparent 70%), repeating-conic-gradient(#18212d 0% 25%, #657589 0% 50%);
+  --material-size: 200% 200%, 8px 8px;
+}
+.home-page .text-flip[data-title-theme="mercury"] {
+  --title-edge: #4a426c;
+  --material: repeating-linear-gradient(165deg, #f7ffff 0%, #a1abbf 12%, #202a46 23%, #f9ffff 26%, #cbd4eb 35%, #465373 47%, #f7ffff 50%);
+}
+.home-page .text-flip[data-title-theme="copper"] {
+  --title-edge: #753423;
+  --title-glow: #ff8c4977;
+  --material: linear-gradient(160deg, #fff0cacc, #cf6d4099 35%, #602c1866 50%, #ffd8aacc 60%, #ac4c2077), url("assets/title-metal.jpg");
+}
+.home-page .text-flip[data-title-theme="sapphire"] {
+  --title-edge: #213287;
+  --title-glow: #557affaa;
+  --material: conic-gradient(from 35deg at 45% 55%, #d7ffff, #2479ff, #14246d, #77eaff, #e8fbff, #2456c0, #d7ffff);
+}
+.home-page .text-flip[data-title-theme="plasma"] {
+  --title-edge: #79146e;
+  --title-glow: #fd45eaaa;
+  --material: repeating-radial-gradient(ellipse at 30% 20%, #ffdafb 0%, #ee3cae 12%, #6526d9 22%, #65f4ff 28%, #ffdafb 34%);
+}
+.home-page .text-flip[data-title-theme="obsidian"] {
+  --title-edge: #352244;
+  --title-glow: #ca76ff88;
+  --material: repeating-conic-gradient(from 40deg at 65% 40%, #172033 0%, #6f6097 12%, #e0c3ff 14%, #25203f 18%, #090e1c 30%, #172033 50%);
+}
+
+.home-page .text-flip:is([data-title-theme="titanium"], [data-title-theme="opal"], [data-title-theme="carbon"], [data-title-theme="mercury"], [data-title-theme="copper"], [data-title-theme="sapphire"], [data-title-theme="plasma"], [data-title-theme="obsidian"]) .text-flip-trigger span {
+  background-image: var(--material);
+  background-size: var(--material-size, 200% 200%);
+  background-position: calc(var(--i) * 13%) 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.6px #e4eaff88;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-page .text-flip[data-title-theme] .text-flip-trigger span {
+    animation: titleLetterFloat 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.23s);
+  }
+  .home-page .text-flip[data-title-theme] .text-flip-trigger span::after {
+    animation: titleMaterialShine 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.23s);
+  }
+}
+@keyframes titleLetterFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(-3deg); }
+  50% { transform: translate3d(0, -0.055em, 12px) rotateX(5deg); }
+}
+@keyframes titleMaterialShine {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.35); background-position: 75% 35%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-page .text-flip[data-title-theme] .text-flip-trigger { transition: none; }
+}
+
+/* A foreground copy keeps the texture above the opaque extrusion. */
+.home-page .text-flip[data-title-theme] .text-flip-trigger span::after {
+  content: attr(data-letter);
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  color: inherit;
+  background-image: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: inherit;
+  -webkit-text-stroke: inherit;
+}
