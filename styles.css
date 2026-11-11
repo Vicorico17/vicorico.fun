@@ -2067,25 +2067,6 @@ button:not(:where(.booking-widget *)) {
   text-shadow: 0 0 4px #d2fff9, 0 0 14px #40eddf, 0 0 34px #00bca9, 4px 5px #0b4558;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .home-page .text-flip[data-title-theme="orbit"]:hover .text-flip-trigger {
-    animation: titleGentleRock 7s ease-in-out 650ms infinite;
-  }
-
-  .home-page .text-flip[data-title-theme="prism"]:hover .text-flip-trigger {
-    animation: titleGentleRock 8s ease-in-out 650ms infinite;
-  }
-
-  .home-page .text-flip[data-title-theme="vinyl"]:hover .text-flip-trigger {
-    animation: titleGentleRock 9s ease-in-out 650ms infinite;
-  }
-}
-
-@keyframes titleGentleRock {
-  0%, 100% { rotate: -1.5deg; }
-  50% { rotate: 1.5deg; }
-}
-
 .text-flip span {
   display: inline-block;
   opacity: 1;
@@ -6176,28 +6157,6 @@ dd {
   -webkit-text-stroke: 0.6px #e4eaff88;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .home-page .text-flip[data-title-theme] .text-flip-trigger span {
-    animation: titleLetterFloat 6.5s ease-in-out infinite;
-    animation-delay: calc(var(--i) * -0.23s);
-  }
-  .home-page .text-flip[data-title-theme] .text-flip-trigger span::after {
-    animation: titleMaterialShine 5s ease-in-out infinite;
-    animation-delay: calc(var(--i) * -0.23s);
-  }
-}
-@keyframes titleLetterFloat {
-  0%, 100% { transform: translate3d(0, 0, 0) rotateX(-1deg); }
-  50% { transform: translate3d(0, -0.02em, 2px) rotateX(1deg); }
-}
-@keyframes titleMaterialShine {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.35); background-position: 75% 35%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .home-page .text-flip[data-title-theme] .text-flip-trigger { transition: none; }
-}
-
 /* A foreground copy keeps the texture above the opaque extrusion. */
 .home-page .text-flip[data-title-theme] .text-flip-trigger span::after {
   content: attr(data-letter);
@@ -6219,15 +6178,6 @@ dd {
   grid-column: 1 / -1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .home-page .text-flip[data-title-theme] .text-flip-trigger {
-    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .home-page .text-flip[data-title-theme]:hover .text-flip-trigger {
-    transition-duration: 240ms;
-  }
-}
-
 /* Extend each website title link across its card, preserving secondary actions. */
 #projects .proof-grid article { position: relative; }
 #projects .proof-grid h3 a::after {
@@ -6247,7 +6197,11 @@ dd {
   z-index: 2;
 }
 
-/* Pointer inertia is independent of each material's pose and transition. */
+/* A stable 3D title: material changes are deliberate clicks, never pointer motion. */
 .home-page .text-flip[data-title-theme] {
-  transform: perspective(1100px) rotateX(var(--pointer-x, 0deg)) rotateY(var(--pointer-y, 0deg));
+  min-height: clamp(80px, 12vw, 150px);
+}
+.home-page .text-flip[data-title-theme] .text-flip-trigger {
+  transform: perspective(900px) rotateX(8deg) rotateY(-6deg) rotateZ(-2deg);
+  transition: none;
 }
