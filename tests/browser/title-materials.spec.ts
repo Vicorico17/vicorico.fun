@@ -1,0 +1,36 @@
+import { test, expect } from '@playwright/test'
+
+test('title has material and depth before interaction and cycles through new materials', async ({ page }) => {
+  await page.goto('/')
+  const title = page.locator('[data-title-themes]')
+  const trigger = title.locator('button')
+  await expect(title).toHaveAttribute('data-title-theme', 'chrome')
+  await expect(title).toHaveAttribute('aria-label', 'vico.wtf')
+  const face = title.locator('span').first()
+  expect(await face.evaluate(el => getComputedStyle(el).backgroundImage)).not.toBe('none')
+  expect(await face.evaluate(el => getComputedStyle(el, '::before').textShadow)).not.toBe('none')
+  await trigger.focus()
+  for (const material of ['titanium', 'opal', 'lava', 'carbon', 'ice', 'mercury', 'copper', 'sapphire', 'plasma', 'obsidian']) {
+    await trigger.press('Enter')
+    await expect(title).toHaveAttribute('data-title-theme', material)
+    expect(await face.evaluate(el => getComputedStyle(el).backgroundImage)).not.toBe('none')
+    await expect(face).toBeVisible()
+  }
+  await page.screenshot({ path: '/tmp/title-obsidian.png' })
+})
+
+test('first material works without scripts on mobile and motion can be disabled', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' })
+  const page = await context.newPage()
+  await page.goto('/')
+  const title = page.locator('[data-title-themes]')
+  await expect(title).toHaveAttribute('data-title-theme', 'chrome')
+  const letter = title.locator('span').first()
+  expect(await letter.evaluate(el => getComputedStyle(el).animationName)).toBe('none')
+  expect(await letter.evaluate(el => getComputedStyle(el).backgroundImage)).not.toBe('none')
+  const box = await title.boundingBox()
+  expect(box!.x).toBeGreaterThanOrEqual(0)
+  expect(box!.x + box!.width).toBeLessThanOrEqual(390)
+  await page.screenshot({ path: '/tmp/title-mobile.png' })
+  await context.close()
+})

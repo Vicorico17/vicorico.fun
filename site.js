@@ -824,7 +824,7 @@ function initProjectCommitCounts() {
     meta.append(badge, latest);
     if (!github) {
       badge.textContent = "Commits not public";
-      status.after(meta);
+      (card.querySelector(".proof-actions") || status).after(meta);
       entries.push({ card, index, info: null, badge, latest });
       return;
     }
@@ -845,7 +845,7 @@ function initProjectCommitCounts() {
       latest.textContent = cached.latestDate ? `Latest commit · ${formatGithubDateTime(cached.latestDate)}` : "No commits yet";
       if (cached.latestDate) latest.dateTime = cached.latestDate;
     }
-    status.after(meta);
+    (card.querySelector(".proof-actions") || status).after(meta);
     const entry = { card, index, repo, info: cached, badge, latest };
     entries.push(entry);
     if (!cached) {
@@ -975,12 +975,14 @@ function initTitleThemes() {
   let domainIndex = 0;
 
   const themes = [
-    "signal", "paper", "grove", "arcade", "lava", "ice",
-    "chrome", "neon", "gold", "hologram", "candy", "noir",
+    "chrome", "titanium", "opal", "lava", "carbon", "ice",
+    "mercury", "copper", "sapphire", "plasma", "obsidian",
+    "signal", "paper", "grove", "arcade", "neon", "gold", "hologram", "candy", "noir",
     "sunset", "ocean", "matrix", "rose", "electric", "emerald",
     "orbit", "prism", "vinyl", "sakura",
   ];
-  let index = -1;
+  let index = 0;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function nextTheme() {
     index = (index + 1) % themes.length;
@@ -992,6 +994,7 @@ function initTitleThemes() {
       span.setAttribute("aria-hidden", "true");
       span.style.setProperty("--i", letterIndex);
       span.textContent = letter;
+      span.dataset.letter = letter;
       return span;
     });
     trigger.replaceChildren(...letters);
@@ -1006,6 +1009,18 @@ function initTitleThemes() {
   }
 
   title.addEventListener("pointerenter", start);
+  title.addEventListener("pointermove", (event) => {
+    if (event.pointerType !== "mouse" || reducedMotion.matches) return;
+    const bounds = title.getBoundingClientRect();
+    title.style.setProperty("--pointer-x", `${(0.5 - (event.clientY - bounds.top) / bounds.height) * 14}deg`);
+    title.style.setProperty("--pointer-y", `${((event.clientX - bounds.left) / bounds.width - 0.5) * 18}deg`);
+  });
+  const resetTilt = () => {
+    title.style.removeProperty("--pointer-x");
+    title.style.removeProperty("--pointer-y");
+  };
+  title.addEventListener("pointerleave", resetTilt);
+  reducedMotion.addEventListener("change", resetTilt);
   trigger.addEventListener("click", nextTheme);
 }
 

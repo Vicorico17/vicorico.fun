@@ -36,6 +36,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&amp;family=Cinzel:wght@700;900&amp;family=DM+Serif+Display:ital@0;1&amp;family=Orbitron:wght@700;900&amp;family=Righteous&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=20261030b">
+    <link rel="stylesheet" href="booking-preview.css">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-wGcIQ25BqV8L2KPJVyEii.js"></script>
     <script>
@@ -132,16 +133,16 @@
     <main>
       <section id="home" class="portal-start section" aria-label="Enter vico.wtf">
         <canvas class="portal-orbit-field" data-portal-art aria-hidden="true"></canvas>
-        <h1 class="text-flip" aria-label="vico.wtf" data-title-themes>
+        <h1 class="text-flip" aria-label="vico.wtf" data-title-themes data-title-theme="chrome">
           <button class="text-flip-trigger" type="button" aria-label="Change vico.wtf title style">
-            <span aria-hidden="true" style="--i: 0">v</span>
-            <span aria-hidden="true" style="--i: 1">i</span>
-            <span aria-hidden="true" style="--i: 2">c</span>
-            <span aria-hidden="true" style="--i: 3">o</span>
-            <span aria-hidden="true" style="--i: 4">.</span>
-            <span aria-hidden="true" style="--i: 5">w</span>
-            <span aria-hidden="true" style="--i: 6">t</span>
-            <span aria-hidden="true" style="--i: 7">f</span>
+            <span aria-hidden="true" style="--i: 0" data-letter="v">v</span>
+            <span aria-hidden="true" style="--i: 1" data-letter="i">i</span>
+            <span aria-hidden="true" style="--i: 2" data-letter="c">c</span>
+            <span aria-hidden="true" style="--i: 3" data-letter="o">o</span>
+            <span aria-hidden="true" style="--i: 4" data-letter=".">.</span>
+            <span aria-hidden="true" style="--i: 5" data-letter="w">w</span>
+            <span aria-hidden="true" style="--i: 6" data-letter="t">t</span>
+            <span aria-hidden="true" style="--i: 7" data-letter="f">f</span>
           </button>
         </h1>
         <div class="portal-socials" role="group" aria-label="Social links">
@@ -234,6 +235,10 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section id="booking" class="section" aria-labelledby="booking-title">
+        <div class="booking-widget" data-booking-widget></div>
       </section>
 
       <section id="about" class="about-intro section" aria-labelledby="about-title">
@@ -698,9 +703,9 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/taptime.jpg" alt="Screenshot of the TapTime live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://taptime-mvp.vercel.app" aria-label="Visit TapTime website"><img src="assets/project-previews/taptime.jpg" alt="Screenshot of the TapTime live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / NFC Attendance</span>
-            <h3>TapTime</h3>
+            <h3><a href="https://taptime-mvp.vercel.app">TapTime</a></h3>
             <p>A passive-NFC workplace attendance checkpoint that turns a simple tap into a secure, location-specific check-in or check-out flow.</p>
             <ul>
               <li>Printable, enclosed NFC checkpoint</li>
@@ -708,14 +713,14 @@
               <li>Production-ready hardware upgrade path</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://taptime-mvp.vercel.app">Open build</a>
+              <a class="project-website" href="https://taptime-mvp.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/tap-time">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/bvb-lol.jpg" alt="Screenshot of the bvb.lol live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://bvblol.vercel.app" aria-label="Visit bvb.lol website"><img src="assets/project-previews/bvb-lol.jpg" alt="Screenshot of the bvb.lol live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Market Intelligence</span>
-            <h3>bvb.lol</h3>
+            <h3><a href="https://bvblol.vercel.app">bvb.lol</a></h3>
             <p>An open-source, read-only terminal that makes the Bucharest Stock Exchange easier to follow through clean instrument pages, filings, events, and market context.</p>
             <ul>
               <li>BVB and AeRO instrument discovery</li>
@@ -723,14 +728,14 @@
               <li>Licensed-data-ready provider architecture</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://bvblol.vercel.app">Open build</a>
+              <a class="project-website" href="https://bvblol.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/bvb.lol">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/black-sea-compute.jpg" alt="Screenshot of the Black Sea Compute live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://blacksea-datacenter.vercel.app" aria-label="Visit Black Sea Compute website"><img src="assets/project-previews/black-sea-compute.jpg" alt="Screenshot of the Black Sea Compute live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Cloud Infrastructure</span>
-            <h3>Black Sea Compute</h3>
+            <h3><a href="https://blacksea-datacenter.vercel.app">Black Sea Compute</a></h3>
             <p>Investor-facing concept for a resilient offshore cloud made from a fleet of autonomous data-center vessels in the Black Sea.</p>
             <ul>
               <li>Distributed maritime compute</li>
@@ -738,14 +743,14 @@
               <li>Responsive investor experience</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://blacksea-datacenter.vercel.app">Open build</a>
+              <a class="project-website" href="https://blacksea-datacenter.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/BLACKSEA-DATACENTER">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/aclienti.jpg" alt="Screenshot of the AClienti interface" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://aclienti.vercel.app" aria-label="Visit AClienti website"><img src="assets/project-previews/aclienti.jpg" alt="Screenshot of the AClienti interface" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Market Intelligence</span>
-            <h3>AClienti</h3>
+            <h3><a href="https://aclienti.vercel.app">AClienti</a></h3>
             <p>Evidence-backed research desk that turns recent public customer signals into ranked opportunities and practical content direction.</p>
             <ul>
               <li>Weighted opportunity scoring</li>
@@ -753,6 +758,7 @@
               <li>Content briefs and JSON exports</li>
             </ul>
             <div class="proof-actions">
+              <a class="project-website" href="https://aclienti.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/ACLIENTI">GitHub</a>
             </div>
           </article>
@@ -771,9 +777,9 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/legit-agentic.jpg" alt="Screenshot of the LEGIT AGENTIC live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://legit-agentic.vercel.app" aria-label="Visit LEGIT AGENTIC website"><img src="assets/project-previews/legit-agentic.jpg" alt="Screenshot of the LEGIT AGENTIC live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Agentic Web</span>
-            <h3>LEGIT AGENTIC</h3>
+            <h3><a href="https://legit-agentic.vercel.app">LEGIT AGENTIC</a></h3>
             <p>Transparent web audit toolkit that separates deterministic agent-readiness checks from observational AI visibility research.</p>
             <ul>
               <li>Web interface and zero-dependency CLI</li>
@@ -781,14 +787,14 @@
               <li>Markdown and JSON reports</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://legit-agentic.vercel.app">Open build</a>
+              <a class="project-website" href="https://legit-agentic.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/LEGIT-AGENTIC">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/finpath-ai.jpg" alt="Screenshot of the FinPath AI live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://finpath-ai-sigma.vercel.app" aria-label="Visit FinPath AI website"><img src="assets/project-previews/finpath-ai.jpg" alt="Screenshot of the FinPath AI live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / AI Finance</span>
-            <h3>FinPath AI</h3>
+            <h3><a href="https://finpath-ai-sigma.vercel.app">FinPath AI</a></h3>
             <p>Research-informed financial-planning prototype that builds a structured profile and returns an assumption-aware action plan with visible guardrails.</p>
             <ul>
               <li>Context quality scoring</li>
@@ -796,7 +802,7 @@
               <li>Shock and rebalancing plans</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://finpath-ai-sigma.vercel.app">Open build</a>
+              <a class="project-website" href="https://finpath-ai-sigma.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/finfin">GitHub</a>
             </div>
           </article>
@@ -815,9 +821,9 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/streamwin.jpg" alt="Screenshot of the Streamwin live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://streamwin.vercel.app" aria-label="Visit Streamwin website"><img src="assets/project-previews/streamwin.jpg" alt="Screenshot of the Streamwin live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Streaming</span>
-            <h3>Streamwin</h3>
+            <h3><a href="https://streamwin.vercel.app">Streamwin</a></h3>
             <p>Interactive live-studio prototype combining real-time AI video, multistream distribution, IRL controls, and vision-aware Twitch automations.</p>
             <ul>
               <li>AI scenes and visual effects</li>
@@ -825,14 +831,14 @@
               <li>IRL and vision automation tools</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://streamwin.vercel.app">Open build</a>
+              <a class="project-website" href="https://streamwin.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/streamwin">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/realsoul.jpg" alt="Screenshot of the REALSOUL live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://realsoul-ten.vercel.app" aria-label="Visit REALSOUL website"><img src="assets/project-previews/realsoul.jpg" alt="Screenshot of the REALSOUL live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Privacy Infrastructure</span>
-            <h3>REALSOUL</h3>
+            <h3><a href="https://realsoul-ten.vercel.app">REALSOUL</a></h3>
             <p>Privacy-respecting protocol demo for issuing short-lived proof that a live human approved a specific call, message, or transaction.</p>
             <ul>
               <li>Ed25519-signed proof tokens</li>
@@ -840,14 +846,14 @@
               <li>Replay-protected verification</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://realsoul-ten.vercel.app">Open build</a>
+              <a class="project-website" href="https://realsoul-ten.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/REALSOUL">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/magic-dev.jpg" alt="Screenshot of the Magic Dev live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://magic-dev-seven.vercel.app" aria-label="Visit Magic Dev website"><img src="assets/project-previews/magic-dev.jpg" alt="Screenshot of the Magic Dev live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Developer Tools</span>
-            <h3>Magic Dev</h3>
+            <h3><a href="https://magic-dev-seven.vercel.app">Magic Dev</a></h3>
             <p>Interactive product concept for a persistent developer VPS that combines a real server with a browser workspace and automatic previews.</p>
             <ul>
               <li>Browser editor and terminal concept</li>
@@ -855,14 +861,14 @@
               <li>Guided workspace builder</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://magic-dev-seven.vercel.app">Open build</a>
+              <a class="project-website" href="https://magic-dev-seven.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/magic-dev">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/bestrestshop.jpg" alt="Screenshot of the BestRestShop live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://bestrestshop.vercel.app" aria-label="Visit BestRestShop website"><img src="assets/project-previews/bestrestshop.jpg" alt="Screenshot of the BestRestShop live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Commerce</span>
-            <h3>BestRestShop</h3>
+            <h3><a href="https://bestrestshop.vercel.app">BestRestShop</a></h3>
             <p>New commerce project currently taking shape in the active product portfolio.</p>
             <ul>
               <li>Active development</li>
@@ -870,14 +876,14 @@
               <li>Open-source repository</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://bestrestshop.vercel.app">Open build</a>
+              <a class="project-website" href="https://bestrestshop.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/bestrestshop">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/recomed.jpg" alt="Screenshot of the Recomed live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://recomed-sage.vercel.app" aria-label="Visit Recomed website"><img src="assets/project-previews/recomed.jpg" alt="Screenshot of the Recomed live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Recommendations</span>
-            <h3>Recomed</h3>
+            <h3><a href="https://recomed-sage.vercel.app">Recomed</a></h3>
             <p>A recommendation product exploring structured discovery and better decisions through personalized context.</p>
             <ul>
               <li>Personalized recommendations</li>
@@ -885,7 +891,7 @@
               <li>Decision-focused product exploration</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://recomed-sage.vercel.app">Open build</a>
+              <a class="project-website" href="https://recomed-sage.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/recomed">GitHub</a>
             </div>
           </article>
@@ -921,9 +927,9 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/accman.jpg" alt="Screenshot of the Accman live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://accman-ochre.vercel.app" aria-label="Visit Accman website"><img src="assets/project-previews/accman.jpg" alt="Screenshot of the Accman live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / New Build</span>
-            <h3>Accman</h3>
+            <h3><a href="https://accman-ochre.vercel.app">Accman</a></h3>
             <p>New account-management project currently taking shape in the active product portfolio.</p>
             <ul>
               <li>Active development</li>
@@ -931,14 +937,14 @@
               <li>Open-source repository</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://accman-ochre.vercel.app">Open build</a>
+              <a class="project-website" href="https://accman-ochre.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/accman">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/efans.jpg" alt="Screenshot of the eFans live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://efans.vercel.app" aria-label="Visit eFans website"><img src="assets/project-previews/efans.jpg" alt="Screenshot of the eFans live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / New Build</span>
-            <h3>eFans</h3>
+            <h3><a href="https://efans.vercel.app">eFans</a></h3>
             <p>New project currently taking shape as part of the active product and automation portfolio.</p>
             <ul>
               <li>Active development</li>
@@ -946,14 +952,14 @@
               <li>Open-source repository</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://efans.vercel.app">Open build</a>
+              <a class="project-website" href="https://efans.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/efans">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/homesports.jpg" alt="Screenshot of the HomeSports live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://homesports.vercel.app" aria-label="Visit HomeSports website"><img src="assets/project-previews/homesports.jpg" alt="Screenshot of the HomeSports live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / Esports</span>
-            <h3>HomeSports</h3>
+            <h3><a href="https://homesports.vercel.app">HomeSports</a></h3>
             <p>Importance-ranked League of Legends esports matchboard, combining live schedules with transparent ratings for the matches that matter most.</p>
             <ul>
               <li>Live PandaScore match feed</li>
@@ -961,7 +967,7 @@
               <li>League-wide match discovery</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://homesports.vercel.app">Open build</a>
+              <a class="project-website" href="https://homesports.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/homesports">GitHub</a>
             </div>
           </article>
@@ -997,11 +1003,11 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact">
-              <img src="assets/project-previews/distronow.png" alt="DistroNow build preview" loading="lazy">
+            <div class="proof-artifact"><a class="project-preview-link" href="https://distronow.vercel.app" aria-label="Visit DistroNow website">
+              <img src="assets/project-previews/distronow.png" alt="DistroNow build preview" loading="lazy"></a>
             </div>
             <span>Active / Distribution</span>
-            <h3>DistroNow</h3>
+            <h3><a href="https://distronow.vercel.app">DistroNow</a></h3>
             <p>Website-to-brand-profile system for distribution workflows, starting with Firecrawl extraction, Supabase storage, and social content generation.</p>
             <ul>
               <li>Brand extraction</li>
@@ -1009,16 +1015,16 @@
               <li>Supabase persistence</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://distronow.vercel.app">Open build</a>
+              <a class="project-website" href="https://distronow.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/distronow">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact">
-              <img src="assets/project-previews/libergent.png" alt="libergent build preview" loading="lazy">
+            <div class="proof-artifact"><a class="project-preview-link" href="https://libergent.com" aria-label="Visit libergent website">
+              <img src="assets/project-previews/libergent.png" alt="libergent build preview" loading="lazy"></a>
             </div>
             <span>Active / Marketplace Search</span>
-            <h3>libergent</h3>
+            <h3><a href="https://libergent.com">libergent</a></h3>
             <p>Romanian marketplace search tool with structured extraction, direct HTML parsing, fallback providers, local scoring, and cost-aware provider strategy.</p>
             <ul>
               <li>OLX, Vinted, Autovit, and more</li>
@@ -1026,16 +1032,16 @@
               <li>Price and offer scoring</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://libergent.com">Open build</a>
+              <a class="project-website" href="https://libergent.com">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/libergent">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact">
-              <img src="assets/project-previews/clipro.png" alt="ClipRO build preview" loading="lazy">
+            <div class="proof-artifact"><a class="project-preview-link" href="https://clip-ro.vercel.app" aria-label="Visit ClipRO website">
+              <img src="assets/project-previews/clipro.png" alt="ClipRO build preview" loading="lazy"></a>
             </div>
             <span>Active / Creator Platform</span>
-            <h3>ClipRO</h3>
+            <h3><a href="https://clip-ro.vercel.app">ClipRO</a></h3>
             <p>Creator-platform MVP that turns long-form YouTube videos and YouTube, Twitch, or Kick streams into ranked short clips.</p>
             <ul>
               <li>Creator onboarding</li>
@@ -1043,16 +1049,16 @@
               <li>Clip scoring and rendering states</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://clip-ro.vercel.app">Open build</a>
+              <a class="project-website" href="https://clip-ro.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/clip-ro">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact">
-              <img src="assets/project-previews/bjj-predict.png" alt="BJJ Predict build preview" loading="lazy">
+            <div class="proof-artifact"><a class="project-preview-link" href="https://bjj-predict.vercel.app" aria-label="Visit BJJ Predict website">
+              <img src="assets/project-previews/bjj-predict.png" alt="BJJ Predict build preview" loading="lazy"></a>
             </div>
             <span>Active / BJJ Game</span>
-            <h3>BJJ Predict</h3>
+            <h3><a href="https://bjj-predict.vercel.app">BJJ Predict</a></h3>
             <p>BJJ-first free-play prediction-market MVP using Smoothcomp-style event data, winner shares, LMSR pricing, and leaderboards.</p>
             <ul>
               <li>Smoothcomp sync worker</li>
@@ -1060,16 +1066,16 @@
               <li>Portfolio and settlement flows</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://bjj-predict.vercel.app">Open build</a>
+              <a class="project-website" href="https://bjj-predict.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/bjj-predict">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact">
-              <img src="assets/project-previews/autoart.png" alt="AutoArt build preview" loading="lazy">
+            <div class="proof-artifact"><a class="project-preview-link" href="https://autoart-nine.vercel.app" aria-label="Visit AutoArt website">
+              <img src="assets/project-previews/autoart.png" alt="AutoArt build preview" loading="lazy"></a>
             </div>
             <span>Active / AI Label OS</span>
-            <h3>AutoArt</h3>
+            <h3><a href="https://autoart-nine.vercel.app">AutoArt</a></h3>
             <p>Static MVP for managing AI artist catalogs, song briefs, release packages, promo plans, analytics imports, and local persistence.</p>
             <ul>
               <li>Artist roster and song lab</li>
@@ -1077,16 +1083,16 @@
               <li>Promo and analytics workflows</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://autoart-nine.vercel.app">Open build</a>
+              <a class="project-website" href="https://autoart-nine.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/autoart">GitHub</a>
             </div>
           </article>
           <article>
-            <div class="proof-artifact proof-artifact-logo">
-              <img src="assets/project-previews/baguri.png" alt="Baguri logo preview" loading="lazy">
+            <div class="proof-artifact proof-artifact-logo"><a class="project-preview-link" href="https://baguri.vercel.app" aria-label="Visit Baguri website">
+              <img src="assets/project-previews/baguri.png" alt="Baguri logo preview" loading="lazy"></a>
             </div>
             <span>Active / Marketplace</span>
-            <h3>Baguri</h3>
+            <h3><a href="https://baguri.vercel.app">Baguri</a></h3>
             <p>Fashion commerce codebase covering product submission, designer/influencer flows, checkout, Stripe automation, and operational UI.</p>
             <ul>
               <li>Designer verification</li>
@@ -1094,6 +1100,7 @@
               <li>Supabase auth and storage</li>
             </ul>
             <div class="proof-actions">
+              <a class="project-website" href="https://baguri.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/baguri">GitHub</a>
             </div>
           </article>
@@ -1115,9 +1122,9 @@
             </div>
           </article>
           <article>
-            <div class="proof-artifact"><img src="assets/project-previews/masscall.jpg" alt="Screenshot of the Masscall live build" loading="lazy" width="900" height="390"></div>
+            <div class="proof-artifact"><a class="project-preview-link" href="https://masscall.vercel.app" aria-label="Visit Masscall website"><img src="assets/project-previews/masscall.jpg" alt="Screenshot of the Masscall live build" loading="lazy" width="900" height="390"></a></div>
             <span>Active / AI Operations</span>
-            <h3>Masscall</h3>
+            <h3><a href="https://masscall.vercel.app">Masscall</a></h3>
             <p>AI command center for turning natural-language requests into coordinated work across calendars, email, Slack, Notion, and connected tools.</p>
             <ul>
               <li>Natural-language commands</li>
@@ -1125,7 +1132,7 @@
               <li>Activity and automation tracking</li>
             </ul>
             <div class="proof-actions">
-              <a href="https://masscall.vercel.app">Open build</a>
+              <a class="project-website" href="https://masscall.vercel.app">Visit website ↗</a>
               <a href="https://github.com/Vicorico17/masscall">GitHub</a>
             </div>
           </article>
@@ -1172,6 +1179,29 @@
       </section>
 
       <section id="career" class="career-data section" aria-label="Career record">
+        <div class="proof-strip" aria-label="Selected career proof points">
+          <article>
+            <span>$10M</span>
+            <p>all-time-high market cap for a Polygon culture coin.</p>
+          </article>
+          <article>
+            <span>$200K+</span>
+            <p>raised from community supporters across projects.</p>
+          </article>
+          <article>
+            <span>$50K</span>
+            <p>Polygon grant received for ecosystem work.</p>
+          </article>
+          <article class="proof-workshops">
+            <span>Workshops</span>
+            <p>Hosted many workshops and Twitter Spaces for crypto and startup communities.</p>
+          </article>
+        </div>
+
+        <p class="career-more-prompt">That’s not enough?</p>
+        <details class="career-more">
+          <summary><span>Learn More</span></summary>
+          <div class="career-more-content">
         <div class="career-profile role-focus">
           <span>Role Fit</span>
           <h3>Forward deployed and graph engineering for AI systems</h3>
@@ -1199,29 +1229,6 @@
           </ul>
         </div>
 
-        <div class="proof-strip" aria-label="Selected career proof points">
-          <article>
-            <span>$10M</span>
-            <p>all-time-high market cap for a Polygon culture coin.</p>
-          </article>
-          <article>
-            <span>$200K+</span>
-            <p>raised from community supporters across projects.</p>
-          </article>
-          <article>
-            <span>$50K</span>
-            <p>Polygon grant received for ecosystem work.</p>
-          </article>
-          <article class="proof-workshops">
-            <span>Workshops</span>
-            <p>Hosted many workshops and Twitter Spaces for crypto and startup communities.</p>
-          </article>
-        </div>
-
-        <p class="career-more-prompt">That’s not enough?</p>
-        <details class="career-more">
-          <summary><span>Learn More</span></summary>
-          <div class="career-more-content">
         <div class="career-thesis" aria-label="AI coordination thesis">
           <p>AI matters economically when it reduces coordination across teams, tools, and decisions.</p>
         </div>
@@ -1823,6 +1830,7 @@
     </main>
     <div id="liquid-navbar-root" class="site-liquid-dock"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="booking-preview.js"></script>
     <script src="language.js?v=20261110b"></script>
     <script src="site.js?v=20261031b"></script>
   </body>
