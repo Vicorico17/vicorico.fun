@@ -6197,11 +6197,11 @@ dd {
   z-index: 2;
 }
 
-/* A stable 3D title: material changes are deliberate clicks, never pointer motion. */
+/* The whole title follows one pointer target; letters retain a single rigid pose. */
 .home-page .text-flip[data-title-theme] {
   min-height: clamp(80px, 12vw, 150px);
 }
 .home-page .text-flip[data-title-theme] .text-flip-trigger {
-  transform: perspective(900px) rotateX(8deg) rotateY(-6deg) rotateZ(-2deg);
+  transform: perspective(1000px) translate3d(var(--follow-x, 0px), var(--follow-y, 0px), 0) rotateX(calc(6deg + var(--follow-pitch, 0deg))) rotateY(var(--follow-yaw, 0deg));
   transition: none;
 }

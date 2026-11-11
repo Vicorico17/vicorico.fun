@@ -1002,6 +1002,51 @@ function initTitleThemes() {
     trigger.setAttribute("aria-label", `Change ${domain} title style`);
   }
 
+  // Track the whole intro, not the moving letters: one stable input surface.
+  const intro = title.closest(".portal-start");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let frame = 0, lastTime = 0;
+  let x = 0, y = 0, targetX = 0, targetY = 0;
+  function followPointer(now) {
+    const dt = Math.min(lastTime ? now - lastTime : 16, 50);
+    lastTime = now;
+    const blend = 1 - Math.exp(-dt / 85);
+    x += (targetX - x) * blend;
+    y += (targetY - y) * blend;
+    const settled = Math.abs(targetX - x) + Math.abs(targetY - y) < 0.001;
+    if (settled) { x = targetX; y = targetY; }
+    title.style.setProperty("--follow-x", `${x * 12}px`);
+    title.style.setProperty("--follow-y", `${y * 8}px`);
+    title.style.setProperty("--follow-pitch", `${-y * 7}deg`);
+    title.style.setProperty("--follow-yaw", `${x * 10}deg`);
+    frame = settled ? 0 : requestAnimationFrame(followPointer);
+    if (settled) lastTime = 0;
+  }
+  function scheduleFollow() {
+    if (!frame) frame = requestAnimationFrame(followPointer);
+  }
+  function resetFollow() {
+    targetX = targetY = 0;
+    if (reducedMotion.matches || document.hidden) {
+      cancelAnimationFrame(frame);
+      frame = lastTime = x = y = 0;
+      for (const prop of ["x", "y", "pitch", "yaw"]) title.style.removeProperty(`--follow-${prop}`);
+    } else scheduleFollow();
+  }
+  intro?.addEventListener("pointermove", (event) => {
+    if (event.pointerType !== "mouse" || reducedMotion.matches) return;
+    const bounds = intro.getBoundingClientRect();
+    targetX = clamp((event.clientX - bounds.left) / bounds.width * 2 - 1, -1, 1);
+    targetY = clamp((event.clientY - bounds.top) / bounds.height * 2 - 1, -1, 1);
+    scheduleFollow();
+  });
+  intro?.addEventListener("pointerleave", resetFollow);
+  intro?.addEventListener("pointercancel", resetFollow);
+  window.addEventListener("blur", resetFollow);
+  window.addEventListener("resize", resetFollow);
+  window.addEventListener("scroll", resetFollow, { passive: true });
+  document.addEventListener("visibilitychange", resetFollow);
+  reducedMotion.addEventListener("change", resetFollow);
   trigger.addEventListener("click", nextTheme);
 }
 
