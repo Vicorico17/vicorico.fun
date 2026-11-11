@@ -3911,7 +3911,7 @@ dd {
   text-decoration: none;
 }
 
-.proof-actions a:first-child {
+.proof-actions a.project-website {
   border-color: rgba(242, 184, 75, 0.44);
   background: rgba(242, 184, 75, 0.12);
   color: #f7d58a;
@@ -5536,7 +5536,7 @@ dd {
 }
 
 .home-page[data-theme="paper"] .proof-grid .proof-commit-count,
-.home-page[data-theme="paper"] .proof-actions a:first-child {
+.home-page[data-theme="paper"] .proof-actions a.project-website {
   border-color: rgba(184, 129, 35, 0.3);
   background: rgba(184, 129, 35, 0.1);
   color: #795313;
@@ -5582,7 +5582,7 @@ dd {
 }
 
 .home-page[data-theme="grove"] .proof-grid .proof-commit-count,
-.home-page[data-theme="grove"] .proof-actions a:first-child {
+.home-page[data-theme="grove"] .proof-actions a.project-website {
   border-color: rgba(125, 207, 174, 0.34);
   background: rgba(73, 185, 154, 0.12);
   color: #a4e3cd;
@@ -6069,3 +6069,28 @@ dd {
   padding-top: 2rem;
 }
 .career-more-content > .section { width: 100%; }
+
+/* Put the product website first in the project archive. */
+#projects .proof-grid h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#projects .proof-grid h3 a:hover {
+  text-decoration: underline;
+}
+
+.project-preview-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.proof-artifact-logo .project-preview-link {
+  display: grid;
+  place-items: center;
+}
+
+#projects .proof-meta {
+  margin-top: 0.8rem;
+}

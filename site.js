@@ -824,7 +824,7 @@ function initProjectCommitCounts() {
     meta.append(badge, latest);
     if (!github) {
       badge.textContent = "Commits not public";
-      status.after(meta);
+      (card.querySelector(".proof-actions") || status).after(meta);
       entries.push({ card, index, info: null, badge, latest });
       return;
     }
@@ -845,7 +845,7 @@ function initProjectCommitCounts() {
       latest.textContent = cached.latestDate ? `Latest commit · ${formatGithubDateTime(cached.latestDate)}` : "No commits yet";
       if (cached.latestDate) latest.dateTime = cached.latestDate;
     }
-    status.after(meta);
+    (card.querySelector(".proof-actions") || status).after(meta);
     const entry = { card, index, repo, info: cached, badge, latest };
     entries.push(entry);
     if (!cached) {
