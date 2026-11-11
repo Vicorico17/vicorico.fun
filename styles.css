@@ -6088,7 +6088,7 @@ dd {
 /* Material faces stay in front of their extruded letter silhouettes. */
 .home-page .text-flip[data-title-theme] .text-flip-trigger {
   text-shadow: none;
-  transform: perspective(900px) rotateX(calc(var(--title-x, 8deg) + var(--pointer-x, 0deg))) rotateY(calc(var(--title-y, -8deg) + var(--pointer-y, 0deg))) rotateZ(var(--title-z, -2deg));
+  transform: perspective(900px) rotateX(var(--title-x, 8deg)) rotateY(var(--title-y, -8deg)) rotateZ(var(--title-z, -2deg));
   filter: drop-shadow(0 12px 14px #0008) drop-shadow(0 0 22px var(--title-glow));
 }
 
@@ -6188,7 +6188,7 @@ dd {
 }
 @keyframes titleLetterFloat {
   0%, 100% { transform: translate3d(0, 0, 0) rotateX(-1deg); }
-  50% { transform: translate3d(0, -0.035em, 5px) rotateX(2deg); }
+  50% { transform: translate3d(0, -0.02em, 2px) rotateX(1deg); }
 }
 @keyframes titleMaterialShine {
   0%, 100% { filter: brightness(1); }
@@ -6245,4 +6245,9 @@ dd {
 #projects .proof-meta {
   position: relative;
   z-index: 2;
+}
+
+/* Pointer inertia is independent of each material's pose and transition. */
+.home-page .text-flip[data-title-theme] {
+  transform: perspective(1100px) rotateX(var(--pointer-x, 0deg)) rotateY(var(--pointer-y, 0deg));
 }

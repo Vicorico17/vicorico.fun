@@ -34,3 +34,17 @@ test('first material works without scripts on mobile and motion can be disabled'
   await page.screenshot({ path: '/tmp/title-mobile.png' })
   await context.close()
 })
+
+test('pointer movement keeps the title style and settles smoothly after leaving', async ({ page }) => {
+  await page.goto('/')
+  const title = page.locator('[data-title-themes]')
+  await title.hover({ position: { x: 30, y: 20 } })
+  await expect(title).toHaveAttribute('data-title-theme', 'chrome')
+  await expect(title).toHaveAttribute('aria-label', 'vico.wtf')
+  await expect.poll(() => title.evaluate(el => Math.abs(parseFloat((el as HTMLElement).style.getPropertyValue('--pointer-y')) || 0))).toBeGreaterThan(0.2)
+  await page.mouse.move(0, 0)
+  await expect.poll(() => title.evaluate(el => parseFloat((el as HTMLElement).style.getPropertyValue('--pointer-y')) || 0)).toBe(0)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await title.hover()
+  expect(await title.evaluate(el => (el as HTMLElement).style.getPropertyValue('--pointer-y'))).toBe('')
+})

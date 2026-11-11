@@ -18,6 +18,8 @@ for (const width of [1280, 390]) {
       state.player.x = item.x
       state.player.z = item.z + 10
       const closed = !item.gateGlow.visible
+      const noBars = item.gate.children.every((child: any) => !child.isInstancedMesh)
+      const seal = item.gateSeal.name === "castle-door-seal"
       mobs.filter((mob: any) => mob.userData.castleIndex === 0).forEach((mob: any) => { mob.userData.alive = false; mob.visible = false })
       item.nodes.forEach((node: any) => { node.userData.active = false; node.visible = false })
       updateCastles(0.4)
@@ -28,12 +30,13 @@ for (const width of [1280, 390]) {
       camera.lookAt(item.x, 1.5, item.z + 3)
       render()
       const positions = Array.from(portal.userData.sparks.geometry.attributes.position.array) as number[]
-      return { closed, halfway, open: item.gateProgress, doorHidden: !item.gate.visible,
+      return { closed, noBars, seal, sealFade: item.gateSeal.userData.veil.material.uniforms.uReveal.value, halfway, open: item.gateProgress, doorHidden: !item.gate.visible,
         visible: portal.visible, strength: portal.userData.veil.material.uniforms.uReveal.value,
         finite: positions.every(Number.isFinite), count: positions.length / 3,
         effectIsNotCollider: !buildingColliders.includes(portal) }
     })
-    expect(result.closed).toBe(true)
+    expect(result.closed && result.noBars && result.seal).toBe(true)
+    expect(result.sealFade).toBe(0)
     expect(result.halfway).toBeGreaterThan(0)
     expect(result.halfway).toBeLessThan(1)
     expect(result.open).toBe(1)

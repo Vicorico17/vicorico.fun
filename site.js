@@ -1003,24 +1003,51 @@ function initTitleThemes() {
     trigger.setAttribute("aria-label", `Change ${domain} title style`);
   }
 
-  function start(event) {
-    if (event.pointerType !== "mouse") return;
-    nextTheme();
+  // Ease toward a bounded pointer target; hovering never changes the title style.
+  let frame = 0;
+  let lastTime = 0;
+  let bounds = null;
+  let currentX = 0, currentY = 0, targetX = 0, targetY = 0;
+  function animateTilt(now) {
+    const dt = Math.min(50, lastTime ? now - lastTime : 16);
+    lastTime = now;
+    const ease = 1 - Math.exp(-dt / 110);
+    currentX += (targetX - currentX) * ease;
+    currentY += (targetY - currentY) * ease;
+    const settled = Math.abs(targetX - currentX) + Math.abs(targetY - currentY) < 0.01;
+    if (settled) { currentX = targetX; currentY = targetY; }
+    title.style.setProperty("--pointer-x", `${currentX}deg`);
+    title.style.setProperty("--pointer-y", `${currentY}deg`);
+    frame = settled ? 0 : requestAnimationFrame(animateTilt);
+    if (settled) lastTime = 0;
   }
-
-  title.addEventListener("pointerenter", start);
+  function scheduleTilt() {
+    if (!frame) frame = requestAnimationFrame(animateTilt);
+  }
+  title.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "mouse") bounds = title.getBoundingClientRect();
+  });
   title.addEventListener("pointermove", (event) => {
     if (event.pointerType !== "mouse" || reducedMotion.matches) return;
-    const bounds = title.getBoundingClientRect();
-    title.style.setProperty("--pointer-x", `${clamp(0.5 - (event.clientY - bounds.top) / bounds.height, -0.5, 0.5) * 10}deg`);
-    title.style.setProperty("--pointer-y", `${clamp((event.clientX - bounds.left) / bounds.width - 0.5, -0.5, 0.5) * 14}deg`);
+    bounds ||= title.getBoundingClientRect();
+    targetX = clamp(0.5 - (event.clientY - bounds.top) / bounds.height, -0.5, 0.5) * 6;
+    targetY = clamp((event.clientX - bounds.left) / bounds.width - 0.5, -0.5, 0.5) * 10;
+    scheduleTilt();
   });
   const resetTilt = () => {
-    title.style.removeProperty("--pointer-x");
-    title.style.removeProperty("--pointer-y");
+    bounds = null;
+    targetX = targetY = 0;
+    if (reducedMotion.matches || document.hidden) {
+      cancelAnimationFrame(frame);
+      frame = lastTime = currentX = currentY = 0;
+      title.style.removeProperty("--pointer-x");
+      title.style.removeProperty("--pointer-y");
+    } else scheduleTilt();
   };
   title.addEventListener("pointerleave", resetTilt);
   title.addEventListener("pointercancel", resetTilt);
+  window.addEventListener("resize", resetTilt);
+  document.addEventListener("visibilitychange", resetTilt);
   reducedMotion.addEventListener("change", resetTilt);
   trigger.addEventListener("click", nextTheme);
 }

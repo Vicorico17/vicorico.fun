@@ -1243,7 +1243,7 @@ const castleStoneMaterial = material("#929aa0", { roughness: 0.84, metalness: 0.
 const castleBrassMaterial = material("#c5a36b", { roughness: 0.36, metalness: 0.55 });
 const castleWindowMaterial = material("#ffdc98", { emissive: "#ffc775", emissiveIntensity: 0.7, roughness: 0.4 });
 
-function addCastleDetails(group, gate, towers) {
+function addCastleDetails(group, towers) {
   const stone = [], brass = [], windows = [];
   // Cornices and corner blocks give the keeps a layered stone silhouette.
   for (const side of [-1, 1]) {
@@ -1293,11 +1293,7 @@ function addCastleDetails(group, gate, towers) {
   batch(group, stone, castleStoneMaterial);
   batch(group, brass, castleBrassMaterial);
   batch(group, windows, castleWindowMaterial);
-  // Gate ornaments move with the gate rather than blocking it when it opens.
-  const gateTrim = [];
-  for (const x of [-1.45, 0, 1.45]) gateTrim.push([x, 0, 0.17, 0.07, 2.25, 0.05]);
-  for (const y of [-0.85, 0.85]) gateTrim.push([0, y, 0.17, 3.1, 0.07, 0.05]);
-  batch(gate, gateTrim, castleBrassMaterial);
+
 }
 
 // Shared soft spark map; each entrance keeps a fixed-size particle buffer.
@@ -1402,7 +1398,14 @@ function buildCastle(castle, index) {
     makeBox(0.44, 1.8, 7.2, wall, 3.72, 1.02, 0),
   ];
   walls.forEach((wallMesh) => group.add(wallMesh));
-  addCastleDetails(group, gate, towerPositions);
+  addCastleDetails(group, towerPositions);
+  const gateSeal = createGatePortal(accent);
+  gateSeal.name = "castle-door-seal";
+  gateSeal.position.set(0, 0, 0.2);
+  gateSeal.scale.set(0.65, 0.65, 0.65);
+  gateSeal.visible = true;
+  gateSeal.userData.sparks.visible = false;
+  gate.add(gateSeal);
 
   // Matching pennants carry the chapter colour on both sides of the gate.
   const bannerMaterial = new THREE.MeshStandardMaterial({
@@ -1492,6 +1495,7 @@ function buildCastle(castle, index) {
     iconMaterial: accentMat,
     gate,
     gateGlow,
+    gateSeal,
     label,
     accentMeshes,
     beacon,
@@ -3047,6 +3051,8 @@ function updateCastles(dt) {
     const eased = 1 - Math.pow(1 - item.gateProgress, 3);
     item.gate.position.y = THREE.MathUtils.lerp(1.32, -1.45, eased);
     item.gate.visible = item.gateProgress < 1;
+    item.gateSeal.userData.veil.material.uniforms.uTime.value = portalReducedMotion.matches ? 0 : time;
+    item.gateSeal.userData.veil.material.uniforms.uReveal.value = (1 - eased) * 0.7;
     item.gateGlow.visible = item.gateProgress > 0 && distance < 48;
     if (item.gateGlow.visible) {
       const portalTime = portalReducedMotion.matches ? 0 : time;
