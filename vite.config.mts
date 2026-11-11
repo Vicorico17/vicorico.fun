@@ -10,7 +10,6 @@ export default defineConfig({
   build: {
     rollupOptions: { input: {
       main: fileURLToPath(new URL("index.html", import.meta.url)),
-      bookingPreview: fileURLToPath(new URL("booking-preview.html", import.meta.url)),
       demo: fileURLToPath(new URL("navbar-demo.html", import.meta.url)),
     } },
   },

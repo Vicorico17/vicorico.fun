@@ -1012,14 +1012,15 @@ function initTitleThemes() {
   title.addEventListener("pointermove", (event) => {
     if (event.pointerType !== "mouse" || reducedMotion.matches) return;
     const bounds = title.getBoundingClientRect();
-    title.style.setProperty("--pointer-x", `${(0.5 - (event.clientY - bounds.top) / bounds.height) * 14}deg`);
-    title.style.setProperty("--pointer-y", `${((event.clientX - bounds.left) / bounds.width - 0.5) * 18}deg`);
+    title.style.setProperty("--pointer-x", `${clamp(0.5 - (event.clientY - bounds.top) / bounds.height, -0.5, 0.5) * 10}deg`);
+    title.style.setProperty("--pointer-y", `${clamp((event.clientX - bounds.left) / bounds.width - 0.5, -0.5, 0.5) * 14}deg`);
   });
   const resetTilt = () => {
     title.style.removeProperty("--pointer-x");
     title.style.removeProperty("--pointer-y");
   };
   title.addEventListener("pointerleave", resetTilt);
+  title.addEventListener("pointercancel", resetTilt);
   reducedMotion.addEventListener("change", resetTilt);
   trigger.addEventListener("click", nextTheme);
 }

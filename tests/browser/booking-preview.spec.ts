@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 
+// Retain preview coverage for when booking is ready to launch.
+test.describe.skip('Booking paused until company setup is complete', () => {
 test.use({ timezoneId: 'Europe/Bucharest' })
 for (const route of ['/booking-preview.html', '/']) {
 for (const width of [1280, 390]) {
@@ -59,3 +61,11 @@ for (const timezoneId of ['America/New_York', 'Asia/Tokyo', 'Pacific/Auckland'])
     })
   })
 }
+
+})
+
+test("public homepage does not offer booking while setup is pending", async ({ page }) => {
+  await page.goto("/")
+  await expect(page.locator("[data-booking-widget]")).toHaveCount(0)
+  await expect(page.locator("script[src*=booking-preview]")).toHaveCount(0)
+})

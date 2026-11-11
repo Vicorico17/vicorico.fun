@@ -834,8 +834,6 @@ castleBannerShape.closePath();
 const castleBannerGeometry = new THREE.ShapeGeometry(castleBannerShape);
 const castleBannerPoleGeometry = new THREE.CylinderGeometry(0.035, 0.045, 1.42, 6);
 const castleBannerPoleMaterial = material("#aab4c5", { metalness: 0.7, roughness: 0.32 });
-const castleGateTrimGeometry = new THREE.BoxGeometry(0.12, 2.65, 0.07);
-const castleGateLintelGeometry = new THREE.BoxGeometry(3.84, 0.12, 0.07);
 
 function makeTextTexture(text, options = {}) {
   const fontSize = options.fontSize || 72;
@@ -980,18 +978,63 @@ function createPlayer() {
   weaponPivot.position.set(0.58, 1.16, -0.2);
   weaponPivot.rotation.set(0.12, 0.7, -0.5);
 
-  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.09, 1.72), swordMat);
-  blade.position.set(0.12, 0.02, -0.86);
+  // Forged rune sword: beveled steel, a luminous fuller, and a wrapped grip.
+  // The tip and grip stay at the original reach and hand attachment points.
+  const steelMat = material("#c5dce9", { metalness: 0.78, roughness: 0.24 });
+  const edgeMat = material("#f0f8ff", { metalness: 0.65, roughness: 0.18 });
+  const brassMat = material("#d9ac55", { metalness: 0.72, roughness: 0.3 });
+  const leatherMat = material("#302734", { roughness: 0.86 });
+  const runeMat = material("#a8f6ff", { emissive: "#39cfff", emissiveIntensity: 1.15, roughness: 0.22 });
+  const bladeOutline = new THREE.Shape();
+  bladeOutline.moveTo(-0.13, 0);
+  bladeOutline.lineTo(-0.18, 0.2);
+  bladeOutline.lineTo(-0.105, 1.53);
+  bladeOutline.lineTo(0, 1.86);
+  bladeOutline.lineTo(0.105, 1.53);
+  bladeOutline.lineTo(0.18, 0.2);
+  bladeOutline.lineTo(0.13, 0);
+  bladeOutline.closePath();
+  const blade = new THREE.Mesh(new THREE.ExtrudeGeometry(bladeOutline, {
+    depth: 0.065, bevelEnabled: true, bevelThickness: 0.018,
+    bevelSize: 0.025, bevelSegments: 1, steps: 1,
+  }), [steelMat, edgeMat]);
+  blade.name = "rune-sword-blade";
+  blade.rotation.x = -Math.PI / 2;
+  blade.position.set(0.12, -0.025, -0.13);
   blade.castShadow = true;
-  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.32, 4), swordMat);
-  tip.position.set(0.12, 0.02, -1.86);
-  tip.rotation.x = Math.PI / 2;
-  tip.castShadow = true;
-  const guard = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.11, 0.13), darkMat);
-  guard.position.set(0.1, 0, -0.08);
-  const hilt = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.44), darkMat);
-  hilt.position.set(0.1, 0, 0.16);
-  weaponPivot.add(blade, tip, guard, hilt);
+  weaponPivot.add(blade);
+  const fuller = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.014, 1.32), darkMat);
+  fuller.position.set(0.12, 0.06, -0.92);
+  weaponPivot.add(fuller);
+  for (let i = 0; i < 5; i += 1) {
+    const rune = new THREE.Mesh(new THREE.OctahedronGeometry(0.045, 0), runeMat);
+    rune.position.set(0.12, 0.076, -0.4 - i * 0.245);
+    rune.scale.set(0.65, 0.25, 1.3);
+    weaponPivot.add(rune);
+  }
+  const guard = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.13, 0.17), brassMat);
+  guard.position.set(0.12, 0, -0.08);
+  const hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.077, 0.085, 0.4, 8), leatherMat);
+  hilt.rotation.x = Math.PI / 2;
+  hilt.position.set(0.12, 0, 0.17);
+  weaponPivot.add(guard, hilt);
+  for (const side of [-1, 1]) {
+    const quillon = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.1, 0.13), brassMat);
+    quillon.position.set(0.12 + side * 0.31, 0, -0.13);
+    quillon.rotation.y = side * 0.5;
+    weaponPivot.add(quillon);
+  }
+  for (let i = 0; i < 5; i += 1) {
+    const wrap = new THREE.Mesh(new THREE.TorusGeometry(0.079, 0.012, 4, 8), brassMat);
+    wrap.position.set(0.12, 0, 0.02 + i * 0.07);
+    weaponPivot.add(wrap);
+  }
+  const pommel = new THREE.Mesh(new THREE.OctahedronGeometry(0.12, 0), brassMat);
+  pommel.position.set(0.12, 0, 0.4);
+  const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.085, 0), runeMat);
+  gem.position.set(0.12, 0.1, -0.08);
+  gem.scale.set(1, 0.6, 1);
+  weaponPivot.add(pommel, gem);
 
   const bowPivot = new THREE.Group();
   bowPivot.position.set(0.64, 1.18, -0.3);
@@ -1257,6 +1300,62 @@ function addCastleDetails(group, gate, towers) {
   batch(gate, gateTrim, castleBrassMaterial);
 }
 
+// Shared soft spark map; each entrance keeps a fixed-size particle buffer.
+const portalReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const portalSparkCanvas = document.createElement("canvas");
+portalSparkCanvas.width = portalSparkCanvas.height = 32;
+const portalSparkContext = portalSparkCanvas.getContext("2d");
+const portalSparkGradient = portalSparkContext.createRadialGradient(16, 16, 0, 16, 16, 16);
+portalSparkGradient.addColorStop(0, "#ffffff");
+portalSparkGradient.addColorStop(0.18, "rgba(255,255,255,0.95)");
+portalSparkGradient.addColorStop(0.5, "rgba(255,255,255,0.25)");
+portalSparkGradient.addColorStop(1, "rgba(255,255,255,0)");
+portalSparkContext.fillStyle = portalSparkGradient;
+portalSparkContext.fillRect(0, 0, 32, 32);
+const portalSparkTexture = new THREE.CanvasTexture(portalSparkCanvas);
+const portalVeilGeometry = new THREE.PlaneGeometry(3.8, 3.1);
+
+function createGatePortal(color) {
+  const portal = new THREE.Group();
+  portal.name = "castle-gate-portal";
+  portal.position.set(0, 1.42, 4.12);
+  portal.visible = false;
+  const veil = new THREE.Mesh(portalVeilGeometry, new THREE.ShaderMaterial({
+    uniforms: { uColor: { value: new THREE.Color(color) }, uTime: { value: 0 }, uReveal: { value: 0 } },
+    transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+    vertexShader: `varying vec2 vUv;
+      void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `varying vec2 vUv;
+      uniform vec3 uColor;
+      uniform float uTime;
+      uniform float uReveal;
+      void main() {
+        vec2 p = (vUv - 0.5) * 2.0;
+        float radius = length(p);
+        float angle = atan(p.y, p.x);
+        float ripple = sin(angle * 5.0 - uTime * 1.7 + radius * 13.0);
+        float edge = exp(-pow((radius - 0.76 - ripple * 0.025) * 17.0, 2.0));
+        float halo = exp(-pow((radius - 0.76) * 5.0, 2.0)) * 0.23;
+        float swirl = pow(0.5 + 0.5 * sin(angle * 3.0 + radius * 19.0 - uTime * 1.3), 3.0);
+        float mist = (1.0 - smoothstep(0.2, 0.8, radius)) * (0.035 + swirl * 0.12);
+        float fade = 1.0 - smoothstep(0.88, 1.0, radius);
+        vec3 tint = mix(uColor, vec3(1.0), edge * 0.65);
+        gl_FragColor = vec4(tint, (edge * 0.8 + halo + mist) * fade * uReveal);
+      }`,
+  }));
+  const sparkGeometry = new THREE.BufferGeometry();
+  sparkGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array((lowPower ? 20 : 36) * 3), 3));
+  const sparks = new THREE.Points(sparkGeometry, new THREE.PointsMaterial({
+    color, map: portalSparkTexture, size: 0.18, transparent: true, opacity: 0,
+    depthWrite: false, blending: THREE.AdditiveBlending,
+  }));
+  // Positions move inside a small fixed doorway volume.
+  sparks.frustumCulled = false;
+  portal.add(veil, sparks);
+  portal.userData = { veil, sparks };
+  return portal;
+}
+
 function buildCastle(castle, index) {
   const [x, z] = castle.position;
   const group = new THREE.Group();
@@ -1276,7 +1375,7 @@ function buildCastle(castle, index) {
   const arch = makeBox(3.9, 0.75, 0.58, wall, 0, 3.2, 3.72, { roughness: 0.55, metalness: 0.08 });
   const backArch = makeBox(3.9, 0.5, 0.44, wall, 0, 2.6, -3.72, { roughness: 0.55, metalness: 0.08 });
   const gate = makeBox(3.5, 2.45, 0.28, dark, 0, 1.32, 3.86, { emissive: accent, emissiveIntensity: 0.18 });
-  const gateGlow = makeBox(2.5, 1.66, 0.08, accent, 0, 1.34, 3.98, { emissive: accent, emissiveIntensity: 0.65, transparent: true, opacity: 0.28 });
+  const gateGlow = createGatePortal(accent);
   accentMeshes.push(leftRoof, rightRoof);
 
   group.add(base, leftKeep, rightKeep, leftRoof, rightRoof, arch, backArch, gate, gateGlow);
@@ -1304,18 +1403,6 @@ function buildCastle(castle, index) {
   ];
   walls.forEach((wallMesh) => group.add(wallMesh));
   addCastleDetails(group, gate, towerPositions);
-
-  // Bright trim makes each castle entrance easier to spot from the road.
-  const gateTrimMaterial = new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.82, depthWrite: false });
-  const gateTrim = new THREE.Group();
-  const leftTrim = new THREE.Mesh(castleGateTrimGeometry, gateTrimMaterial);
-  const rightTrim = new THREE.Mesh(castleGateTrimGeometry, gateTrimMaterial);
-  const lintel = new THREE.Mesh(castleGateLintelGeometry, gateTrimMaterial);
-  leftTrim.position.set(-1.82, 1.3, 4.08);
-  rightTrim.position.set(1.82, 1.3, 4.08);
-  lintel.position.set(0, 2.62, 4.08);
-  gateTrim.add(leftTrim, rightTrim, lintel);
-  group.add(gateTrim);
 
   // Matching pennants carry the chapter colour on both sides of the gate.
   const bannerMaterial = new THREE.MeshStandardMaterial({
@@ -1353,7 +1440,7 @@ function buildCastle(castle, index) {
   ring.userData.spin = index % 2 ? -0.18 : 0.18;
   ring.visible = false;
   group.add(ring);
-  worldObjects.push(ring, gateGlow);
+  worldObjects.push(ring);
 
   const label = makeTextSprite(castle.shortTitle, {
     background: "rgba(5, 7, 12, 0.72)",
@@ -2960,8 +3047,24 @@ function updateCastles(dt) {
     const eased = 1 - Math.pow(1 - item.gateProgress, 3);
     item.gate.position.y = THREE.MathUtils.lerp(1.32, -1.45, eased);
     item.gate.visible = item.gateProgress < 1;
-    item.gateGlow.visible = item.gateProgress > 0.25;
-    item.gateGlow.material.opacity = 0.2 + eased * 0.55;
+    item.gateGlow.visible = item.gateProgress > 0 && distance < 48;
+    if (item.gateGlow.visible) {
+      const portalTime = portalReducedMotion.matches ? 0 : time;
+      const strength = eased * (isDone ? 0.38 : 1);
+      const { veil, sparks } = item.gateGlow.userData;
+      veil.material.uniforms.uTime.value = portalTime;
+      veil.material.uniforms.uReveal.value = strength;
+      item.gateGlow.scale.setScalar(0.7 + eased * 0.3);
+      sparks.material.opacity = strength * 0.8;
+      const positions = sparks.geometry.attributes.position;
+      for (let i = 0; i < positions.count; i += 1) {
+        const phase = i / positions.count;
+        const angle = phase * Math.PI * 8 + portalTime * 0.7;
+        const rise = (phase + portalTime * 0.16) % 1;
+        positions.setXYZ(i, Math.cos(angle) * (1.35 + 0.12 * Math.sin(angle * 3)), rise * 2.6 - 1.25, Math.sin(angle) * 0.25);
+      }
+      positions.needsUpdate = true;
+    }
 
     const inside = distance <= triggerRadius;
     const ringTarget = isDone ? 0.55 : open ? (inside ? 1 : 0.82) : 0;

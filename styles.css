@@ -2069,31 +2069,21 @@ button:not(:where(.booking-widget *)) {
 
 @media (prefers-reduced-motion: no-preference) {
   .home-page .text-flip[data-title-theme="orbit"]:hover .text-flip-trigger {
-    animation: titleOrbitSpin 4.8s linear 650ms infinite;
+    animation: titleGentleRock 7s ease-in-out 650ms infinite;
   }
 
   .home-page .text-flip[data-title-theme="prism"]:hover .text-flip-trigger {
-    animation: titlePrismFlip 4.2s ease-in-out 650ms infinite;
+    animation: titleGentleRock 8s ease-in-out 650ms infinite;
   }
 
   .home-page .text-flip[data-title-theme="vinyl"]:hover .text-flip-trigger {
-    animation: titleVinylSpin 6s linear 650ms infinite;
+    animation: titleGentleRock 9s ease-in-out 650ms infinite;
   }
 }
 
-@keyframes titleOrbitSpin {
-  from { transform: perspective(900px) rotateX(6deg) rotateY(-7deg) rotateZ(0deg); }
-  to { transform: perspective(900px) rotateX(6deg) rotateY(-7deg) rotateZ(360deg); }
-}
-
-@keyframes titlePrismFlip {
-  0%, 100% { transform: perspective(900px) rotateX(5deg) rotateY(0deg); }
-  50% { transform: perspective(900px) rotateX(5deg) rotateY(180deg); }
-}
-
-@keyframes titleVinylSpin {
-  from { transform: perspective(900px) rotateZ(0deg); }
-  to { transform: perspective(900px) rotateZ(-360deg); }
+@keyframes titleGentleRock {
+  0%, 100% { rotate: -1.5deg; }
+  50% { rotate: 1.5deg; }
 }
 
 .text-flip span {
@@ -6188,7 +6178,7 @@ dd {
 
 @media (prefers-reduced-motion: no-preference) {
   .home-page .text-flip[data-title-theme] .text-flip-trigger span {
-    animation: titleLetterFloat 5s ease-in-out infinite;
+    animation: titleLetterFloat 6.5s ease-in-out infinite;
     animation-delay: calc(var(--i) * -0.23s);
   }
   .home-page .text-flip[data-title-theme] .text-flip-trigger span::after {
@@ -6197,8 +6187,8 @@ dd {
   }
 }
 @keyframes titleLetterFloat {
-  0%, 100% { transform: translate3d(0, 0, 0) rotateX(-3deg); }
-  50% { transform: translate3d(0, -0.055em, 12px) rotateX(5deg); }
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(-1deg); }
+  50% { transform: translate3d(0, -0.035em, 5px) rotateX(2deg); }
 }
 @keyframes titleMaterialShine {
   0%, 100% { filter: brightness(1); }
@@ -6227,4 +6217,32 @@ dd {
 
 .bio-facts > .bio-name {
   grid-column: 1 / -1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-page .text-flip[data-title-theme] .text-flip-trigger {
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .home-page .text-flip[data-title-theme]:hover .text-flip-trigger {
+    transition-duration: 240ms;
+  }
+}
+
+/* Extend each website title link across its card, preserving secondary actions. */
+#projects .proof-grid article { position: relative; }
+#projects .proof-grid h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+#projects .proof-grid h3 a:focus-visible::after {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+#projects .proof-actions,
+#projects .proof-meta {
+  position: relative;
+  z-index: 2;
 }
