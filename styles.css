@@ -6027,7 +6027,7 @@ dd {
   .bio-facts > div { grid-template-columns: 1fr; align-content: center; gap: 6px; padding: 16px; border-radius: 16px; box-shadow: none; }
   .bio-facts dt { font-size: 0.65rem; letter-spacing: 0.12em; }
   .bio-facts dd { margin: 0; font-size: 1rem; line-height: 1.35; }
-  .bio-facts > div:first-child dd { font-size: 1.55rem; line-height: 1.1; }
+  .bio-facts > .bio-age dd { font-size: 1.55rem; line-height: 1.1; }
   .bio-facts .bio-skills-row { grid-column: 1 / -1; padding: 4px 0 0; }
 }
 
@@ -6223,4 +6223,8 @@ dd {
   -webkit-background-clip: text;
   -webkit-text-fill-color: inherit;
   -webkit-text-stroke: inherit;
+}
+
+.bio-facts > .bio-name {
+  grid-column: 1 / -1;
 }
