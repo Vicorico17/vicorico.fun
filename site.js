@@ -716,35 +716,31 @@ function sortProjectArchiveByPushDate(repos) {
 function readCachedProjectCommitInfo(repo) {
   try {
     const cached = JSON.parse(localStorage.getItem(`vicorico-project-commits:${repo}`) || "null");
-    if (Number.isInteger(cached?.count) && Date.now() - cached.savedAt < 6 * 60 * 60 * 1000) {
+    if (Number.isInteger(cached?.count) && cached.count >= 0) {
       return cached;
     }
   } catch { /* Storage may be disabled. */ }
   return null;
 }
 
+let projectActivityRequest;
 async function getGithubProjectCommitInfo(repo) {
-  const response = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`, {
-    headers: { Accept: "application/vnd.github+json" },
-  });
-  if (!response.ok && response.status !== 409) throw new Error(`GitHub API returned ${response.status}`);
-
-  const links = response.headers.get("Link");
-  const lastPage = links?.match(/<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/);
-  if (links && !lastPage) throw new Error("GitHub did not provide the last page");
-  const commits = response.status === 409 ? [] : await response.json(); // 409 means an empty repository.
-  const count = lastPage ? Number(lastPage[1]) : commits.length;
-  if (!Number.isInteger(count)) throw new Error("Invalid commit count");
-  const commit = commits[0];
-  const info = {
-    count,
-    latestDate: commit?.commit?.committer?.date || commit?.commit?.author?.date || null,
-    savedAt: Date.now(),
-  };
+  projectActivityRequest ||= fetch("assets/project-activity.json", { signal: AbortSignal.timeout(8000) })
+    .then((response) => {
+      if (!response.ok) throw new Error("Project activity snapshot unavailable");
+      return response.json();
+    });
+  const snapshot = await projectActivityRequest;
+  const info = snapshot.projects?.[repo.toLowerCase()];
+  if (!Number.isInteger(info?.count) || info.count < 0 || !Number.isFinite(info.savedAt)) {
+    throw new Error("Project has no saved count");
+  }
+  const cached = readCachedProjectCommitInfo(repo);
+  const latest = cached?.savedAt > info.savedAt ? cached : info;
   try {
-    localStorage.setItem(`vicorico-project-commits:${repo}`, JSON.stringify(info));
+    localStorage.setItem(`vicorico-project-commits:${repo}`, JSON.stringify(latest));
   } catch { /* Storage may be disabled. */ }
-  return info;
+  return latest;
 }
 
 function initProjectCommitCounts() {
@@ -762,8 +758,11 @@ function initProjectCommitCounts() {
       getGithubProjectCommitInfo(task.repo)
         .then((info) => { task.entry.info = info; })
         .catch(() => {
-          task.badge.textContent = "Commit count unavailable";
-          task.entry.latest.textContent = "Latest commit unavailable";
+          // Keep a real cached count; otherwise offer the history link without a fake zero.
+          if (!task.entry.info) {
+            task.badge.textContent = "View commits";
+            if (!projectPushDates.has(task.repo.toLowerCase())) task.entry.latest.textContent = "";
+          }
         })
         .finally(() => {
           completed += 1;
@@ -783,6 +782,7 @@ function initProjectCommitCounts() {
     entries.forEach(({ card, info, badge, latest }) => {
       if (info) {
         badge.textContent = `${info.count.toLocaleString()} ${info.count === 1 ? "commit" : "commits"}`;
+        badge.title = `Count checked ${formatGithubDateTime(new Date(info.savedAt).toISOString())}`;
         latest.textContent = info.latestDate ? `Latest commit · ${formatGithubDateTime(info.latestDate)}` : "No commits yet";
         if (info.latestDate) latest.dateTime = info.latestDate;
       }
@@ -848,11 +848,9 @@ function initProjectCommitCounts() {
     (card.querySelector(".proof-actions") || status).after(meta);
     const entry = { card, index, repo, info: cached, badge, latest };
     entries.push(entry);
-    if (!cached) {
-      entry.task = { repo, badge, entry };
-      card.commitCountTask = entry.task;
-      if (!observer) pending.push(entry.task);
-    }
+    entry.task = { repo, badge, entry };
+    card.commitCountTask = entry.task;
+    if (!observer) pending.push(entry.task);
   });
   total = entries.filter((entry) => entry.task).length;
   if (!total) sortArchive();

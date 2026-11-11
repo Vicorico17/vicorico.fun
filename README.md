@@ -118,3 +118,15 @@ Arabic uses right-to-left layout and “يلا نستكشف!” on the Explore l
 A neutral globe marks Arabic in the language menu. Switching to another language
 restores left-to-right layout. Arabic copy is machine-translated with reviewed
 interface and introductory wording; brand and repository names stay unchanged.
+
+### Project commit counts
+
+Selected Projects reads `assets/project-activity.json` once instead of requesting every repository from each visitor's browser. The build refreshes counts older than six hours, retaining saved values on GitHub failures. Count links show the snapshot check time in their tooltip.
+
+To update the committed snapshot using an existing GitHub CLI login, run:
+
+```sh
+node scripts/refresh-project-activity.mjs --write-source --github-cli
+```
+
+No credentials are included in the browser bundle or snapshot. Without a saved count, the card offers a **View commits** link.
